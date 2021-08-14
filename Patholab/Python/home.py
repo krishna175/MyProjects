@@ -1,0 +1,844 @@
+from tkinter import *
+
+from PIL import ImageTk,Image
+import tkinter as tk
+import sqlite3
+from tkinter import messagebox
+import pyautogui
+import pygetwindow
+from datetime import datetime
+import webbrowser
+from plyer import notification
+import time
+
+
+
+
+
+def notifyrecmail():
+    notification.notify(
+        title = "Mail send",
+        message = "Receipt sent to patient",
+        timeout = 1
+    )
+    time.sleep(0)
+
+def showError():
+    messagebox.showerror("Message", "Please fill the data properly.")
+
+
+
+def homewindow():
+    home = Tk()
+    home.configure(bg="white")
+    home.title('Patholab')
+    home.resizable(False,False)
+    home.iconbitmap("Images/icon4.ico")
+    window_width, window_height = 885, 650
+
+    screen_width = home.winfo_screenwidth()
+    screen_height = home.winfo_screenheight()
+
+    position_top = int(screen_height / 2 - window_height / 2)
+    position_right = int(screen_width / 2 - window_width / 2)
+
+    home.geometry(f"{window_width}x{window_height}+{position_right}+{position_top}")
+
+    temp_size = Image.open("Images/home_template2.png")
+    temp_resized = temp_size.resize((395,655), Image.ANTIALIAS)
+    template = ImageTk.PhotoImage(temp_resized)
+    template_image = Label(home,image=template,borderwidth="0")
+    template_image.place(x="-1",y="-3")
+
+    backtemplate_size = Image.open("Images/back1.jpg")
+    backtemplate_resized = backtemplate_size.resize((410,700), Image.ANTIALIAS)
+    backtemplate = ImageTk.PhotoImage(backtemplate_resized)
+    backtemplate_image = Label(home,image=backtemplate,borderwidth="0")
+    backtemplate_image.place(x="430",y="0")
+
+
+    receipt_size = Image.open("C:/Users/Vandana/Documents/Clg Doc/OneDrive/Patholab/Python/Images/receipt_button.png")
+    receipt_resized = receipt_size.resize((220,50), Image.ANTIALIAS)
+    receipt_image = ImageTk.PhotoImage(receipt_resized)
+    Label(image=receipt_image)
+    button_receipt = Button(home,image=receipt_image,borderwidth="0",activebackground='blue',command=receiptEntry)
+    button_receipt.place(x=530,y=30)
+
+    editreceipt_size = Image.open("C:/Users/Vandana/Documents/Clg Doc/OneDrive/Patholab/Python/Images/editreceipt_button.png")
+    editreceipt_resized = editreceipt_size.resize((220,50), Image.ANTIALIAS)
+    editreceipt_image = ImageTk.PhotoImage(editreceipt_resized)
+    Label(image=editreceipt_image)
+    button_editreceipt = Button(home,image=editreceipt_image,borderwidth="0",activebackground='blue',command=editReceipt)
+    button_editreceipt.place(x=530,y=100)
+
+    taketest_size = Image.open("C:/Users/Vandana/Documents/Clg Doc/OneDrive/Patholab/Python/Images/taketest_button.png")
+    taketest_resized = taketest_size.resize((220,50), Image.ANTIALIAS)
+    taketest_image = ImageTk.PhotoImage(taketest_resized)
+    Label(image=taketest_image)
+    button_taketest = Button(home,image=taketest_image,borderwidth="0",command=takeTest)
+    button_taketest.place(x=530,y=170)
+
+
+
+    covtest_size = Image.open("C:/Users/Vandana/Documents/Clg Doc/OneDrive/Patholab/Python/Images/covidtest_button.png")
+    covtest_resized = covtest_size.resize((220,50), Image.ANTIALIAS)
+    covtest_image = ImageTk.PhotoImage(covtest_resized)
+    Label(image=covtest_image)
+    button_covtest = Button(home,image=covtest_image,borderwidth="0")
+    button_covtest.place(x=530,y=240)
+
+    sendreport_size = Image.open("C:/Users/Vandana/Documents/Clg Doc/OneDrive/Patholab/Python/Images/sendreport_button.png")
+    sendreport_resized = sendreport_size.resize((220,50), Image.ANTIALIAS)
+    sendreport_image = ImageTk.PhotoImage(sendreport_resized)
+    Label(image=sendreport_image)
+    button_sendreport = Button(home,image=sendreport_image,borderwidth="0")
+    button_sendreport.place(x=530,y=310)
+
+    deletereport_size = Image.open("C:/Users/Vandana/Documents/Clg Doc/OneDrive/Patholab/Python/Images/deletereport_button.png")
+    deletereport_resized = deletereport_size.resize((220,50), Image.ANTIALIAS)
+    deletereport_image = ImageTk.PhotoImage(deletereport_resized)
+    Label(image=deletereport_image)
+    button_deletereport = Button(home,image=deletereport_image,borderwidth="0")
+    button_deletereport.place(x=530,y=380)
+
+    vcard_size = Image.open("C:/Users/Vandana/Documents/Clg Doc/OneDrive/Patholab/Python/Images/vcard_button.png")
+    vcard_resized = vcard_size.resize((220,50), Image.ANTIALIAS)
+    vcard_image = ImageTk.PhotoImage(vcard_resized)
+    Label(image=vcard_image)
+    button_vcard = Button(home,image=vcard_image,borderwidth="0")
+    button_vcard.place(x=530,y=450)
+
+    vaccineslot_size = Image.open("C:/Users/Vandana/Documents/Clg Doc/OneDrive/Patholab/Python/Images/vaccineslot_button.png")
+    vaccineslot_resized = vaccineslot_size.resize((220,50), Image.ANTIALIAS)
+    vaccineslot_image = ImageTk.PhotoImage(vaccineslot_resized)
+    Label(image=vaccineslot_image)
+    button_vaccineslot = Button(home,image=vaccineslot_image,borderwidth="0")
+    button_vaccineslot.place(x=530,y=520)
+
+    exit_size = Image.open("C:/Users/Vandana/Documents/Clg Doc/OneDrive/Patholab/Python/Images/exit_button.png")
+    exit_resized = exit_size.resize((60,40), Image.ANTIALIAS)
+    exit_image = ImageTk.PhotoImage(exit_resized)
+    Label(image=exit_image)
+    button_exit = Button(home,image=exit_image,borderwidth="0",activebackground='red',command=home.destroy)
+    button_exit.place(x=818,y=605)
+
+    home.mainloop()
+
+def receiptEntry():
+    global recname_entry,recage_entry,var,recphone_entry,recemail_entry,click,rentry,recrefdr_entry
+    rentry = Toplevel()
+
+    window_width, window_height = 1000, 570
+    screen_width = rentry.winfo_screenwidth()
+    screen_height = rentry.winfo_screenheight()
+    position_top = int(screen_height / 2 - window_height / 2)
+    position_right = int(screen_width / 2 - window_width / 2)
+    rentry.geometry(f"{window_width}x{window_height}+{position_right}+{position_top}")
+
+    rentry.title("RECEIPT ENTRY")
+    rentry.configure(bg="white")
+    rentry.resizable(width=False, height=False)
+    rentry.iconbitmap('C:/gui/icon4.ico')
+
+    rentry_top = Image.open("Images/receipt_temp.png")
+    rephoto = ImageTk.PhotoImage(rentry_top)
+    rentry.photo = rephoto  # solution for bug in `PhotoImage`
+    receipt_toplogo = Label(rentry, image=rephoto, borderwidth="0")
+    receipt_toplogo.place(x="37",y="15")
+
+    rentry_down = Image.open("Images/Receipt_temp_ss_down.png")
+    rephoto2 = ImageTk.PhotoImage(rentry_down)
+    rentry.photo2 = rephoto2  # solution for bug in `PhotoImage`
+    receipt_downlogo = Label(rentry, image=rephoto2, borderwidth="0")
+    receipt_downlogo.place(x="37", y="450")
+
+    gpay_logo = Image.open("Images/payment_image.png")
+    gpay_logo = ImageTk.PhotoImage(gpay_logo)
+    rentry.photo2 = gpay_logo  # solution for bug in `PhotoImage`
+    rec_gpay_logo = Label(rentry, image=gpay_logo, borderwidth="0",bg="white")
+    rec_gpay_logo.place(x="100", y="230")
+
+
+    rec_name = Label(rentry,text="Name : ",font="lucida 12 bold ",bg="white",fg="blue4")
+    rec_name.place(x="300",y="150")
+    recname_entry = Entry(rentry,width="40",font="lucida 12",bd="3")
+    recname_entry.place(x="380",y="150")
+
+    rec_age = Label(rentry,text="Age : ",font="lucida 12 bold",bg="white",fg="blue4")
+    rec_age.place(x="300",y="200")
+    recage_entry = Entry(rentry,width="5",font="lucida 12",bd="3")
+    recage_entry.place(x="370",y="200")
+
+    var=StringVar()
+    rec_gender = Label(rentry, text="Gender : ", font="lucida 12 bold", bg="white", fg="blue4")
+    rec_gender.place(x="470", y="200")
+
+    msymbol = Image.open("Images/male.png")
+    msymbol = ImageTk.PhotoImage(msymbol)
+    rentry.photo = msymbol  # solution for bug in `PhotoImage`
+    mgender_radio = Radiobutton(rentry,image=msymbol,variable=var,bg="white",fg="blue",font="2",value="MALE")
+    mgender_radio.place(x="560",y="198")
+
+    fsymbol = Image.open("Images/femenine.png")
+    fsymbol = ImageTk.PhotoImage(fsymbol)
+    rentry.photo = fsymbol  # solution for bug in `PhotoImage`
+    fgender_radio = Radiobutton(rentry,image=fsymbol,variable=var,bg="white",fg="blue",font="2",value="FEMALE")
+    fgender_radio.place(x="630",y="198")
+
+    rec_phone = Label(rentry, text="Mobile no : ", font="lucida 12 bold", bg="white", fg="blue4")
+    rec_phone.place(x="300", y="250")
+    recphone_entry = Entry(rentry, width="15", font="lucida 12", bd="3")
+    recphone_entry.place(x="420", y="250")
+
+    rec_refdr = Label(rentry, text="Ref.By Dr : ", font="lucida 12 bold", bg="white", fg="blue4")
+    rec_refdr.place(x="300", y="300")
+    recrefdr_entry = Entry(rentry, width="19", font="lucida 12", bd="3")
+    recrefdr_entry.place(x="420", y="300")
+
+
+    rec_test = Label(rentry, text="Test : ", font="lucida 12 bold", bg="white", fg="blue4")
+    rec_test.place(x="300", y="350")
+    list1 = ['Complete Blood Count', 'Prothrobin Time', 'Basic Metabolic Panel', 'Comprehensive Metabolic Panel', 'Lipid Panel', 'Liver Panel', 'Thyroid Stimulating Hormone', 'Hemoglobin A1C', 'Urinalysis', 'Cultures']
+    click=StringVar()
+    click.set("Select Test")
+    test_dropdown = OptionMenu(rentry,click,*list1)
+    test_dropdown.config(bg="blue4",fg="white",width="26",activebackground="dodger blue",activeforeground="black")
+    test_dropdown.place(x="370",y="345")
+
+    rec_email = Label(rentry, text="e-mail id : ", font="lucida 12 bold", bg="white", fg="blue4")
+    rec_email.place(x="300", y="400")
+    recemail_entry = Entry(rentry, width="30",font="lucida 12", bd="3")
+    recemail_entry.place(x="420", y="400")
+
+    submitsymbol = Image.open("Images/submit_button.png")
+    submitsymbol = ImageTk.PhotoImage(submitsymbol)
+    rentry.photo3 = submitsymbol
+    submit_receipt = Button(rentry,image=submitsymbol,bg="white",bd="0",activebackground='green',command=receiptInsertdb)
+    submit_receipt.place(x="800",y="400")
+
+    rentry.mainloop()
+
+def receiptInsertdb():
+    # global recname_entry, recage_entry, var, recphone_entry, recemail_entry, click
+    name = str(recname_entry.get())
+    age = recage_entry.get()
+    gender = var.get()
+    phone = recphone_entry.get()
+    doc =  recrefdr_entry.get()
+    test = str(click.get())
+    email = str(recemail_entry.get())
+    timenow  =(datetime.today().strftime("%I:%M %p"))
+
+    # testamt = 750
+    if (test == "Complete Blood Count"):
+        testamt=700
+    elif(test=="Prothrobin Time"):
+        testamt=700
+    elif(test=="Basic Metabolic Panel"):
+        testamt=800
+    elif(test=="Comprehensive Metabolic Panel"):
+        testamt=900
+    elif(test=="Lipid Panel"):
+        testamt=500
+    elif(test=="Liver Panel"):
+        testamt=950
+    elif(test=="Thyroid Stimulating Hormone"):
+        testamt=750
+    elif(test=="Hemoglobin A1C"):
+        testamt=1200
+    elif(test=="Urinalysis"):
+        testamt=600
+    elif(test=="Cultures"):
+        testamt=1100
+    else:
+        testamt=500
+
+    try:
+        conn = sqlite3.connect('Labdb.db')
+        cur = conn.cursor()
+        cur.execute(f"INSERT INTO Receipt values((SELECT max (REC_ID)+1 from Receipt),'{name}',{age},'{gender}',{phone},'{email}','{test}','{doc}',{testamt},STRFTIME('%d/%m/%Y'),'{timenow}')")  # get method gets values from the variable
+        cur.close()
+        conn.commit()
+        conn.close()
+        showmessage()
+    except Exception as e:
+        showError()
+
+def receiptDisplay():
+    redisp = Tk()
+    label_name = Label(redisp,text=str(f"{var.get()}"))
+    label_name.pack()
+    redisp.mainloop()
+
+def showmessage():
+    messagebox.showinfo("Message", "Receipt created successfully!")
+    rentry.destroy()
+    displayReceipt()
+
+def printrec():
+    path = "C:/Users/Vandana/Documents/Clg Doc/OneDrive/Patholab/Python/Receipt_i.png"
+    titles =pygetwindow.getAllTitles()
+
+    # x1, y1 = width, height = pygetwindow.getWindowsWithTitle('Patholab')
+    window = pygetwindow.getWindowsWithTitle('RECEIPT')[0]
+    x1 = window.left+10
+    y1 = window.top+50
+    height = window.height-110
+    width = window.width-20
+    x2 = x1 + width
+    y2 = y1 + height
+
+    pyautogui.screenshot(path)
+
+    im = Image.open(path)
+    im = im.crop((x1,y1,x2,y2))
+    im.save(path)
+    # im.show(path)
+    pdfconv()
+
+def pdfconv():
+    filename = "C:/Users/Vandana/Documents/Clg Doc/OneDrive/Patholab/Python/Receipt_i.png"
+    image = Image.open(filename)
+
+    if image.mode == "RGBA":
+        image = image.convert("RGB")
+    output = "C:/Users/Vandana/Documents/Clg Doc/OneDrive/Patholab/Python/Receipt.pdf"
+    image.save(output, "PDF", resolution=100.0)
+    sendmail()
+
+def sendmail():
+    from pdf_mail import sendpdf
+    conn = sqlite3.connect('Labdb.db')
+    cur = conn.cursor()
+    rvalue = cur.execute("SELECT NAME,EMAIL_ID,TEST FROM Receipt WHERE REC_ID = (SELECT max (REC_ID) FROM Receipt) ")
+    emaildetails = rvalue.fetchall()
+    for i in emaildetails:
+        recepent_name = str(i[0])
+        recepent_email = str(i[1])
+        recepent_test = str(i[2])
+
+    # Create an object of sendpdf function
+        k = sendpdf("patholabsreport@gmail.com",
+                    f"{recepent_email}",
+                    "Patho@175",
+                    "Patholab Receipt",
+                    f"Dear {recepent_name},\nThis is the receipt for your {recepent_test} test.\nTest report will be sent to you before 6:00 PM. \n\nRegards,\nPatholab",
+                    "Receipt",
+                    "C:/Users/Vandana/Documents/Clg Doc/OneDrive/Patholab/Python")
+
+    # sending an email
+        k.email_send()
+        # showmailmessage()
+        notifyrecmail()
+
+def displayReceipt():
+    rdisplay = Toplevel()
+
+    window_width, window_height = 1000, 630
+    screen_width = rdisplay.winfo_screenwidth()
+    screen_height = rdisplay.winfo_screenheight()
+    position_top = int(screen_height / 2 - window_height / 2)
+    position_right = int(screen_width / 2 - window_width / 2)
+    rdisplay.geometry(f"{window_width}x{window_height}+{position_right}+{position_top}")
+
+    rdisplay.title("RECEIPT")
+    rdisplay.configure(bg="white")
+    rdisplay.resizable(width=False, height=False)
+    rdisplay.iconbitmap('C:/gui/icon4.ico')
+
+    rdisplay_top = Image.open("C:/Users/Vandana/Documents/Clg Doc/OneDrive/Patholab/Python/Images/receipt_temp.png")
+    rephoto = ImageTk.PhotoImage(rdisplay_top)
+    rdisplay.photo = rephoto  # solution for bug in `PhotoImage`
+    receipt_toplogo = Label(rdisplay, image=rephoto, borderwidth="0")
+    receipt_toplogo.place(x="37", y="15")
+
+    rdisplay_down = Image.open("C:/Users/Vandana/Documents/Clg Doc/OneDrive/Patholab/Python/Images/Receipt_temp_ss_down.png")
+    rephoto2 = ImageTk.PhotoImage(rdisplay_down)
+    rdisplay.photo2 = rephoto2  # solution for bug in `PhotoImage`
+    receipt_downlogo = Label(rdisplay, image=rephoto2, borderwidth="0")
+    receipt_downlogo.place(x="37", y="450")
+
+    gpay_logo = Image.open("C:/Users/Vandana/Documents/Clg Doc/OneDrive/Patholab/Python/Images/payment_image.png")
+    gpay_logo = ImageTk.PhotoImage(gpay_logo)
+    rdisplay.photo2 = gpay_logo  # solution for bug in `PhotoImage`
+    rec_gpay_logo = Label(rdisplay, image=gpay_logo, borderwidth="0", bg="white")
+    rec_gpay_logo.place(x="100", y="225")
+
+    emailsymbol = Image.open("C:/Users/Vandana/Documents/Clg Doc/OneDrive/Patholab/Python/Images/mail_button.png")
+    emailsymbol = ImageTk.PhotoImage(emailsymbol)
+    rdisplay.photo = emailsymbol  # solution for bug in `PhotoImage`
+    email_button = Button(rdisplay, image=emailsymbol, bg="white", bd="0",activebackground='blue',command=printrec)
+    email_button.place(x="350", y="580")
+
+    printsymbol = Image.open("C:/Users/Vandana/Documents/Clg Doc/OneDrive/Patholab/Python/Images/print_button_size.png")
+    printsymbol = ImageTk.PhotoImage(printsymbol)
+    rdisplay.photo = printsymbol  # solution for bug in `PhotoImage`
+    print_button = Button(rdisplay, image=printsymbol, bg="white", bd="0",activebackground='blue',command=priss)
+    print_button.place(x="550", y="580")
+
+    rec_amt = Label(rdisplay, text="Amount : ", font="lucida 8 bold", bg="white", fg="black")
+    rec_amt.place(x="100", y="400")
+
+    rec_amt = Label(rdisplay, text="Amount : ", font="lucida 11 bold", bg="white", fg="black")
+    rec_amt.place(x="750", y="410")
+
+    rec_id=Label(rdisplay,text="Rec_ID : ",font="lucida 13 bold",bg="white",fg="black")
+    rec_id.place(x="300",y="150")
+
+    rec_name = Label(rdisplay, text="Name : ", font="lucida 11 bold ", bg="white", fg="black")
+    rec_name.place(x="300", y="205")
+
+    rec_age = Label(rdisplay, text="Age : ", font="lucida 11 bold", bg="white", fg="black")
+    rec_age.place(x="300", y="255")
+
+    rec_gender = Label(rdisplay, text="Gender : ", font="lucida 11 bold", bg="white", fg="black")
+    rec_gender.place(x="420", y="255")
+
+    rec_phone = Label(rdisplay, text="Mobile no : ", font="lucida 11 bold", bg="white", fg="black")
+    rec_phone.place(x="300", y="305")
+
+    rec_date = Label(rdisplay, text="Date : ", font="lucida 11 bold", bg="white", fg="black")
+    rec_date.place(x="300", y="350")
+
+    rec_refdr = Label(rdisplay, text="Ref.By Dr:  ", font="lucida 11 bold", bg="white", fg="black")
+    rec_refdr.place(x="500", y="350")
+
+
+
+    rec_test = Label(rdisplay, text="Test : ", font="lucida 11 bold", bg="white", fg="black")
+    rec_test.place(x="300", y="395")
+
+
+
+    # display name on receipt from db
+
+    conn = sqlite3.connect('Labdb.db')
+    cur = conn.cursor()
+    rvalue = cur.execute("SELECT * FROM Receipt WHERE REC_ID = (SELECT max (REC_ID) FROM Receipt) ")
+    detaillist = rvalue.fetchall()
+
+    for i in detaillist:
+        rec_id = Label(rdisplay, text=str(i[0]), font="lucida 14 bold", bg="white", fg="royalblue4")
+        rec_id.place(x="390", y="150")
+
+        dis_name = Label(rdisplay,text=str(i[1]),font="lucida 11 ",bg="white",fg="black")
+        dis_name.place(x="370",y="205")
+
+        dis_age = Label(rdisplay,text=str(i[2]),font="lucida 11 ",bg="white",fg="black")
+        dis_age.place(x="360", y="255")
+
+        dis_gender = Label(rdisplay,text=str(i[3]), font="lucida 11 ", bg="white", fg="black")
+        dis_gender.place(x="510", y="255")
+
+        dis_phone = Label(rdisplay, text=str(i[4]), font="lucida 11 ", bg="white", fg="black")
+        dis_phone.place(x="410", y="305")
+
+        dis_test = Label(rdisplay,text=str(i[6]), font="lucida 11 ", bg="white", fg="black")
+        dis_test.place(x="360", y="395")
+
+        dis_doc = Label(rdisplay, text=str(i[7]), font="lucida 11 ", bg="white", fg="black")
+        dis_doc.place(x="600", y="350")
+
+        rec_amt = Label(rdisplay,text=str(i[8])+"/- Rs", font="lucida 11 bold", bg="white", fg="black")
+        rec_amt.place(x="845", y="410")
+        rec_amt2 = Label(rdisplay,text=str(i[8])+"/- Rs", font="lucida 8 bold", bg="white", fg="black")
+        rec_amt2.place(x="165", y="400")
+
+        dis_date = Label(rdisplay,text=str(i[9]), font="lucida 11 ", bg="white", fg="black")
+        dis_date.place(x="360", y="350")
+
+        rec_time = Label(rdisplay,text=str("Time: "+i[10]), font="lucida 9 bold", bg="white", fg="black")
+        rec_time.place(x="820", y="120")
+
+        cur.close()
+        conn.close()
+
+    rdisplay.mainloop()
+
+
+def priss():
+    path = "C:/Users/Vandana/Documents/Clg Doc/OneDrive/Patholab/Python/Receipt_i.png"
+    titles =pygetwindow.getAllTitles()
+
+    # x1, y1 = width, height = pygetwindow.getWindowsWithTitle('Patholab')
+    window = pygetwindow.getWindowsWithTitle('RECEIPT')[0]
+    x1 = window.left+10
+    y1 = window.top+50
+    height = window.height-110
+    width = window.width-20
+    x2 = x1 + width
+    y2 = y1 + height
+
+    pyautogui.screenshot(path)
+
+    im = Image.open(path)
+    im = im.crop((x1,y1,x2,y2))
+    im.save(path)
+    # im.show(path)
+    sstopdf()
+
+def sstopdf():
+    filename = "C:/Users/Vandana/Documents/Clg Doc/OneDrive/Patholab/Python/Receipt_i.png"
+    image = Image.open(filename)
+
+    if image.mode == "RGBA":
+        image = image.convert("RGB")
+    output = "C:/Users/Vandana/Documents/Clg Doc/OneDrive/Patholab/Python/Receipt.pdf"
+    image.save(output, "PDF", resolution=100.0)
+    printreceipt()
+
+def printreceipt():
+    webbrowser.open_new(r'file://C:/Users/Vandana/Documents/Clg Doc/OneDrive/Patholab/Python/Receipt.pdf')
+def showmailmessage():
+    messagebox.showinfo("Message", "Mail sent successfully!")
+
+def editReceipt():
+    global select_rec_entry, edrecwin
+    edrecwin = Toplevel()
+    edrecwin.configure(bg="white")
+    window_width, window_height = 570,360
+    screen_width = edrecwin.winfo_screenwidth()
+    screen_height = edrecwin.winfo_screenheight()
+    position_top = int(screen_height / 2 - window_height / 2)
+    position_right = int(screen_width / 2 - window_width / 2)
+    edrecwin.geometry(f"{window_width}x{window_height}+{position_right}+{position_top}")
+
+    reditselectionimg = Image.open("C:/Users/Vandana/Documents/Clg Doc/OneDrive/Patholab/Python/Images/backnew_3.png")
+    rebg = ImageTk.PhotoImage(reditselectionimg)
+    edrecwin.photo = rebg  # solution for bug in `PhotoImage`
+    receipt_editlogo = Label(edrecwin, image=rebg, borderwidth="0")
+    receipt_editlogo.place(x="0", y="0")
+
+    select_rec_id = Label(edrecwin,text="Rec_Id : ",bg="white",font="lucida 12 bold")
+    select_rec_id.place(x="170",y="95")
+    select_rec_entry = Entry(edrecwin,font="lucida 13 bold",width="14",bg="grey93",bd="3")
+    select_rec_entry.place(x="270",y="95")
+
+    showreceiptbtn = Image.open("C:/Users/Vandana/Documents/Clg Doc/OneDrive/Patholab/Python/Images/showReceipt.png")
+    showreceiptbtn = ImageTk.PhotoImage(showreceiptbtn)
+    edrecwin.photo = showreceiptbtn  # solution for bug in `PhotoImage`
+    showrecbtn = Button(edrecwin, image=showreceiptbtn, bg="white", bd="0", activebackground='blue',command=showReceipt)
+    showrecbtn.place(x="190", y="160")
+
+    editrecimg = Image.open("C:/Users/Vandana/Documents/Clg Doc/OneDrive/Patholab/Python/Images/editReceipt.png")
+    editrecimg = ImageTk.PhotoImage(editrecimg)
+    edrecwin.photo = editrecimg  # solution for bug in `PhotoImage`
+    editrecbtn = Button(edrecwin, image=editrecimg, bg="white", bd="0", activebackground='blue',command=recUpdate)
+    editrecbtn.place(x="191", y="220")
+
+    edrecwin.mainloop()
+
+def showReceipt():
+    global rdisplay
+    recid = int(select_rec_entry.get())
+    rdisplay = Toplevel()
+
+    window_width, window_height = 1000, 630
+    screen_width = rdisplay.winfo_screenwidth()
+    screen_height = rdisplay.winfo_screenheight()
+    position_top = int(screen_height / 2 - window_height / 2)
+    position_right = int(screen_width / 2 - window_width / 2)
+    rdisplay.geometry(f"{window_width}x{window_height}+{position_right}+{position_top}")
+
+    rdisplay.title("RECEIPT")
+    rdisplay.configure(bg="white")
+    rdisplay.resizable(width=False, height=False)
+    rdisplay.iconbitmap('C:/gui/icon4.ico')
+
+    rdisplay_top = Image.open("C:/Users/Vandana/Documents/Clg Doc/OneDrive/Patholab/Python/Images/receipt_temp.png")
+    rephoto = ImageTk.PhotoImage(rdisplay_top)
+    rdisplay.photo = rephoto  # solution for bug in `PhotoImage`
+    receipt_toplogo = Label(rdisplay, image=rephoto, borderwidth="0")
+    receipt_toplogo.place(x="37", y="15")
+
+    rdisplay_down = Image.open("C:/Users/Vandana/Documents/Clg Doc/OneDrive/Patholab/Python/Images/Receipt_temp_ss_down.png")
+    rephoto2 = ImageTk.PhotoImage(rdisplay_down)
+    rdisplay.photo2 = rephoto2  # solution for bug in `PhotoImage`
+    receipt_downlogo = Label(rdisplay, image=rephoto2, borderwidth="0")
+    receipt_downlogo.place(x="37", y="450")
+
+    gpay_logo = Image.open("C:/Users/Vandana/Documents/Clg Doc/OneDrive/Patholab/Python/Images/payment_image.png")
+    gpay_logo = ImageTk.PhotoImage(gpay_logo)
+    rdisplay.photo2 = gpay_logo  # solution for bug in `PhotoImage`
+    rec_gpay_logo = Label(rdisplay, image=gpay_logo, borderwidth="0", bg="white")
+    rec_gpay_logo.place(x="100", y="225")
+
+    emailsymbol = Image.open("C:/Users/Vandana/Documents/Clg Doc/OneDrive/Patholab/Python/Images/mail_button.png")
+    emailsymbol = ImageTk.PhotoImage(emailsymbol)
+    rdisplay.photo = emailsymbol  # solution for bug in `PhotoImage`
+    email_button = Button(rdisplay, image=emailsymbol, bg="white", bd="0", activebackground='blue', command=printrec)
+    email_button.place(x="350", y="580")
+
+    printsymbol = Image.open("C:/Users/Vandana/Documents/Clg Doc/OneDrive/Patholab/Python/Images/print_button_size.png")
+    printsymbol = ImageTk.PhotoImage(printsymbol)
+    rdisplay.photo = printsymbol  # solution for bug in `PhotoImage`
+    print_button = Button(rdisplay, image=printsymbol, bg="white", bd="0", activebackground='blue',command=priss)
+    print_button.place(x="550", y="580")
+
+    rec_amt = Label(rdisplay, text="Amount : ", font="lucida 8 bold", bg="white", fg="black")
+    rec_amt.place(x="100", y="400")
+
+    rec_amt = Label(rdisplay, text="Amount : ", font="lucida 11 bold", bg="white", fg="black")
+    rec_amt.place(x="750", y="410")
+
+    rec_id = Label(rdisplay, text="Rec_ID : ", font="lucida 13 bold", bg="white", fg="black")
+    rec_id.place(x="300", y="150")
+
+    rec_name = Label(rdisplay, text="Name : ", font="lucida 11 bold ", bg="white", fg="black")
+    rec_name.place(x="300", y="205")
+
+    rec_age = Label(rdisplay, text="Age : ", font="lucida 11 bold", bg="white", fg="black")
+    rec_age.place(x="300", y="255")
+
+    rec_gender = Label(rdisplay, text="Gender : ", font="lucida 11 bold", bg="white", fg="black")
+    rec_gender.place(x="420", y="255")
+
+    rec_phone = Label(rdisplay, text="Mobile no : ", font="lucida 11 bold", bg="white", fg="black")
+    rec_phone.place(x="300", y="305")
+
+    rec_date = Label(rdisplay, text="Date : ", font="lucida 11 bold", bg="white", fg="black")
+    rec_date.place(x="300", y="350")
+
+    rec_refdr = Label(rdisplay, text="Ref.By Dr:  ", font="lucida 11 bold", bg="white", fg="black")
+    rec_refdr.place(x="500", y="350")
+
+    rec_test = Label(rdisplay, text="Test : ", font="lucida 11 bold", bg="white", fg="black")
+    rec_test.place(x="300", y="395")
+
+    # display name on receipt from db
+
+    conn = sqlite3.connect('Labdb.db')
+    cur = conn.cursor()
+    rvalue = cur.execute(f"SELECT * FROM Receipt WHERE REC_ID = {recid}")
+    detaillist = rvalue.fetchall()
+
+    for i in detaillist:
+        rec_id = Label(rdisplay, text=str(i[0]), font="lucida 14 bold", bg="white", fg="royalblue4")
+        rec_id.place(x="390", y="150")
+
+        dis_name = Label(rdisplay, text=str(i[1]), font="lucida 11 ", bg="white", fg="black")
+        dis_name.place(x="370", y="205")
+
+        dis_age = Label(rdisplay, text=str(i[2]), font="lucida 11 ", bg="white", fg="black")
+        dis_age.place(x="360", y="255")
+
+        dis_gender = Label(rdisplay, text=str(i[3]), font="lucida 11 ", bg="white", fg="black")
+        dis_gender.place(x="510", y="255")
+
+        dis_phone = Label(rdisplay, text=str(i[4]), font="lucida 11 ", bg="white", fg="black")
+        dis_phone.place(x="410", y="305")
+
+        dis_test = Label(rdisplay, text=str(i[6]), font="lucida 11 ", bg="white", fg="black")
+        dis_test.place(x="360", y="395")
+
+        dis_doc = Label(rdisplay, text=str(i[7]), font="lucida 11 ", bg="white", fg="black")
+        dis_doc.place(x="600", y="350")
+
+        rec_amt = Label(rdisplay, text=str(i[8]) + "/- Rs", font="lucida 11 bold", bg="white", fg="black")
+        rec_amt.place(x="845", y="410")
+        rec_amt2 = Label(rdisplay, text=str(i[8]) + "/- Rs", font="lucida 8 bold", bg="white", fg="black")
+        rec_amt2.place(x="165", y="400")
+
+        dis_date = Label(rdisplay, text=str(i[9]), font="lucida 11 ", bg="white", fg="black")
+        dis_date.place(x="360", y="350")
+
+        rec_time = Label(rdisplay, text=str("Time: " + i[10]), font="lucida 9 bold", bg="white", fg="black")
+        rec_time.place(x="820", y="120")
+
+        cur.close()
+        conn.close()
+
+    rdisplay.mainloop()
+
+def recUpdate():
+    global recname_uentry, recage_uentry, uvar, recphone_uentry, recrefdr_uentry, uclick, recemail_uentry,rentry
+    rentry = Toplevel()
+
+    window_width, window_height = 1000, 570
+    screen_width = rentry.winfo_screenwidth()
+    screen_height = rentry.winfo_screenheight()
+    position_top = int(screen_height / 2 - window_height / 2)
+    position_right = int(screen_width / 2 - window_width / 2)
+    rentry.geometry(f"{window_width}x{window_height}+{position_right}+{position_top}")
+
+    rentry.title("RECEIPT ENTRY")
+    rentry.configure(bg="white")
+    rentry.resizable(width=False, height=False)
+    rentry.iconbitmap('C:/gui/icon4.ico')
+
+    rentry_top = Image.open("Images/receipt_temp.png")
+    rephoto = ImageTk.PhotoImage(rentry_top)
+    rentry.photo = rephoto  # solution for bug in `PhotoImage`
+    receipt_toplogo = Label(rentry, image=rephoto, borderwidth="0")
+    receipt_toplogo.place(x="37", y="15")
+
+    rentry_down = Image.open("Images/Receipt_temp_ss_down.png")
+    rephoto2 = ImageTk.PhotoImage(rentry_down)
+    rentry.photo2 = rephoto2  # solution for bug in `PhotoImage`
+    receipt_downlogo = Label(rentry, image=rephoto2, borderwidth="0")
+    receipt_downlogo.place(x="37", y="450")
+
+    gpay_logo = Image.open("Images/payment_image.png")
+    gpay_logo = ImageTk.PhotoImage(gpay_logo)
+    rentry.photo2 = gpay_logo  # solution for bug in `PhotoImage`
+    rec_gpay_logo = Label(rentry, image=gpay_logo, borderwidth="0", bg="white")
+    rec_gpay_logo.place(x="100", y="230")
+
+    rec_name = Label(rentry, text="Name : ", font="lucida 12 bold ", bg="white", fg="blue4")
+    rec_name.place(x="300", y="150")
+    recname_uentry = Entry(rentry, width="40", font="lucida 12", bd="3")
+    recname_uentry.place(x="380", y="150")
+
+    rec_age = Label(rentry, text="Age : ", font="lucida 12 bold", bg="white", fg="blue4")
+    rec_age.place(x="300", y="200")
+    recage_uentry = Entry(rentry, width="5", font="lucida 12", bd="3")
+    recage_uentry.place(x="370", y="200")
+
+    uvar = StringVar()
+    rec_gender = Label(rentry, text="Gender : ", font="lucida 12 bold", bg="white", fg="blue4")
+    rec_gender.place(x="470", y="200")
+
+    msymbol = Image.open("Images/male.png")
+    msymbol = ImageTk.PhotoImage(msymbol)
+    rentry.photo = msymbol  # solution for bug in `PhotoImage`
+    mgender_radio = Radiobutton(rentry, image=msymbol, variable=uvar, bg="white", fg="blue", font="2", value="MALE")
+    mgender_radio.place(x="560", y="198")
+
+    fsymbol = Image.open("Images/femenine.png")
+    fsymbol = ImageTk.PhotoImage(fsymbol)
+    rentry.photo = fsymbol  # solution for bug in `PhotoImage`
+    fgender_radio = Radiobutton(rentry, image=fsymbol, variable=uvar, bg="white", fg="blue", font="2", value="FEMALE")
+    fgender_radio.place(x="630", y="198")
+
+    rec_phone = Label(rentry, text="Mobile no : ", font="lucida 12 bold", bg="white", fg="blue4")
+    rec_phone.place(x="300", y="250")
+    recphone_uentry = Entry(rentry, width="15", font="lucida 12", bd="3")
+    recphone_uentry.place(x="420", y="250")
+
+    rec_refdr = Label(rentry, text="Ref.By Dr : ", font="lucida 12 bold", bg="white", fg="blue4")
+    rec_refdr.place(x="300", y="300")
+    recrefdr_uentry = Entry(rentry, width="15", font="lucida 12", bd="3")
+    recrefdr_uentry.place(x="420", y="300")
+
+    rec_test = Label(rentry, text="Test : ", font="lucida 12 bold", bg="white", fg="blue4")
+    rec_test.place(x="300", y="350")
+    list1 = ['Complete Blood Count', 'Prothrobin Time', 'Basic Metabolic Panel', 'Comprehensive Metabolic Panel','Lipid Panel', 'Liver Panel', 'Thyroid Stimulating Hormone', 'Hemoglobin A1C', 'Urinalysis', 'Cultures']
+    uclick = StringVar()
+    uclick.set("Select Test")
+    test_dropdown = OptionMenu(rentry, uclick, *list1)
+    test_dropdown.config(bg="blue4", fg="white", width="25", activebackground="dodger blue", activeforeground="black")
+    test_dropdown.place(x="370", y="345")
+
+    rec_email = Label(rentry, text="e-mail id : ", font="lucida 12 bold", bg="white", fg="blue4")
+    rec_email.place(x="300", y="400")
+    recemail_uentry = Entry(rentry, width="30", font="lucida 12", bd="3")
+    recemail_uentry.place(x="420", y="400")
+
+    submitsymbol = Image.open("Images/save_changes_button.png")
+    submitsymbol = ImageTk.PhotoImage(submitsymbol)
+    rentry.photo3 = submitsymbol
+    submit_receipt = Button(rentry, image=submitsymbol, bg="white", bd="0", activebackground='green', command=receiptUpdatedb)
+    submit_receipt.place(x="775", y="410")
+
+    # insert the values in the entry box
+    recid = int(select_rec_entry.get())
+    conn = sqlite3.connect('Labdb.db')
+    cur = conn.cursor()
+    rvalue = cur.execute(f"SELECT * FROM Receipt WHERE REC_ID = {recid}")
+    detaillist = rvalue.fetchall()
+    for i in detaillist:
+        recname_uentry.insert(0, i[1])
+        recage_uentry.insert(0, i[2])
+        uvar.set(i[3])
+        recphone_uentry.insert(0, i[4])
+        recemail_uentry.insert(0, i[5])
+        uclick.set(i[6])
+        recrefdr_uentry.insert(0, i[7])
+    cur.close()
+    conn.close()
+
+    rentry.mainloop()
+
+def receiptUpdatedb():
+    updatename = recname_uentry.get()
+    updateage = recage_uentry.get()
+    updategender = uvar.get()
+    updatephone = recphone_uentry.get()
+    updaterefdr = recrefdr_uentry.get()
+    updatetest = uclick.get()
+    updatemail = recemail_uentry.get()
+    recid =  select_rec_entry.get()
+
+    if (updatetest == "Complete Blood Count"):
+        newamt=700
+    elif(updatetest=="Prothrobin Time"):
+        newamt=700
+    elif(updatetest=="Basic Metabolic Panel"):
+        newamt=800
+    elif(updatetest=="Comprehensive Metabolic Panel"):
+        newamt=900
+    elif(updatetest=="Lipid Panel"):
+        newamt=500
+    elif(updatetest=="Liver Panel"):
+        newamt=950
+    elif(updatetest=="Thyroid Stimulating Hormone"):
+        newamt=750
+    elif(updatetest=="Hemoglobin A1C"):
+        newamt=1200
+    elif(updatetest=="Urinalysis"):
+        newamt=600
+    elif(updatetest=="Cultures"):
+        newamt=1100
+    else:
+        newamt=500
+
+
+    conn = sqlite3.connect('Labdb.db')
+    cur = conn.cursor()
+    cur.execute(f"""UPDATE Receipt set
+                NAME = '{updatename}',
+                AGE = {updateage},
+                GENDER = '{updategender}',
+                PHONE_NO = {updatephone},
+                REF_DR = '{updaterefdr}',
+                TEST = '{updatetest}',
+                EMAIL_ID = '{updatemail}',
+                AMOUNT = {newamt}
+                WHERE REC_ID = {recid}
+                
+                """)
+    cur.close()
+    conn.commit()
+    showupdatemessage()
+    conn.close()
+
+def showupdatemessage():
+    messagebox.showinfo("Message", "Receipt updated successfully!")
+    rentry.destroy()
+    showReceipt()
+
+def takeTest():
+    tktest = Toplevel()
+
+    window_width, window_height = 850, 750
+    screen_width = tktest.winfo_screenwidth()
+    screen_height = tktest.winfo_screenheight()
+    position_top = int(screen_height / 2 - window_height / 2)
+    position_right = int(screen_width / 2 - window_width / 2)
+    tktest.geometry(f"{window_width}x{window_height}+{position_right}+{position_top}")
+
+    tktest.title("REPORT ENTRY")
+    tktest.configure(bg="white")
+    tktest.resizable(width=False, height=False)
+    tktest.iconbitmap('C:/gui/icon4.ico')
+
+    taketest_temp = Image.open("C:/Users/Vandana/Documents/Clg Doc/OneDrive/Patholab/Python/Images/taketest_template.png")
+    tktesttemp = ImageTk.PhotoImage(taketest_temp)
+    tktest.photo = tktesttemp  # solution for bug in `PhotoImage`
+    receipt_toplogo = Label(tktest, image=tktesttemp, borderwidth="0")
+    receipt_toplogo.place(x="-3", y="0")
+    tktest.mainloop()
+
+homewindow()
+# receiptEntry()
+# displayReceipt()
