@@ -19,19 +19,25 @@ def homeWindow():
 
     home.geometry(f"{window_width}x{window_height}+{position_right}+{position_top}")
 
-    temp_size = Image.open("Images/home_template.png")
+    temp_size = Image.open("Images/home_template2.png")
     temp_resized = temp_size.resize((395, 704), Image.ANTIALIAS)
     template = ImageTk.PhotoImage(temp_resized)
     template_image = Label(home, image=template, borderwidth="0")
     template_image.place(x="-3", y="-3")
 
-    addcon_size = Image.open("Images/adconsumer_ss.png")
+    addcon_size = Image.open("Images/adconsumer_btn.png")
     addcon_resized = addcon_size.resize((220, 50), Image.ANTIALIAS)
     addcon_image = ImageTk.PhotoImage(addcon_resized)
     Label(image=addcon_image)
     button_receipt = Button(home, image=addcon_image, borderwidth="0", activebackground='blue',command=consumerEntry)
     button_receipt.place(x=530, y=30)
 
+    editreceipt_size = Image.open("Images/edit_details_btn.png")
+    editreceipt_resized = editreceipt_size.resize((220, 50), Image.ANTIALIAS)
+    editreceipt_image = ImageTk.PhotoImage(editreceipt_resized)
+    Label(image=editreceipt_image)
+    button_editreceipt = Button(home, image=editreceipt_image, borderwidth="0", activebackground='blue')
+    button_editreceipt.place(x=530, y=100)
 
 
     home.mainloop()
