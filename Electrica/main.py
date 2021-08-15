@@ -25,11 +25,11 @@ def homeWindow():
     template_image = Label(home, image=template, borderwidth="0")
     template_image.place(x="-3", y="-3")
 
-    receipt_size = Image.open("C:/Users/Vandana/Documents/Clg Doc/OneDrive/Patholab/Python/Images/receipt_button.png")
-    receipt_resized = receipt_size.resize((220, 50), Image.ANTIALIAS)
-    receipt_image = ImageTk.PhotoImage(receipt_resized)
-    Label(image=receipt_image)
-    button_receipt = Button(home, image=receipt_image, borderwidth="0", activebackground='blue')
+    addcon_size = Image.open("Images/adconsumer_ss.png")
+    addcon_resized = addcon_size.resize((220, 50), Image.ANTIALIAS)
+    addcon_image = ImageTk.PhotoImage(addcon_resized)
+    Label(image=addcon_image)
+    button_receipt = Button(home, image=addcon_image, borderwidth="0", activebackground='blue')
     button_receipt.place(x=530, y=30)
 
 
