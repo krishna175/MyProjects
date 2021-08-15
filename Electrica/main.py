@@ -40,7 +40,7 @@ def homeWindow():
 def consumerEntry():
     conentry = Toplevel()
 
-    window_width, window_height = 1000, 570
+    window_width, window_height = 1000, 800
     screen_width = conentry.winfo_screenwidth()
     screen_height = conentry.winfo_screenheight()
     position_top = int(screen_height / 2 - window_height / 2)
@@ -52,7 +52,11 @@ def consumerEntry():
     conentry.resizable(width=False, height=False)
     conentry.iconbitmap('Images/icon2.ico')
 
-
+    rentry_top = Image.open("Images/adcon_toptemp_new.png")
+    rephoto = ImageTk.PhotoImage(rentry_top)
+    conentry.photo = rephoto  # solution for bug in `PhotoImage`
+    receipt_toplogo = Label(conentry, image=rephoto, borderwidth="0")
+    receipt_toplogo.place(x="37", y="2")
 
     conentry.mainloop()
 
