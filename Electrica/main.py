@@ -52,10 +52,10 @@ def consumerEntry():
     conentry.resizable(width=False, height=False)
     conentry.iconbitmap('Images/icon2.ico')
 
-    rentry_top = Image.open("Images/adcon_toptemp_new.png")
-    rephoto = ImageTk.PhotoImage(rentry_top)
-    conentry.photo = rephoto  # solution for bug in `PhotoImage`
-    receipt_toplogo = Label(conentry, image=rephoto, borderwidth="0")
+    conentry_top = Image.open("Images/adcon_toptemp.png")
+    entrytop = ImageTk.PhotoImage(conentry_top)
+    conentry.photo = entrytop  # solution for bug in `PhotoImage`
+    receipt_toplogo = Label(conentry, image=entrytop, borderwidth="0")
     receipt_toplogo.place(x="37", y="2")
 
     conentry.mainloop()
