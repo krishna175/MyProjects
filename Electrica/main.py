@@ -72,8 +72,13 @@ def consumerEntry():
 
     con_name = Label(conentry, text="Name : ", font="lucida 12 bold ", bg="white", fg="blue4")
     con_name.place(x="300", y="150")
-    conname_entry = Entry(conentry, width="40", font="lucida 12", bd="3")
+    conname_entry = Entry(conentry, width="40", font="lucida 12", bd="3", bg="grey94")
     conname_entry.place(x="380", y="150")
+
+    conphone = Label(conentry, text="Phone No : ", font="lucida 12 bold ", bg="white", fg="blue4")
+    conphone.place(x="300", y="200")
+    conphone_entry = Entry(conentry, width="20", font="lucida 12", bd="3", bg="grey94")
+    conphone_entry.place(x="425", y="200")
 
     conentry.mainloop()
 
