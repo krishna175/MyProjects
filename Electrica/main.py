@@ -70,6 +70,11 @@ def consumerEntry():
     receipt_toplogo = Label(conentry, image=entrytop, borderwidth="0")
     receipt_toplogo.place(x="37", y="2")
 
+    con_name = Label(conentry, text="Name : ", font="lucida 12 bold ", bg="white", fg="blue4")
+    con_name.place(x="300", y="150")
+    conname_entry = Entry(conentry, width="40", font="lucida 12", bd="3")
+    conname_entry.place(x="380", y="150")
+
     conentry.mainloop()
 
 
