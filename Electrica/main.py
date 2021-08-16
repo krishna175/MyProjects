@@ -25,6 +25,12 @@ def homeWindow():
     template_image = Label(home, image=template, borderwidth="0")
     template_image.place(x="-3", y="-3")
 
+    backtemplate_size = Image.open("Images/backtemp1.png")
+    backtemplate_resized = backtemplate_size.resize((410, 700), Image.ANTIALIAS)
+    backtemplate = ImageTk.PhotoImage(backtemplate_resized)
+    backtemplate_image = Label(home, image=backtemplate, borderwidth="0")
+    backtemplate_image.place(x="430", y="0")
+
     addcon_size = Image.open("Images/adconsumer_btn.png")
     addcon_resized = addcon_size.resize((220, 50), Image.ANTIALIAS)
     addcon_image = ImageTk.PhotoImage(addcon_resized)
