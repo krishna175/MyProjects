@@ -11,6 +11,12 @@ import webbrowser
 from plyer import notification
 import time
 
+import requests
+from pygame import mixer
+from datetime import datetime, timedelta
+import webbrowser
+import tkinter as tk
+
 
 
 
@@ -112,7 +118,7 @@ def homewindow():
     vaccineslot_resized = vaccineslot_size.resize((220,50), Image.ANTIALIAS)
     vaccineslot_image = ImageTk.PhotoImage(vaccineslot_resized)
     Label(image=vaccineslot_image)
-    button_vaccineslot = Button(home,image=vaccineslot_image,borderwidth="0")
+    button_vaccineslot = Button(home,image=vaccineslot_image,borderwidth="0",command=age_pin)
     button_vaccineslot.place(x=530,y=520)
 
     exit_size = Image.open("C:/Users/Vandana/Documents/Clg Doc/OneDrive/Patholab/Python/Images/exit_button.png")
@@ -838,6 +844,168 @@ def takeTest():
     receipt_toplogo = Label(tktest, image=tktesttemp, borderwidth="0")
     receipt_toplogo.place(x="-3", y="0")
     tktest.mainloop()
+
+
+def age_pin():
+    global entry_age, entry_pin, agpin
+    agpin = Tk()
+
+    window_width, window_height = 410, 170
+
+    screen_width = agpin.winfo_screenwidth()
+    screen_height = agpin.winfo_screenheight()
+
+    position_top = int(screen_height / 2 - window_height / 2)
+    position_right = int(screen_width / 2 - window_width / 2)
+
+    agpin.geometry(f"{window_width}x{window_height}+{position_right}+{position_top}")
+
+    agpin.title("Pincode and age")
+    # agpin.wm_attributes("-transparentcolor", "white")
+
+    label_age = Label(agpin, text="Enter Age: ", font="5")
+    label_age.place(x=10, y=10)
+    label_pin = Label(agpin, text="Enter Pincode: ", font="5")
+    label_pin.place(x=10, y=60)
+
+    entry_age = Entry(agpin, font="5")
+    entry_age.place(x=170, y=10)
+    entry_pin = Entry(agpin, font="5")
+    entry_pin.place(x=170, y=60)
+
+
+    button_booking = Button(agpin, text="Search", bg="green3", fg="black", height="1", width="30", command=slotbook)
+    button_booking.place(x=90, y=120)
+
+
+
+
+
+    agpin.mainloop()
+
+def loading():
+    global load
+    load = Tk()
+    load.title("")
+    # load.wm_attributes("-transparentcolor", "black")
+    load.configure(bg="white")
+    window_width, window_height = 400, 120
+
+    screen_width = load.winfo_screenwidth()
+    screen_height = load.winfo_screenheight()
+
+    position_top = int(screen_height / 2 - window_height / 2)
+    position_right = int(screen_width / 2 - window_width / 2)
+
+    load.geometry(f"{window_width}x{window_height}+{position_right}+{position_top}")
+    Label(load, text="No vaccine slots are available at this moment\nPlease try again after sometime.", bg="white",
+          fg="black").pack(pady=10)
+    Button(load, text="OK", height="1", width="5", bg="white", fg="black", borderwidth="5", command=load.destroy).pack(
+        pady=14)
+    load.mainloop()
+
+def back():
+    slot.destroy()
+    age_pin()
+
+
+def open_site():
+    webbrowser.open("https://selfregistration.cowin.gov.in/")
+
+def slotbook():
+    age = int(entry_age.get())
+    pincodes = [f"{entry_pin.get()}"]  # 680570
+    agpin.destroy()
+    num_days = 2
+    print(age)
+    print(pincodes)
+    print_flag = 'Y'
+
+    print("Starting search for Covid vaccine slots!")
+    actual = datetime.today()
+    list_format = [actual + timedelta(days=i) for i in range(num_days)]
+    actual_dates = [i.strftime("%d-%m-%Y") for i in list_format]
+    global slot
+    slot = Tk()
+
+    window_width, window_height = 650, 850
+
+    screen_width = slot.winfo_screenwidth()
+    screen_height = slot.winfo_screenheight()
+
+    position_top = int(screen_height / 2 - window_height / 2)
+    position_right = int(screen_width / 2 - window_width / 2)
+
+    slot.geometry(f"{window_width}x{window_height}+{position_right}+{position_top}")
+
+    slot.configure(bg="white")
+    slot.title("Vaccine slot")
+
+    Label(slot, text=f"VACCINE SLOTS ", fg="blue", bg="white", font="5").pack(pady="2")
+    Button(slot, text="Book Now", bg="green", fg="white", borderwidth="2", height="1", width="13",command=open_site).place(x=512, y=800)
+    Button(slot, text="Back", bg="blue", fg="white", borderwidth="2", height="1", width="13", command=back).place(x=25,y=800)
+
+    while True:
+        counter = 0
+
+        for pincode in pincodes:
+            for given_date in actual_dates:
+
+                URL = "https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByPin?pincode={}&date={}".format(
+                    pincode, given_date)
+                header = {
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.76 Safari/537.36'}
+
+                result = requests.get(URL, headers=header)
+
+                if result.ok:
+                    response_json = result.json()
+                    if response_json["centers"]:
+                        if (print_flag.lower() == 'y'):
+                            for center in response_json["centers"]:
+                                for session in center["sessions"]:
+                                    if (session["min_age_limit"] <= age and session["available_capacity"] > 0):
+                                        tk_pincode = 'Pincode : ' + pincode
+
+                                        tk_data = ("Available on: {}".format(given_date))
+
+                                        tk_centername = center["name"]
+
+                                        tk_blockname = center["block_name"]
+
+                                        tk_price = "Type : " + center["fee_type"]
+
+                                        tk_available = (" Availablity : " + str(session["available_capacity"]))
+
+                                        if (session["vaccine"] != ''):
+                                            tk_vacctype = " Vaccine name : " + session["vaccine"]
+
+                                            label_show = Label(slot,
+                                                               text=tk_pincode + "\n" + tk_data + "\n" + tk_centername + "\n" + tk_blockname + "\n" + tk_price + "\n" + tk_available + "\n" + tk_vacctype + "\n",bg="white", fg="black")
+                                            label_show.pack()
+
+                                        counter = counter + 1
+
+                else:
+                    print("No Response!")
+
+        if counter:
+            print("Search complete!")
+            break
+        else:
+            mixer.init()
+            mixer.music.load('C:/gui/beep.wav')
+            mixer.music.play()
+            slot.destroy()
+            loading()
+            slot.destroy()
+
+
+        dt = datetime.now() + timedelta(minutes=3)
+        slot.mainloop()
+        while datetime.now() < dt:
+            time.sleep(0)
+
 
 homewindow()
 # receiptEntry()
