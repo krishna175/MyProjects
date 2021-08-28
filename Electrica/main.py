@@ -66,6 +66,27 @@ def homeWindow():
     button_sendalert = Button(home, image=sendalert_image, borderwidth="0")
     button_sendalert.place(x=530, y=310)
 
+    defaulter_size = Image.open("Images/defaulters_btn.png")
+    defaulter_resized = defaulter_size.resize((220, 50), Image.ANTIALIAS)
+    defaulter_image = ImageTk.PhotoImage(defaulter_resized)
+    Label(image=defaulter_image)
+    button_defaulter = Button(home, image=defaulter_image, borderwidth="0")
+    button_defaulter.place(x=530, y=380)
+
+    fraud_size = Image.open("Images/fraud.png")
+    fraud_resized = fraud_size.resize((220, 50), Image.ANTIALIAS)
+    fraud_image = ImageTk.PhotoImage(fraud_resized)
+    Label(image=fraud_image)
+    button_fraud = Button(home, image=fraud_image, borderwidth="0")
+    button_fraud.place(x=530, y=450)
+
+    payment_size = Image.open( "Images/payment_btn.png")
+    payment_resized = payment_size.resize((220, 50), Image.ANTIALIAS)
+    payment_image = ImageTk.PhotoImage(payment_resized)
+    Label(image=payment_image)
+    button_payment = Button(home, image=payment_image, borderwidth="0")
+    button_payment.place(x=530, y=520)
+
     home.mainloop()
 
 
