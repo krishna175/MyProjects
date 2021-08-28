@@ -52,6 +52,20 @@ def homeWindow():
     button_readings = Button(home, image=readings_image, borderwidth="0")
     button_readings.place(x=530, y=170)
 
+    generatebill_size = Image.open("Images/generatebill_btn.png")
+    generatebill_resized = generatebill_size.resize((220, 50), Image.ANTIALIAS)
+    generatebill_image = ImageTk.PhotoImage(generatebill_resized)
+    Label(image=generatebill_image)
+    button_generatebill = Button(home, image=generatebill_image, borderwidth="0")
+    button_generatebill.place(x=530, y=240)
+
+    sendalert_size = Image.open("Images/sendalert_btn.png")
+    sendalert_resized = sendalert_size.resize((220, 50), Image.ANTIALIAS)
+    sendalert_image = ImageTk.PhotoImage(sendalert_resized)
+    Label(image=sendalert_image)
+    button_sendalert = Button(home, image=sendalert_image, borderwidth="0")
+    button_sendalert.place(x=530, y=310)
+
     home.mainloop()
 
 
