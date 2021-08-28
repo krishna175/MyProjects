@@ -38,13 +38,19 @@ def homeWindow():
     button_receipt = Button(home, image=addcon_image, borderwidth="0", activebackground='blue',command=consumerEntry)
     button_receipt.place(x=530, y=30)
 
-    editreceipt_size = Image.open("Images/edit_details_btn.png")
-    editreceipt_resized = editreceipt_size.resize((220, 50), Image.ANTIALIAS)
-    editreceipt_image = ImageTk.PhotoImage(editreceipt_resized)
-    Label(image=editreceipt_image)
-    button_editreceipt = Button(home, image=editreceipt_image, borderwidth="0", activebackground='blue')
+    editdetails_size = Image.open("Images/edit_details_btn.png")
+    editdetails_resized = editdetails_size.resize((220, 50), Image.ANTIALIAS)
+    editdetails_image = ImageTk.PhotoImage(editdetails_resized)
+    Label(image=editdetails_image)
+    button_editreceipt = Button(home, image=editdetails_image, borderwidth="0", activebackground='blue')
     button_editreceipt.place(x=530, y=100)
 
+    readings_size = Image.open("Images/readings_btn.png")
+    readings_resized = readings_size.resize((220, 50), Image.ANTIALIAS)
+    readings_image = ImageTk.PhotoImage(readings_resized)
+    Label(image=readings_image)
+    button_readings = Button(home, image=readings_image, borderwidth="0")
+    button_readings.place(x=530, y=170)
 
     home.mainloop()
 
