@@ -121,6 +121,46 @@ def consumerEntry():
     conphone_entry = Entry(conentry, width="20", font="lucida 12", bd="3", bg="grey94")
     conphone_entry.place(x="425", y="200")
 
+    address_label = Label(conentry, text="Address :",font="lucida 12 bold underline", bg="white")
+    address_label.place(x="300", y="250")
+
+
+
+    address1_label = Label(conentry, text="Flat, House no./ Company  :",font="lucida 10 bold",bg="white",fg="blue4")
+    address1_label.place(x="300",y="290")
+    address1_entry = Entry(conentry, width="35", font="lucida 11", bd="3", bg="grey94")
+    address1_entry.place(x="530", y="290")
+
+    address2_label = Label(conentry, text="Area, Street, Village           :", font="lucida 10 bold", bg="white", fg="blue4")
+    address2_label.place(x="301", y="330")
+    address1_entry = Entry(conentry, width="35", font="lucida 11", bd="3", bg="grey94")
+    address1_entry.place(x="530", y="330")
+
+    address3_label = Label(conentry, text="Landmark, Town/City         :", font="lucida 10 bold", bg="white", fg="blue4")
+    address3_label.place(x="300", y="370")
+    address1_entry = Entry(conentry, width="35", font="lucida 11", bd="3", bg="grey94")
+    address1_entry.place(x="530", y="370")
+
+    pincode_label = Label(conentry, text="Pincode                              :", font="lucida 10 bold", bg="white", fg="blue4")
+    pincode_label.place(x="300", y="410")
+    address1_entry = Entry(conentry, width="15", font="lucida 11", bd="3", bg="grey94")
+    address1_entry.place(x="530", y="410")
+
+    email_label = Label(conentry, text="Email :",font="lucida 12 bold" ,bg="white",fg="blue4")
+    email_label.place(x="300",y="460")
+    email_entry = Entry(conentry, width="30", font="lucida 12", bd="3", bg="grey94")
+    email_entry.place(x="390", y="460")
+
+    supplytype_label = Label(conentry, text="Supply Type :", font="lucida 12 bold", bg="white", fg="blue4")
+    supplytype_label.place(x="300", y="510")
+    list1 = ['SINGLE PHASE','TWO PHASE','THREE PHASE']
+    click = StringVar()
+    click.set("Select Type")
+    test_dropdown = OptionMenu(conentry, click, *list1)
+    test_dropdown.config(bg="blue4", fg="white", width="12", activebackground="dodger blue", activeforeground="black")
+    test_dropdown.place(x="445", y="506")
+
+
     conentry.mainloop()
 
 
