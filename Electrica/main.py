@@ -151,18 +151,55 @@ def consumerEntry():
     email_entry = Entry(conentry, width="30", font="lucida 12", bd="3", bg="grey94")
     email_entry.place(x="390", y="460")
 
+    aadhar_label = Label(conentry, text="Aadhar No:",font="lucida 12 bold", bg="white",fg="blue4")
+    aadhar_label.place(x="300",y="510")
+    aadhar_entry = Entry(conentry, width="13", font="lucida 12", bd="3", bg="grey94")
+    aadhar_entry.place(x="420", y="510")
+
+    pan_label = Label(conentry, text="PAN : ", font="lucida 12 bold", bg="white", fg="blue4")
+    pan_label.place(x="300", y="560")
+    pan_entry = Entry(conentry, width="13", font="lucida 12", bd="3", bg="grey94")
+    pan_entry.place(x="420", y="560")
+
     supplytype_label = Label(conentry, text="Supply Type :", font="lucida 12 bold", bg="white", fg="blue4")
-    supplytype_label.place(x="300", y="510")
+    supplytype_label.place(x="300", y="610")
     list1 = ['SINGLE PHASE','TWO PHASE','THREE PHASE']
     click = StringVar()
     click.set("Select Type")
     test_dropdown = OptionMenu(conentry, click, *list1)
     test_dropdown.config(bg="blue4", fg="white", width="12", activebackground="dodger blue", activeforeground="black")
-    test_dropdown.place(x="445", y="506")
+    test_dropdown.place(x="445", y="610")
 
+    usage_label = Label(conentry, text="Purpose of Supply :", font="lucida 12 bold", bg="white", fg="blue4")
+    usage_label.place(x="300", y="660")
+    var = StringVar()
+    domsymbol = Image.open("Images/domesticss_btn.png")
+    domsymbol = ImageTk.PhotoImage(domsymbol)
+    conentry.photo = domsymbol  # solution for bug in `PhotoImage`
+    domestic_radio = Radiobutton(conentry, image=domsymbol, variable=var, bg="white", fg="blue", font="2", value="DOMESTIC",bd="0",activebackground="white")
+    domestic_radio.place(x="500", y="650")
+
+    indsymbol = Image.open("Images/industrialss_btn.png")
+    indsymbol = ImageTk.PhotoImage(indsymbol)
+    conentry.photo = indsymbol  # solution for bug in `PhotoImage`
+    industry_radio = Radiobutton(conentry, image=indsymbol, variable=var, bg="white", fg="blue", font="2", value="INDUSTRIAL", bd="0", activebackground="white")
+    industry_radio.place(x="570", y="650")
+
+    global declare
+    declare=IntVar()
+    declaration = Checkbutton(conentry,text="I hereby declare that the information given in this application is\n  true and correct to the best of my knowledge and belief. In case  \nany information given in this application proves to be false or     \nincorrect, I shall be responsible for the consequences.               ",variable=declare,font="lucida 7 ",bg="white")
+    declaration.place(x="300",y="725")
+
+    submitsymbol = Image.open("Images/submit_button.png")
+    submitsymbol = ImageTk.PhotoImage(submitsymbol)
+    conentry.photo3 = submitsymbol
+    submit_receipt = Button(conentry, image=submitsymbol, bg="white", bd="0", activebackground='green',command=printval)
+    submit_receipt.place(x="855", y="740")
 
 
     conentry.mainloop()
 
+def printval():
+    print(declare.get())
 
 homeWindow()
