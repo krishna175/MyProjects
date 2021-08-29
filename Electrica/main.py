@@ -1,6 +1,8 @@
 import pyautogui
 from tkinter import *
 from PIL import ImageTk,Image
+from tkinter import messagebox
+
 
 def homeWindow():
     home = Tk()
@@ -93,7 +95,7 @@ def homeWindow():
 def consumerEntry():
     conentry = Toplevel()
 
-    window_width, window_height = 1000, 800
+    window_width, window_height = 1000, 950
     screen_width = conentry.winfo_screenwidth()
     screen_height = conentry.winfo_screenheight()
     position_top = int(screen_height / 2 - window_height / 2)
@@ -114,12 +116,12 @@ def consumerEntry():
     con_name = Label(conentry, text="Name : ", font="lucida 12 bold ", bg="white", fg="blue4")
     con_name.place(x="300", y="150")
     conname_entry = Entry(conentry, width="40", font="lucida 12", bd="3", bg="grey94")
-    conname_entry.place(x="380", y="150")
+    conname_entry.place(x="530", y="150")
 
     conphone = Label(conentry, text="Phone No : ", font="lucida 12 bold ", bg="white", fg="blue4")
     conphone.place(x="300", y="200")
     conphone_entry = Entry(conentry, width="20", font="lucida 12", bd="3", bg="grey94")
-    conphone_entry.place(x="425", y="200")
+    conphone_entry.place(x="530", y="200")
 
     address_label = Label(conentry, text="Address :",font="lucida 12 bold underline", bg="white")
     address_label.place(x="300", y="250")
@@ -149,17 +151,17 @@ def consumerEntry():
     email_label = Label(conentry, text="Email :",font="lucida 12 bold" ,bg="white",fg="blue4")
     email_label.place(x="300",y="460")
     email_entry = Entry(conentry, width="30", font="lucida 12", bd="3", bg="grey94")
-    email_entry.place(x="390", y="460")
+    email_entry.place(x="530", y="460")
 
     aadhar_label = Label(conentry, text="Aadhar No:",font="lucida 12 bold", bg="white",fg="blue4")
     aadhar_label.place(x="300",y="510")
     aadhar_entry = Entry(conentry, width="13", font="lucida 12", bd="3", bg="grey94")
-    aadhar_entry.place(x="420", y="510")
+    aadhar_entry.place(x="530", y="510")
 
     pan_label = Label(conentry, text="PAN : ", font="lucida 12 bold", bg="white", fg="blue4")
     pan_label.place(x="300", y="560")
     pan_entry = Entry(conentry, width="13", font="lucida 12", bd="3", bg="grey94")
-    pan_entry.place(x="420", y="560")
+    pan_entry.place(x="530", y="560")
 
     supplytype_label = Label(conentry, text="Supply Type :", font="lucida 12 bold", bg="white", fg="blue4")
     supplytype_label.place(x="300", y="610")
@@ -168,7 +170,7 @@ def consumerEntry():
     click.set("Select Type")
     test_dropdown = OptionMenu(conentry, click, *list1)
     test_dropdown.config(bg="blue4", fg="white", width="12", activebackground="dodger blue", activeforeground="black")
-    test_dropdown.place(x="445", y="610")
+    test_dropdown.place(x="530", y="610")
 
     usage_label = Label(conentry, text="Purpose of Supply :", font="lucida 12 bold", bg="white", fg="blue4")
     usage_label.place(x="300", y="660")
@@ -177,29 +179,38 @@ def consumerEntry():
     domsymbol = ImageTk.PhotoImage(domsymbol)
     conentry.photo = domsymbol  # solution for bug in `PhotoImage`
     domestic_radio = Radiobutton(conentry, image=domsymbol, variable=var, bg="white", fg="blue", font="2", value="DOMESTIC",bd="0",activebackground="white")
-    domestic_radio.place(x="500", y="650")
+    domestic_radio.place(x="530", y="650")
 
     indsymbol = Image.open("Images/industrialss_btn.png")
     indsymbol = ImageTk.PhotoImage(indsymbol)
     conentry.photo = indsymbol  # solution for bug in `PhotoImage`
     industry_radio = Radiobutton(conentry, image=indsymbol, variable=var, bg="white", fg="blue", font="2", value="INDUSTRIAL", bd="0", activebackground="white")
-    industry_radio.place(x="570", y="650")
+    industry_radio.place(x="600", y="650")
+
+    meter_label = Label(conentry, text="Meter No: ", font="lucida 12 bold", bg="white", fg="blue4")
+    meter_label.place(x="300", y="710")
+    meter_entry = Entry(conentry, width="13", font="lucida 12", bd="3", bg="grey94")
+    meter_entry.place(x="530", y="710")
 
     global declare
     declare=IntVar()
-    declaration = Checkbutton(conentry,text="I hereby declare that the information given in this application is\n  true and correct to the best of my knowledge and belief. In case  \nany information given in this application proves to be false or     \nincorrect, I shall be responsible for the consequences.               ",variable=declare,font="lucida 7 ",bg="white")
-    declaration.place(x="300",y="725")
+    declaration = Checkbutton(conentry,text="   I hereby declare that the information given in this application is true and correct to  \n best of my knowledge and belief.In case any information given in this application \n     proves to be false or incorrect, I shall be responsible for the consequences.               ",variable=declare,font="lucida 7 ",bg="white",fg="red")
+    declaration.place(x="300",y="755")
 
     submitsymbol = Image.open("Images/submit_button.png")
     submitsymbol = ImageTk.PhotoImage(submitsymbol)
     conentry.photo3 = submitsymbol
-    submit_receipt = Button(conentry, image=submitsymbol, bg="white", bd="0", activebackground='green',command=printval)
-    submit_receipt.place(x="855", y="740")
+    submit_receipt = Button(conentry, image=submitsymbol, bg="white", bd="0", activebackground='green',command=submit)
+    submit_receipt.place(x="855", y="780")
 
 
     conentry.mainloop()
 
-def printval():
-    print(declare.get())
+def submit():
+    declaration = declare.get()
+    if(declaration==0):
+        messagebox.showinfo("Message", "Please select the declaration Checkbox")
+    else:
+        print("inserting to db")
 
 homeWindow()
