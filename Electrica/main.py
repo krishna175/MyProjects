@@ -2,6 +2,8 @@ import pyautogui
 from tkinter import *
 from PIL import ImageTk,Image
 from tkinter import messagebox
+import cx_Oracle
+
 
 
 def homeWindow():
@@ -93,8 +95,9 @@ def homeWindow():
 
 
 def consumerEntry():
-    conentry = Toplevel()
 
+    conentry = Toplevel()
+    global conname_entry, conphone_entry, address1_entry, address2_entry, address3_entry, pincode_entry, email_entry, aadhar_entry, pan_entry, click, var, meter_entry
     window_width, window_height = 1000, 950
     screen_width = conentry.winfo_screenwidth()
     screen_height = conentry.winfo_screenheight()
@@ -219,6 +222,30 @@ def submit():
     if(declaration==0):
         messagebox.showinfo("Message", "Please select the declaration Checkbox")
     else:
-        print("inserting to db")
+        addconsumerdb()
+
+def addconsumerdb():
+    # conname_entry, conphone_entry, address1_entry, address2_entry, address3_entry, pincode_entry, email_entry, aadhar_entry, pan_entry, click, var, meter_entry
+    name = conname_entry.get()
+    phone = conphone_entry.get()
+    address1 = address1_entry.get()
+    address2 = address2_entry.get()
+    address3 = address3_entry.get()
+    pincode = pincode_entry.get()
+    email = email_entry.get()
+    aadhar = aadhar_entry.get()
+    pan = pan_entry.get()
+    supply = click.get()
+    pos = var.get()
+    meterno = meter_entry.get()
+
+    con = cx_Oracle.connect('system/12345@localhost:1521/xe')
+    print(con.version)
+    cursor = con.cursor()
+    cursor.execute(f"INSERT INTO ADD_CONSUMER VALUES(consumer_seq.nextval,'{name}',{phone},'{address1}','{address2}','{address3}',{pincode},'{email}',{aadhar},'{pan}','{supply}','{pos}',{meterno})")
+
+    cursor.close()
+    con.commit()
+    con.close()
 
 homeWindow()
