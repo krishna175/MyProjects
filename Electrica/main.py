@@ -315,10 +315,21 @@ def displayentry():
     meter_label = Label(condisplay, text="Meter No                     : ", font="lucida 12 bold", bg="white", fg="blue4")
     meter_label.place(x="300", y="650")
 
+    printbtn = Image.open("Images/print_btn.png")
+    printbtn = ImageTk.PhotoImage(printbtn)
+    condisplay.photo3 = printbtn
+    submit_receipt = Button(condisplay, image=printbtn, bg="white", bd="0", activebackground='green')
+    submit_receipt.place(x="370", y="765")
+
+    mailbtn = Image.open("Images/mail_btn.png")
+    mailbtn = ImageTk.PhotoImage(mailbtn)
+    condisplay.photo3 = mailbtn
+    submit_receipt = Button(condisplay, image=mailbtn, bg="white", bd="0", activebackground='green')
+    submit_receipt.place(x="530", y="765")
 
     condisplay.mainloop()
 
 
 
-homeWindow()
-# displayentry()
+# homeWindow()
+displayentry()
