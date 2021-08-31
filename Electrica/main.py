@@ -239,6 +239,9 @@ def submit():
 
 def addconsumerdb():
     # conname_entry, conphone_entry, address1_entry, address2_entry, address3_entry, pincode_entry, email_entry, aadhar_entry, pan_entry, click, var, meter_entry
+
+
+
     name = conname_entry.get()
     phone = conphone_entry.get()
     address1 = address1_entry.get()
@@ -253,10 +256,23 @@ def addconsumerdb():
     meterno = meter_entry.get()
     requirement = click2.get()
 
+    if (supply == 'SINGLE PHASE' and (requirement=='Up to 5 kW' or requirement=='5-10 kW')):
+        cc = 2050
+    elif (supply == 'THREE PHASE' and requirement=='10-20 kW'):
+        cc = 4575
+    elif  (supply == 'THREE PHASE' and requirement=='20-50 kW'):
+        cc = 6575
+    elif (supply == 'THREE PHASE' and requirement=='50-150 kW'):
+        cc = 12075
+    elif (supply == 'THREE PHASE' and requirement=='Above 150 kW'):
+        cc = 250075
+    else:
+        cc = 2050
+
     con = cx_Oracle.connect('system/12345@localhost:1521/xe')
     print(con.version)
     cursor = con.cursor()
-    cursor.execute(f"INSERT INTO ADD_CONSUMER VALUES(consumer_seq.nextval,'{name}',{phone},'{address1}','{address2}','{address3}',{pincode},'{email}',{aadhar},'{pan}','{supply}','{pos}',{meterno},sysdate,'{requirement}')")
+    cursor.execute(f"INSERT INTO ADD_CONSUMER VALUES(consumer_seq.nextval,'{name}',{phone},'{address1}','{address2}','{address3}',{pincode},'{email}',{aadhar},'{pan}','{supply}','{pos}',{meterno},sysdate,'{requirement}',{cc})")
 
     cursor.close()
     con.commit()
@@ -331,5 +347,5 @@ def displayentry():
 
 
 
-# homeWindow()
-displayentry()
+homeWindow()
+# displayentry()
