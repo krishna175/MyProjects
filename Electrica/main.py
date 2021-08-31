@@ -97,7 +97,7 @@ def homeWindow():
 def consumerEntry():
 
     conentry = Toplevel()
-    global conname_entry, conphone_entry, address1_entry, address2_entry, address3_entry, pincode_entry, email_entry, aadhar_entry, pan_entry, click, var, meter_entry
+    global conname_entry, conphone_entry, address1_entry, address2_entry, address3_entry, pincode_entry, email_entry, aadhar_entry, pan_entry, click,click2, var, meter_entry
     window_width, window_height = 1000, 950
     screen_width = conentry.winfo_screenwidth()
     screen_height = conentry.winfo_screenheight()
@@ -115,6 +115,12 @@ def consumerEntry():
     conentry.photo = entrytop  # solution for bug in `PhotoImage`
     receipt_toplogo = Label(conentry, image=entrytop, borderwidth="0")
     receipt_toplogo.place(x="37", y="2")
+
+    conentry_left = Image.open("Images/charges.png")
+    entryleft = ImageTk.PhotoImage(conentry_left)
+    conentry.photo = entryleft  # solution for bug in `PhotoImage`
+    receipt_leftcharges = Label(conentry, image=entryleft, borderwidth="0")
+    receipt_leftcharges.place(x="70", y="230")
 
     entrydown = Image.open("Images/adcon_downtempnew.png")
     entrydown = ImageTk.PhotoImage(entrydown)
@@ -176,12 +182,19 @@ def consumerEntry():
 
     supplytype_label = Label(conentry, text="Supply Type                :", font="lucida 12 bold", bg="white", fg="blue4")
     supplytype_label.place(x="300", y="610")
-    list1 = ['SINGLE PHASE','TWO PHASE','THREE PHASE']
+    list1 = ['SINGLE PHASE','THREE PHASE']
     click = StringVar()
     click.set("Select Type")
-    test_dropdown = OptionMenu(conentry, click, *list1)
-    test_dropdown.config(bg="blue4", fg="white", width="12", activebackground="dodger blue", activeforeground="black")
-    test_dropdown.place(x="530", y="605")
+    type_dropdown = OptionMenu(conentry, click, *list1)
+    type_dropdown.config(bg="blue4", fg="white", width="12", activebackground="dodger blue", activeforeground="black")
+    type_dropdown.place(x="530", y="605")
+
+    list2 = ['Up to 5 kW', '5-10 kW','10-20 kW','20-50 kW','50-150 kW','Above 150 kW']
+    click2 = StringVar()
+    click2.set("Select Requirement")
+    test_dropdown = OptionMenu(conentry, click2, *list2)
+    test_dropdown.config(bg="blue4", fg="white", width="15", activebackground="dodger blue", activeforeground="black")
+    test_dropdown.place(x="690", y="605")
 
     usage_label = Label(conentry, text="Purpose of Supply      :", font="lucida 12 bold", bg="white", fg="blue4")
     usage_label.place(x="301", y="660")
@@ -238,14 +251,74 @@ def addconsumerdb():
     supply = click.get()
     pos = var.get()
     meterno = meter_entry.get()
+    requirement = click2.get()
 
     con = cx_Oracle.connect('system/12345@localhost:1521/xe')
     print(con.version)
     cursor = con.cursor()
-    cursor.execute(f"INSERT INTO ADD_CONSUMER VALUES(consumer_seq.nextval,'{name}',{phone},'{address1}','{address2}','{address3}',{pincode},'{email}',{aadhar},'{pan}','{supply}','{pos}',{meterno})")
+    cursor.execute(f"INSERT INTO ADD_CONSUMER VALUES(consumer_seq.nextval,'{name}',{phone},'{address1}','{address2}','{address3}',{pincode},'{email}',{aadhar},'{pan}','{supply}','{pos}',{meterno},sysdate,'{requirement}')")
 
     cursor.close()
     con.commit()
     con.close()
 
+def displayentry():
+    condisplay = Toplevel()
+    window_width, window_height = 1000, 950
+    screen_width = condisplay.winfo_screenwidth()
+    screen_height = condisplay.winfo_screenheight()
+    position_top = int(screen_height / 2 - window_height / 2)
+    position_right = int(screen_width / 2 - window_width / 2)
+    condisplay.geometry(f"{window_width}x{window_height}+{position_right}+{position_top}")
+
+    condisplay.title("DISPLAY DETAILS")
+    condisplay.configure(bg="white")
+    condisplay.resizable(width=False, height=False)
+    condisplay.iconbitmap('Images/icon2.ico')
+
+    conentry_top = Image.open("Images/adcon_toptemp.png")
+    entrytop = ImageTk.PhotoImage(conentry_top)
+    condisplay.photo = entrytop  # solution for bug in `PhotoImage`
+    receipt_toplogo = Label(condisplay, image=entrytop, borderwidth="0")
+    receipt_toplogo.place(x="37", y="2")
+
+    entrydown = Image.open("Images/adcon_downtempnew.png")
+    entrydown = ImageTk.PhotoImage(entrydown)
+    condisplay.photo = entrydown  # solution for bug in `PhotoImage`
+    receipt_toplogo = Label(condisplay, image=entrydown, borderwidth="0")
+    receipt_toplogo.place(x="37", y="820")
+
+    con_name = Label(condisplay, text="Name                           : ", font="lucida 12 bold ", bg="white", fg="blue4")
+    con_name.place(x="300", y="150")
+
+    conphone = Label(condisplay, text="Phone No                    :", font="lucida 12 bold ", bg="white", fg="blue4")
+    conphone.place(x="300.5", y="200")
+
+    address_label = Label(condisplay, text="Address                      :", font="lucida 12 bold ", bg="white",fg="blue4")
+    address_label.place(x="301", y="250")
+
+    email_label = Label(condisplay, text="Email                           :", font="lucida 12 bold", bg="white",fg="blue4")
+    email_label.place(x="300", y="400")
+
+    aadhar_label = Label(condisplay, text="Aadhar No                   :", font="lucida 12 bold", bg="white", fg="blue4")
+    aadhar_label.place(x="300", y="450")
+
+    pan_label = Label(condisplay, text="PAN                             : ", font="lucida 12 bold", bg="white",fg="blue4")
+    pan_label.place(x="300", y="500")
+
+    supplytype_label = Label(condisplay, text="Supply Type                :", font="lucida 12 bold", bg="white",fg="blue4")
+    supplytype_label.place(x="300", y="550")
+
+    usage_label = Label(condisplay, text="Purpose of Supply      :", font="lucida 12 bold", bg="white", fg="blue4")
+    usage_label.place(x="301", y="600")
+
+    meter_label = Label(condisplay, text="Meter No                     : ", font="lucida 12 bold", bg="white", fg="blue4")
+    meter_label.place(x="300", y="650")
+
+
+    condisplay.mainloop()
+
+
+
 homeWindow()
+# displayentry()
