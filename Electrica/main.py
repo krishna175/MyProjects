@@ -3,6 +3,10 @@ from tkinter import *
 from PIL import ImageTk,Image
 from tkinter import messagebox
 import cx_Oracle
+import pygetwindow
+import webbrowser
+
+
 
 
 
@@ -95,7 +99,7 @@ def homeWindow():
 
 
 def consumerEntry():
-
+    global conentry
     conentry = Toplevel()
     global conname_entry, conphone_entry, address1_entry, address2_entry, address3_entry, pincode_entry, email_entry, aadhar_entry, pan_entry, click,click2, var, meter_entry
     window_width, window_height = 1000, 950
@@ -273,12 +277,50 @@ def addconsumerdb():
     print(con.version)
     cursor = con.cursor()
     cursor.execute(f"INSERT INTO ADD_CONSUMER VALUES(consumer_seq.nextval,'{name}',{phone},'{address1}','{address2}','{address3}',{pincode},'{email}',{aadhar},'{pan}','{supply}','{pos}',{meterno},sysdate,'{requirement}',{cc})")
-
+    messagebox.showinfo("Message", "Consumer Added Successfully")
     cursor.close()
     con.commit()
+    print('Consumer added!')
+    displayentry()
     con.close()
 
+#print the consuemr receipt
+def printrec():
+    path = "C:/Users/Vandana/Documents/Clg Doc/OneDrive/ProjectGit/Electrica/Receipt_img.png"
+    titles =pygetwindow.getAllTitles()
+
+    # x1, y1 = width, height = pygetwindow.getWindowsWithTitle('Patholab')
+    window = pygetwindow.getWindowsWithTitle('RECEIPT')[0]
+    x1 = window.left+10
+    y1 = window.top+30
+    height = window.height-150
+    width = window.width-20
+    x2 = x1 + width
+    y2 = y1 + height
+
+    pyautogui.screenshot(path)
+
+    im = Image.open(path)
+    im = im.crop((x1,y1,x2,y2))
+    im.save(path)
+    # im.show(path)
+    sstopdf()
+
+def sstopdf():
+    filename = "C:/Users/Vandana/Documents/Clg Doc/OneDrive/ProjectGit/Electrica/Receipt_img.png"
+    image = Image.open(filename)
+
+    if image.mode == "RGBA":
+        image = image.convert("RGB")
+    output = "C:/Users/Vandana/Documents/Clg Doc/OneDrive/ProjectGit/Electrica/Receipt.pdf"
+    image.save(output, "PDF", resolution=100.0)
+    printreceipt()
+
+def printreceipt():
+    webbrowser.open_new(r'file://C:/Users/Vandana/Documents/Clg Doc/OneDrive/ProjectGit/Electrica/Receipt.pdf')
+
 def displayentry():
+    conentry.destroy()
     condisplay = Toplevel()
     window_width, window_height = 1000, 950
     screen_width = condisplay.winfo_screenwidth()
@@ -287,7 +329,7 @@ def displayentry():
     position_right = int(screen_width / 2 - window_width / 2)
     condisplay.geometry(f"{window_width}x{window_height}+{position_right}+{position_top}")
 
-    condisplay.title("DISPLAY DETAILS")
+    condisplay.title("RECEIPT")
     condisplay.configure(bg="white")
     condisplay.resizable(width=False, height=False)
     condisplay.iconbitmap('Images/icon2.ico')
@@ -298,19 +340,26 @@ def displayentry():
     receipt_toplogo = Label(condisplay, image=entrytop, borderwidth="0")
     receipt_toplogo.place(x="37", y="2")
 
+    iddisplay = Image.open("Images/iddisplaynew.png")
+    iddislpayleft = ImageTk.PhotoImage(iddisplay)
+    condisplay.photo = iddislpayleft  # solution for bug in `PhotoImage`
+    iddisplay_leftcharges = Label(condisplay, image=iddislpayleft, borderwidth="0")
+    iddisplay_leftcharges.place(x="70", y="230")
+
     con_name = Label(condisplay, text="Connection Charges :  ", font="lucida 9 bold ", bg="white",fg="red")
-    con_name.place(x="75", y="240")
+    con_name.place(x="75", y="290")
+
     conentry_left = Image.open("Images/connectionchageimg.png")
     entryleft = ImageTk.PhotoImage(conentry_left)
     condisplay.photo = entryleft  # solution for bug in `PhotoImage`
     receipt_leftcharges = Label(condisplay, image=entryleft, borderwidth="0")
-    receipt_leftcharges.place(x="70", y="270")
+    receipt_leftcharges.place(x="70", y="310")
 
     gpay_logo = Image.open("Images/payment_image.png")
     gpay_logo = ImageTk.PhotoImage(gpay_logo)
     condisplay.photo2 = gpay_logo  # solution for bug in `PhotoImage`
     rec_gpay_logo = Label(condisplay, image=gpay_logo, borderwidth="0", bg="white")
-    rec_gpay_logo.place(x="100", y="490")
+    rec_gpay_logo.place(x="100", y="510")
 
     entrydown = Image.open("Images/adcon_downtempnew.png")
     entrydown = ImageTk.PhotoImage(entrydown)
@@ -364,6 +413,8 @@ def displayentry():
     x = cursor.execute("SELECT * FROM ADD_CONSUMER WHERE CON_ID = (SELECT MAX(CON_ID) FROM ADD_CONSUMER)")
     values = x.fetchall()
     for i in values:
+        con_iddis = Label(condisplay, text=i[0], font="lucida 13 bold ", bg="midnight blue", fg="white")
+        con_iddis.place(x="170", y="240")
 
         con_namedis = Label(condisplay, text= i[1], font="lucida 12 bold ", bg="white", fg="black")
         con_namedis.place(x="530", y="152")
@@ -402,19 +453,29 @@ def displayentry():
         supplytypeamount = total_amount%100
         cc_amount = total_amount - supplytypeamount
         stcharge = Label(condisplay, text=supplytypeamount, font="lucida 11 bold ", bg="goldenrod1", fg="black")
-        stcharge.place(x="185", y="303")
+        stcharge.place(x="185", y="343")
 
         cc = Label(condisplay, text=cc_amount, font="lucida 11 bold ", bg="goldenrod1", fg="black")
-        cc.place(x="185", y="354")
+        cc.place(x="185", y="394")
 
         cctotal = Label(condisplay, text=total_amount, font="lucida 11 bold ", bg="goldenrod1", fg="black")
-        cctotal.place(x="185", y="393")
+        cctotal.place(x="185", y="433")
 
-    date_label = Label(condisplay, text="07-SEP-2021", font="lucida 9 bold ", bg="white", fg="black")
-    date_label.place(x="775", y="120")
+        gpayamount = Label(condisplay, text=f"Amount : {total_amount} Rs", font="lucida 11 bold ", bg="white", fg="black")
+        gpayamount.place(x="80", y="670")
 
-    date_label = Label(condisplay, text="11:10 PM", font="lucida 9 bold ", bg="white", fg="black")
-    date_label.place(x="875", y="120")
+
+
+
+    y = cursor.execute("SELECT to_char(JOINDATE,'DD-MON-YYYY'),to_char(JOINDATE,'hh24:mi') FROM ADD_CONSUMER")
+    time_date = y.fetchall()
+    for i in time_date:
+
+        date_label = Label(condisplay, text=f"{i[0]} |", font="lucida 9 bold ", bg="white", fg="black")
+        date_label.place(x="800", y="120")
+
+        time_label = Label(condisplay, text=i[1], font="lucida 9 bold ", bg="white", fg="black")
+        time_label.place(x="900", y="120")
 
     cursor.close()
     con.close()
@@ -422,7 +483,7 @@ def displayentry():
     printbtn = Image.open("Images/print_btn.png")
     printbtn = ImageTk.PhotoImage(printbtn)
     condisplay.photo3 = printbtn
-    submit_receipt = Button(condisplay, image=printbtn, bg="white", bd="0", activebackground='green')
+    submit_receipt = Button(condisplay, image=printbtn, bg="white", bd="0", activebackground='green',command=printrec)
     submit_receipt.place(x="370", y="850")
 
     mailbtn = Image.open("Images/mail_btn.png")
@@ -431,9 +492,10 @@ def displayentry():
     submit_receipt = Button(condisplay, image=mailbtn, bg="white", bd="0", activebackground='green')
     submit_receipt.place(x="530", y="850")
 
+    print("Consumer details displayed")
+
     condisplay.mainloop()
 
 
 
-# homeWindow()
-displayentry()
+homeWindow()
