@@ -359,50 +359,65 @@ def displayentry():
 
     #CONNECTION DB
 
-    con_namedis = Label(condisplay, text="HARIKRISHNAN SATHYAN ", font="lucida 12 bold ", bg="white", fg="black")
-    con_namedis.place(x="530", y="152")
+    con = cx_Oracle.connect('system/12345@localhost:1521/xe')
+    cursor = con.cursor()
+    x = cursor.execute("SELECT * FROM ADD_CONSUMER WHERE CON_ID = (SELECT MAX(CON_ID) FROM ADD_CONSUMER)")
+    values = x.fetchall()
+    for i in values:
 
-    conphonedis = Label(condisplay, text="9820767948 ", font="lucida 12 bold ", bg="white", fg="black")
-    conphonedis.place(x="530", y="202")
+        con_namedis = Label(condisplay, text= i[1], font="lucida 12 bold ", bg="white", fg="black")
+        con_namedis.place(x="530", y="152")
 
-    address1 = Label(condisplay, text="B-403 DIVYA APT, ", font="lucida 11 bold ", bg="white", fg="black")
-    address1.place(x="530", y="252")
-    address2 = Label(condisplay, text="TRIVENI NAGAR, KURAR VILLAGE, ", font="lucida 11 bold ", bg="white", fg="black")
-    address2.place(x="530", y="280")
-    address3 = Label(condisplay, text="NEAR JOYTI HOTEL, MALAD(E)", font="lucida 11 bold ", bg="white", fg="black")
-    address3.place(x="530", y="310")
-    pincode = Label(condisplay, text="PINCODE : 400097", font="lucida 11 bold ", bg="white", fg="black")
-    pincode.place(x="530", y="340")
+        conphonedis = Label(condisplay, text= i[2], font="lucida 12 bold ", bg="white", fg="black")
+        conphonedis.place(x="530", y="202")
 
-    emaildis = Label(condisplay, text="harikrishnansathyan2001@gmail.com", font="lucida 11 bold ", bg="white",fg="black")
-    emaildis.place(x="530", y="400")
+        address1 = Label(condisplay, text= i[3], font="lucida 11 bold ", bg="white", fg="black")
+        address1.place(x="530", y="252")
+        address2 = Label(condisplay, text= i[4], font="lucida 11 bold ", bg="white", fg="black")
+        address2.place(x="530", y="280")
+        address3 = Label(condisplay, text= i[5], font="lucida 11 bold ", bg="white", fg="black")
+        address3.place(x="530", y="310")
+        pincode = Label(condisplay, text=f"PINCODE : {i[6]}", font="lucida 11 bold ", bg="white", fg="black")
+        pincode.place(x="530", y="340")
 
-    aadhardis = Label(condisplay, text="682938721393", font="lucida 11 bold ", bg="white", fg="black")
-    aadhardis.place(x="530", y="450")
+        emaildis = Label(condisplay, text= i[7], font="lucida 11 bold ", bg="white",fg="black")
+        emaildis.place(x="530", y="400")
 
-    pandis = Label(condisplay, text="PB938092", font="lucida 11 bold ", bg="white", fg="black")
-    pandis.place(x="530", y="500")
+        aadhardis = Label(condisplay, text= i[8], font="lucida 11 bold ", bg="white", fg="black")
+        aadhardis.place(x="530", y="450")
 
-    supplytypedis = Label(condisplay, text="SINGLE PHASE (10 - 15 kW)", font="lucida 11 bold ", bg="white", fg="black")
-    supplytypedis.place(x="530", y="550")
+        pandis = Label(condisplay, text= i[9], font="lucida 11 bold ", bg="white", fg="black")
+        pandis.place(x="530", y="500")
 
-    usagedis = Label(condisplay, text="DOMESTIC", font="lucida 11 bold ", bg="white", fg="black")
-    usagedis.place(x="530", y="600")
+        supplytypedis = Label(condisplay, text= i[10]+ f" ({i[14]})", font="lucida 11 bold ", bg="white", fg="black")
+        supplytypedis.place(x="530", y="550")
 
-    meterdis = Label(condisplay, text="2342355", font="lucida 11 bold ", bg="white", fg="black")
-    meterdis.place(x="530", y="650")
+        usagedis = Label(condisplay, text= i[11], font="lucida 11 bold ", bg="white", fg="black")
+        usagedis.place(x="530", y="600")
 
-    stcharge = Label(condisplay, text="50", font="lucida 11 bold ", bg="goldenrod1", fg="black")
-    stcharge.place(x="185", y="303")
+        meterdis = Label(condisplay, text= i[12], font="lucida 11 bold ", bg="white", fg="black")
+        meterdis.place(x="530", y="650")
 
-    cc = Label(condisplay, text="2000", font="lucida 11 bold ", bg="goldenrod1", fg="black")
-    cc.place(x="185", y="354")
+        total_amount = i[15]
+        supplytypeamount = total_amount%100
+        cc_amount = total_amount - supplytypeamount
+        stcharge = Label(condisplay, text=supplytypeamount, font="lucida 11 bold ", bg="goldenrod1", fg="black")
+        stcharge.place(x="185", y="303")
 
-    cctotal = Label(condisplay, text="250075", font="lucida 11 bold ", bg="goldenrod1", fg="black")
-    cctotal.place(x="185", y="393")
+        cc = Label(condisplay, text=cc_amount, font="lucida 11 bold ", bg="goldenrod1", fg="black")
+        cc.place(x="185", y="354")
 
+        cctotal = Label(condisplay, text=total_amount, font="lucida 11 bold ", bg="goldenrod1", fg="black")
+        cctotal.place(x="185", y="393")
 
+    date_label = Label(condisplay, text="07-SEP-2021", font="lucida 9 bold ", bg="white", fg="black")
+    date_label.place(x="775", y="120")
 
+    date_label = Label(condisplay, text="11:10 PM", font="lucida 9 bold ", bg="white", fg="black")
+    date_label.place(x="875", y="120")
+
+    cursor.close()
+    con.close()
 
     printbtn = Image.open("Images/print_btn.png")
     printbtn = ImageTk.PhotoImage(printbtn)
