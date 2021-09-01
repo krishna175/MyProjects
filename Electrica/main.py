@@ -298,54 +298,127 @@ def displayentry():
     receipt_toplogo = Label(condisplay, image=entrytop, borderwidth="0")
     receipt_toplogo.place(x="37", y="2")
 
+    con_name = Label(condisplay, text="Connection Charges :  ", font="lucida 9 bold ", bg="white",fg="red")
+    con_name.place(x="75", y="240")
+    conentry_left = Image.open("Images/connectionchageimg.png")
+    entryleft = ImageTk.PhotoImage(conentry_left)
+    condisplay.photo = entryleft  # solution for bug in `PhotoImage`
+    receipt_leftcharges = Label(condisplay, image=entryleft, borderwidth="0")
+    receipt_leftcharges.place(x="70", y="270")
+
+    gpay_logo = Image.open("Images/payment_image.png")
+    gpay_logo = ImageTk.PhotoImage(gpay_logo)
+    condisplay.photo2 = gpay_logo  # solution for bug in `PhotoImage`
+    rec_gpay_logo = Label(condisplay, image=gpay_logo, borderwidth="0", bg="white")
+    rec_gpay_logo.place(x="100", y="490")
+
     entrydown = Image.open("Images/adcon_downtempnew.png")
     entrydown = ImageTk.PhotoImage(entrydown)
     condisplay.photo = entrydown  # solution for bug in `PhotoImage`
     receipt_toplogo = Label(condisplay, image=entrydown, borderwidth="0")
-    receipt_toplogo.place(x="37", y="820")
+    receipt_toplogo.place(x="37", y="720")
+
+
 
     con_name = Label(condisplay, text="Name                           : ", font="lucida 12 bold ", bg="white", fg="blue4")
     con_name.place(x="300", y="150")
 
+
     conphone = Label(condisplay, text="Phone No                    :", font="lucida 12 bold ", bg="white", fg="blue4")
     conphone.place(x="300.5", y="200")
+
 
     address_label = Label(condisplay, text="Address                      :", font="lucida 12 bold ", bg="white",fg="blue4")
     address_label.place(x="301", y="250")
 
+
     email_label = Label(condisplay, text="Email                           :", font="lucida 12 bold", bg="white",fg="blue4")
     email_label.place(x="300", y="400")
+
 
     aadhar_label = Label(condisplay, text="Aadhar No                   :", font="lucida 12 bold", bg="white", fg="blue4")
     aadhar_label.place(x="300", y="450")
 
+
     pan_label = Label(condisplay, text="PAN                             : ", font="lucida 12 bold", bg="white",fg="blue4")
     pan_label.place(x="300", y="500")
+
 
     supplytype_label = Label(condisplay, text="Supply Type                :", font="lucida 12 bold", bg="white",fg="blue4")
     supplytype_label.place(x="300", y="550")
 
+
     usage_label = Label(condisplay, text="Purpose of Supply      :", font="lucida 12 bold", bg="white", fg="blue4")
     usage_label.place(x="301", y="600")
 
+
     meter_label = Label(condisplay, text="Meter No                     : ", font="lucida 12 bold", bg="white", fg="blue4")
     meter_label.place(x="300", y="650")
+
+
+
+    #CONNECTION DB
+
+    con_namedis = Label(condisplay, text="HARIKRISHNAN SATHYAN ", font="lucida 12 bold ", bg="white", fg="black")
+    con_namedis.place(x="530", y="152")
+
+    conphonedis = Label(condisplay, text="9820767948 ", font="lucida 12 bold ", bg="white", fg="black")
+    conphonedis.place(x="530", y="202")
+
+    address1 = Label(condisplay, text="B-403 DIVYA APT, ", font="lucida 11 bold ", bg="white", fg="black")
+    address1.place(x="530", y="252")
+    address2 = Label(condisplay, text="TRIVENI NAGAR, KURAR VILLAGE, ", font="lucida 11 bold ", bg="white", fg="black")
+    address2.place(x="530", y="280")
+    address3 = Label(condisplay, text="NEAR JOYTI HOTEL, MALAD(E)", font="lucida 11 bold ", bg="white", fg="black")
+    address3.place(x="530", y="310")
+    pincode = Label(condisplay, text="PINCODE : 400097", font="lucida 11 bold ", bg="white", fg="black")
+    pincode.place(x="530", y="340")
+
+    emaildis = Label(condisplay, text="harikrishnansathyan2001@gmail.com", font="lucida 11 bold ", bg="white",fg="black")
+    emaildis.place(x="530", y="400")
+
+    aadhardis = Label(condisplay, text="682938721393", font="lucida 11 bold ", bg="white", fg="black")
+    aadhardis.place(x="530", y="450")
+
+    pandis = Label(condisplay, text="PB938092", font="lucida 11 bold ", bg="white", fg="black")
+    pandis.place(x="530", y="500")
+
+    supplytypedis = Label(condisplay, text="SINGLE PHASE (10 - 15 kW)", font="lucida 11 bold ", bg="white", fg="black")
+    supplytypedis.place(x="530", y="550")
+
+    usagedis = Label(condisplay, text="DOMESTIC", font="lucida 11 bold ", bg="white", fg="black")
+    usagedis.place(x="530", y="600")
+
+    meterdis = Label(condisplay, text="2342355", font="lucida 11 bold ", bg="white", fg="black")
+    meterdis.place(x="530", y="650")
+
+    stcharge = Label(condisplay, text="50", font="lucida 11 bold ", bg="goldenrod1", fg="black")
+    stcharge.place(x="185", y="303")
+
+    cc = Label(condisplay, text="2000", font="lucida 11 bold ", bg="goldenrod1", fg="black")
+    cc.place(x="185", y="354")
+
+    cctotal = Label(condisplay, text="250075", font="lucida 11 bold ", bg="goldenrod1", fg="black")
+    cctotal.place(x="185", y="393")
+
+
+
 
     printbtn = Image.open("Images/print_btn.png")
     printbtn = ImageTk.PhotoImage(printbtn)
     condisplay.photo3 = printbtn
     submit_receipt = Button(condisplay, image=printbtn, bg="white", bd="0", activebackground='green')
-    submit_receipt.place(x="370", y="765")
+    submit_receipt.place(x="370", y="850")
 
     mailbtn = Image.open("Images/mail_btn.png")
     mailbtn = ImageTk.PhotoImage(mailbtn)
     condisplay.photo3 = mailbtn
     submit_receipt = Button(condisplay, image=mailbtn, bg="white", bd="0", activebackground='green')
-    submit_receipt.place(x="530", y="765")
+    submit_receipt.place(x="530", y="850")
 
     condisplay.mainloop()
 
 
 
-homeWindow()
-# displayentry()
+# homeWindow()
+displayentry()
