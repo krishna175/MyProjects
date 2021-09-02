@@ -5,9 +5,18 @@ from tkinter import messagebox
 import cx_Oracle
 import pygetwindow
 import webbrowser
+from plyer import notification
+import time
 
 
 
+def notifyrecmail():
+    notification.notify(
+        title = "Mail send",
+        message = "Receipt sent to the Consumer",
+        timeout = 1
+    )
+    time.sleep(0)
 
 
 def homeWindow():
@@ -50,7 +59,7 @@ def homeWindow():
     editdetails_resized = editdetails_size.resize((220, 50), Image.ANTIALIAS)
     editdetails_image = ImageTk.PhotoImage(editdetails_resized)
     Label(image=editdetails_image)
-    button_editreceipt = Button(home, image=editdetails_image, borderwidth="0", activebackground='blue')
+    button_editreceipt = Button(home, image=editdetails_image, borderwidth="0", activebackground='blue',command=displayentry)
     button_editreceipt.place(x=530, y=100)
 
     readings_size = Image.open("Images/readings_btn.png")
@@ -321,20 +330,31 @@ def printreceipt():
 
 def sendmail():
     from pdf_mail import sendpdf
-    # Create an object of sendpdf function
-    k = sendpdf("electrica.org@gmail.com",
-                "harikrishnansathyan2001@gmail.com",
-                "Electrica@1234",
-                "Electrica New Connection",
-                "Dear ABC,\nThis is the receipt for your ABC test.\nTest report will be sent to you before 6:00 PM. \n\nRegards,\nPatholab",
-                "Receipt",
-                "C:/Users/Vandana/Documents/Clg Doc/OneDrive/ProjectGit/Electrica")
 
-# sending an email
-    k.email_send()
+    con = cx_Oracle.connect('system/12345@localhost:1521/xe')
+    cursor = con.cursor()
+    x = cursor.execute("SELECT * FROM ADD_CONSUMER WHERE CON_ID = (SELECT MAX(CON_ID) FROM ADD_CONSUMER)")
+    values = x.fetchall()
+    for i in values:
+        name = i[1]
+        supply = i[10]
+        requrement = i[14]
+        email = i[7]
+        # Create an object of sendpdf function
+        k = sendpdf("electrica.org@gmail.com",
+                    f"{email}",
+                    "Electrica@1234",
+                    "Electrica New Connection",
+                    f"Dear {name} ,\nYour connection for request for {supply} ({requrement}) current supply has been approved.\nConnection will be established within 24hrs.\n\nRegards,\nElectrica",
+                    "Receipt",
+                    "C:/Users/Vandana/Documents/Clg Doc/OneDrive/ProjectGit/Electrica")
+
+    # sending an email
+        k.email_send()
+        notifyrecmail()
 
 def displayentry():
-    conentry.destroy()
+    # conentry.destroy()
     condisplay = Toplevel()
     window_width, window_height = 1000, 950
     screen_width = condisplay.winfo_screenwidth()
