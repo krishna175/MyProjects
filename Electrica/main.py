@@ -319,6 +319,20 @@ def sstopdf():
 def printreceipt():
     webbrowser.open_new(r'file://C:/Users/Vandana/Documents/Clg Doc/OneDrive/ProjectGit/Electrica/Receipt.pdf')
 
+def sendmail():
+    from pdf_mail import sendpdf
+    # Create an object of sendpdf function
+    k = sendpdf("electrica.org@gmail.com",
+                "harikrishnansathyan2001@gmail.com",
+                "Electrica@1234",
+                "Electrica New Connection",
+                "Dear ABC,\nThis is the receipt for your ABC test.\nTest report will be sent to you before 6:00 PM. \n\nRegards,\nPatholab",
+                "Receipt",
+                "C:/Users/Vandana/Documents/Clg Doc/OneDrive/ProjectGit/Electrica")
+
+# sending an email
+    k.email_send()
+
 def displayentry():
     conentry.destroy()
     condisplay = Toplevel()
@@ -489,7 +503,7 @@ def displayentry():
     mailbtn = Image.open("Images/mail_btn.png")
     mailbtn = ImageTk.PhotoImage(mailbtn)
     condisplay.photo3 = mailbtn
-    submit_receipt = Button(condisplay, image=mailbtn, bg="white", bd="0", activebackground='green')
+    submit_receipt = Button(condisplay, image=mailbtn, bg="white", bd="0", activebackground='green',command=sendmail)
     submit_receipt.place(x="530", y="850")
 
     print("Consumer details displayed")
