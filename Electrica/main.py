@@ -7,6 +7,7 @@ import pygetwindow
 import webbrowser
 from plyer import notification
 import time
+from pdf_mail import sendpdf
 
 
 
@@ -329,8 +330,6 @@ def printreceipt():
     webbrowser.open_new(r'file://C:/Users/Vandana/Documents/Clg Doc/OneDrive/ProjectGit/Electrica/Receipt.pdf')
 
 def sendmail():
-    from pdf_mail import sendpdf
-
     con = cx_Oracle.connect('system/12345@localhost:1521/xe')
     cursor = con.cursor()
     x = cursor.execute("SELECT * FROM ADD_CONSUMER WHERE CON_ID = (SELECT MAX(CON_ID) FROM ADD_CONSUMER)")
