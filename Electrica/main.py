@@ -19,6 +19,30 @@ def notifyrecmail():
     )
     time.sleep(0)
 
+def sendmail():
+    con = cx_Oracle.connect('system/12345@localhost:1521/xe')
+    cursor = con.cursor()
+    x = cursor.execute("SELECT * FROM ADD_CONSUMER WHERE CON_ID = (SELECT MAX(CON_ID) FROM ADD_CONSUMER)")
+    values = x.fetchall()
+    for i in values:
+        name = i[1]
+        supply = i[10]
+        requrement = i[14]
+        email = i[7]
+        # Create an object of sendpdf function
+        k = sendpdf("electrica.org@gmail.com",
+                    f"{email}",
+                    "Electrica@1234",
+                    "Electrica New Connection",
+                    f"Dear {name} ,\nYour connection for request for {supply} ({requrement}) current supply has been approved.\nConnection will be established within 24hrs.\n\nRegards,\nElectrica",
+                    "Receipt",
+                    "C:/Users/Vandana/Documents/Clg Doc/OneDrive/ProjectGit/Electrica")
+
+    # sending an email
+        k.email_send()
+        notifyrecmail()
+
+
 
 def homeWindow():
     home = Tk()
@@ -60,7 +84,7 @@ def homeWindow():
     editdetails_resized = editdetails_size.resize((220, 50), Image.ANTIALIAS)
     editdetails_image = ImageTk.PhotoImage(editdetails_resized)
     Label(image=editdetails_image)
-    button_editreceipt = Button(home, image=editdetails_image, borderwidth="0", activebackground='blue',command=displayentry)
+    button_editreceipt = Button(home, image=editdetails_image, borderwidth="0", activebackground='blue',command=editwindow)
     button_editreceipt.place(x=530, y=100)
 
     readings_size = Image.open("Images/readings_btn.png")
@@ -329,28 +353,6 @@ def sstopdf():
 def printreceipt():
     webbrowser.open_new(r'file://C:/Users/Vandana/Documents/Clg Doc/OneDrive/ProjectGit/Electrica/Receipt.pdf')
 
-def sendmail():
-    con = cx_Oracle.connect('system/12345@localhost:1521/xe')
-    cursor = con.cursor()
-    x = cursor.execute("SELECT * FROM ADD_CONSUMER WHERE CON_ID = (SELECT MAX(CON_ID) FROM ADD_CONSUMER)")
-    values = x.fetchall()
-    for i in values:
-        name = i[1]
-        supply = i[10]
-        requrement = i[14]
-        email = i[7]
-        # Create an object of sendpdf function
-        k = sendpdf("electrica.org@gmail.com",
-                    f"{email}",
-                    "Electrica@1234",
-                    "Electrica New Connection",
-                    f"Dear {name} ,\nYour connection for request for {supply} ({requrement}) current supply has been approved.\nConnection will be established within 24hrs.\n\nRegards,\nElectrica",
-                    "Receipt",
-                    "C:/Users/Vandana/Documents/Clg Doc/OneDrive/ProjectGit/Electrica")
-
-    # sending an email
-        k.email_send()
-        notifyrecmail()
 
 def displayentry():
     # conentry.destroy()
@@ -529,6 +531,228 @@ def displayentry():
 
     condisplay.mainloop()
 
+def editwindow():
+
+    editentry = Toplevel()
+    global id_entry
+    window_width, window_height = 583,430
+    screen_width = editentry.winfo_screenwidth()
+    screen_height = editentry.winfo_screenheight()
+    position_top = int(screen_height / 2 - window_height / 2)
+    position_right = int(screen_width / 2 - window_width / 2)
+    editentry.geometry(f"{window_width}x{window_height}+{position_right}+{position_top}")
+
+    editentry.title("EDIT DETAILS")
+    editentry.configure(bg="white")
+    editentry.resizable(width=False, height=False)
+    editentry.iconbitmap('Images/icon2.ico')
+
+
+    bg_logo = Image.open("Images/editwindowbg.png")
+    bg_logo = ImageTk.PhotoImage(bg_logo)
+    editentry.photo2 = bg_logo  # solution for bug in `PhotoImage`
+    background_logo = Label(editentry, image=bg_logo, borderwidth="0", bg="white")
+    background_logo.place(x="0", y="0")
+
+    id_label = Label(editentry, text="CON_ID : ", font="lucida 14 bold ", bg="goldenrod1", fg="black")
+    id_label.place(x="185", y="130")
+
+    id_entry = Entry(editentry, width="8", font="lucida 12 bold", bd="3", bg="grey94")
+    id_entry.place(x="300", y="132")
+
+    showdetailsbtn = Image.open("Images/showdetails_btn2.png")
+    showdetailsbtn = ImageTk.PhotoImage(showdetailsbtn)
+    editentry.photo3 = showdetailsbtn
+    submit_receipt = Button(editentry, image=showdetailsbtn, bg="goldenrod1", bd="0", activebackground='green',command=showentry)
+    submit_receipt.place(x="190", y="195")
+
+    editdetailsbtn = Image.open("Images/editdetails_btn.png")
+    editdetailsbtn = ImageTk.PhotoImage(editdetailsbtn)
+    editentry.photo3 = editdetailsbtn
+    submit_receipt = Button(editentry, image=editdetailsbtn, bg="goldenrod1", bd="0", activebackground='green')
+    submit_receipt.place(x="190", y="250")
+
+    editentry.mainloop()
+
+
+
+def showentry():
+    # conentry.destroy()
+    condisplay = Toplevel()
+    window_width, window_height = 1000, 950
+    screen_width = condisplay.winfo_screenwidth()
+    screen_height = condisplay.winfo_screenheight()
+    position_top = int(screen_height / 2 - window_height / 2)
+    position_right = int(screen_width / 2 - window_width / 2)
+    condisplay.geometry(f"{window_width}x{window_height}+{position_right}+{position_top}")
+
+    condisplay.title("RECEIPT")
+    condisplay.configure(bg="white")
+    condisplay.resizable(width=False, height=False)
+    condisplay.iconbitmap('Images/icon2.ico')
+
+    conentry_top = Image.open("Images/adcon_toptemp.png")
+    entrytop = ImageTk.PhotoImage(conentry_top)
+    condisplay.photo = entrytop  # solution for bug in `PhotoImage`
+    receipt_toplogo = Label(condisplay, image=entrytop, borderwidth="0")
+    receipt_toplogo.place(x="37", y="2")
+
+    iddisplay = Image.open("Images/iddisplaynew.png")
+    iddislpayleft = ImageTk.PhotoImage(iddisplay)
+    condisplay.photo = iddislpayleft  # solution for bug in `PhotoImage`
+    iddisplay_leftcharges = Label(condisplay, image=iddislpayleft, borderwidth="0")
+    iddisplay_leftcharges.place(x="70", y="230")
+
+    con_name = Label(condisplay, text="Connection Charges :  ", font="lucida 9 bold ", bg="white",fg="red")
+    con_name.place(x="75", y="290")
+
+    conentry_left = Image.open("Images/connectionchageimg.png")
+    entryleft = ImageTk.PhotoImage(conentry_left)
+    condisplay.photo = entryleft  # solution for bug in `PhotoImage`
+    receipt_leftcharges = Label(condisplay, image=entryleft, borderwidth="0")
+    receipt_leftcharges.place(x="70", y="310")
+
+    gpay_logo = Image.open("Images/payment_image.png")
+    gpay_logo = ImageTk.PhotoImage(gpay_logo)
+    condisplay.photo2 = gpay_logo  # solution for bug in `PhotoImage`
+    rec_gpay_logo = Label(condisplay, image=gpay_logo, borderwidth="0", bg="white")
+    rec_gpay_logo.place(x="100", y="510")
+
+    entrydown = Image.open("Images/adcon_downtempnew.png")
+    entrydown = ImageTk.PhotoImage(entrydown)
+    condisplay.photo = entrydown  # solution for bug in `PhotoImage`
+    receipt_toplogo = Label(condisplay, image=entrydown, borderwidth="0")
+    receipt_toplogo.place(x="37", y="720")
+
+
+
+    con_name = Label(condisplay, text="Name                           : ", font="lucida 12 bold ", bg="white", fg="blue4")
+    con_name.place(x="300", y="150")
+
+
+    conphone = Label(condisplay, text="Phone No                    :", font="lucida 12 bold ", bg="white", fg="blue4")
+    conphone.place(x="300.5", y="200")
+
+
+    address_label = Label(condisplay, text="Address                      :", font="lucida 12 bold ", bg="white",fg="blue4")
+    address_label.place(x="301", y="250")
+
+
+    email_label = Label(condisplay, text="Email                           :", font="lucida 12 bold", bg="white",fg="blue4")
+    email_label.place(x="300", y="400")
+
+
+    aadhar_label = Label(condisplay, text="Aadhar No                   :", font="lucida 12 bold", bg="white", fg="blue4")
+    aadhar_label.place(x="300", y="450")
+
+
+    pan_label = Label(condisplay, text="PAN                             : ", font="lucida 12 bold", bg="white",fg="blue4")
+    pan_label.place(x="300", y="500")
+
+
+    supplytype_label = Label(condisplay, text="Supply Type                :", font="lucida 12 bold", bg="white",fg="blue4")
+    supplytype_label.place(x="300", y="550")
+
+
+    usage_label = Label(condisplay, text="Purpose of Supply      :", font="lucida 12 bold", bg="white", fg="blue4")
+    usage_label.place(x="301", y="600")
+
+
+    meter_label = Label(condisplay, text="Meter No                     : ", font="lucida 12 bold", bg="white", fg="blue4")
+    meter_label.place(x="300", y="650")
+
+
+
+    #CONNECTION DB
+    identered = id_entry.get()
+    con = cx_Oracle.connect('system/12345@localhost:1521/xe')
+    cursor = con.cursor()
+    x = cursor.execute(f"SELECT * FROM ADD_CONSUMER WHERE CON_ID = {identered}")
+    values = x.fetchall()
+    for i in values:
+        con_iddis = Label(condisplay, text=i[0], font="lucida 13 bold ", bg="midnight blue", fg="white")
+        con_iddis.place(x="170", y="240")
+
+        con_namedis = Label(condisplay, text= i[1], font="lucida 12 bold ", bg="white", fg="black")
+        con_namedis.place(x="530", y="152")
+
+        conphonedis = Label(condisplay, text= i[2], font="lucida 12 bold ", bg="white", fg="black")
+        conphonedis.place(x="530", y="202")
+
+        address1 = Label(condisplay, text= i[3], font="lucida 11 bold ", bg="white", fg="black")
+        address1.place(x="530", y="252")
+        address2 = Label(condisplay, text= i[4], font="lucida 11 bold ", bg="white", fg="black")
+        address2.place(x="530", y="280")
+        address3 = Label(condisplay, text= i[5], font="lucida 11 bold ", bg="white", fg="black")
+        address3.place(x="530", y="310")
+        pincode = Label(condisplay, text=f"PINCODE : {i[6]}", font="lucida 11 bold ", bg="white", fg="black")
+        pincode.place(x="530", y="340")
+
+        emaildis = Label(condisplay, text= i[7], font="lucida 11 bold ", bg="white",fg="black")
+        emaildis.place(x="530", y="400")
+
+        aadhardis = Label(condisplay, text= i[8], font="lucida 11 bold ", bg="white", fg="black")
+        aadhardis.place(x="530", y="450")
+
+        pandis = Label(condisplay, text= i[9], font="lucida 11 bold ", bg="white", fg="black")
+        pandis.place(x="530", y="500")
+
+        supplytypedis = Label(condisplay, text= i[10]+ f" ({i[14]})", font="lucida 11 bold ", bg="white", fg="black")
+        supplytypedis.place(x="530", y="550")
+
+        usagedis = Label(condisplay, text= i[11], font="lucida 11 bold ", bg="white", fg="black")
+        usagedis.place(x="530", y="600")
+
+        meterdis = Label(condisplay, text= i[12], font="lucida 11 bold ", bg="white", fg="black")
+        meterdis.place(x="530", y="650")
+
+        total_amount = i[15]
+        supplytypeamount = total_amount%100
+        cc_amount = total_amount - supplytypeamount
+        stcharge = Label(condisplay, text=supplytypeamount, font="lucida 11 bold ", bg="goldenrod1", fg="black")
+        stcharge.place(x="185", y="343")
+
+        cc = Label(condisplay, text=cc_amount, font="lucida 11 bold ", bg="goldenrod1", fg="black")
+        cc.place(x="185", y="394")
+
+        cctotal = Label(condisplay, text=total_amount, font="lucida 11 bold ", bg="goldenrod1", fg="black")
+        cctotal.place(x="185", y="433")
+
+        gpayamount = Label(condisplay, text=f"Amount : {total_amount} Rs", font="lucida 11 bold ", bg="white", fg="black")
+        gpayamount.place(x="80", y="670")
+
+
+
+
+    y = cursor.execute("SELECT to_char(JOINDATE,'DD-MON-YYYY'),to_char(JOINDATE,'hh24:mi') FROM ADD_CONSUMER")
+    time_date = y.fetchall()
+    for i in time_date:
+
+        date_label = Label(condisplay, text=f"{i[0]} |", font="lucida 9 bold ", bg="white", fg="black")
+        date_label.place(x="800", y="120")
+
+        time_label = Label(condisplay, text=i[1], font="lucida 9 bold ", bg="white", fg="black")
+        time_label.place(x="900", y="120")
+
+    cursor.close()
+    con.close()
+
+    printbtn = Image.open("Images/print_btn.png")
+    printbtn = ImageTk.PhotoImage(printbtn)
+    condisplay.photo3 = printbtn
+    submit_receipt = Button(condisplay, image=printbtn, bg="white", bd="0", activebackground='green',command=printrec)
+    submit_receipt.place(x="370", y="850")
+
+    mailbtn = Image.open("Images/mail_btn.png")
+    mailbtn = ImageTk.PhotoImage(mailbtn)
+    condisplay.photo3 = mailbtn
+    submit_receipt = Button(condisplay, image=mailbtn, bg="white", bd="0", activebackground='green',command=sendmail)
+    submit_receipt.place(x="530", y="850")
+
+    print("Consumer details displayed")
+
+    condisplay.mainloop()
 
 
 homeWindow()
+# editwindow()
