@@ -572,6 +572,12 @@ def editwindow():
     submit_receipt = Button(editentry, image=editdetailsbtn, bg="goldenrod1", bd="0", activebackground='green',command=editentries)
     submit_receipt.place(x="190", y="250")
 
+    deletedetailsbtn = Image.open("Images/delete_details_btn.png")
+    deletedetailsbtn = ImageTk.PhotoImage(deletedetailsbtn)
+    editentry.photo3 = deletedetailsbtn
+    submit_receipt = Button(editentry, image=deletedetailsbtn, bg="goldenrod1", bd="0", activebackground='green',command=security)
+    submit_receipt.place(x="190", y="305")
+
     editentry.mainloop()
 
 
@@ -755,7 +761,7 @@ def showentry():
 
 def editentries():
     conentry = Toplevel()
-    global conname_entry, conphone_entry, address1_entry, address2_entry, address3_entry, pincode_entry, email_entry, aadhar_entry, pan_entry, click, click2, var, meter_entry
+    global uconname_entry, uconphone_entry, uaddress1_entry, uaddress2_entry, uaddress3_entry, upincode_entry, uemail_entry, uaadhar_entry, upan_entry, uclick, uclick2, uvar, umeter_entry
     window_width, window_height = 1000, 950
     screen_width = conentry.winfo_screenwidth()
     screen_height = conentry.winfo_screenheight()
@@ -786,107 +792,166 @@ def editentries():
     receipt_toplogo = Label(conentry, image=entrydown, borderwidth="0")
     receipt_toplogo.place(x="37", y="800")
 
-    con_name = Label(conentry, text="Name                           : ", font="lucida 12 bold ", bg="white", fg="blue4")
-    con_name.place(x="300", y="150")
-    conname_entry = Entry(conentry, width="32", font="lucida 12", bd="3", bg="grey94")
-    conname_entry.place(x="530", y="150")
+    ucon_name = Label(conentry, text="Name                           : ", font="lucida 12 bold ", bg="white", fg="blue4")
+    ucon_name.place(x="300", y="150")
+    uconname_entry = Entry(conentry, width="32", font="lucida 12", bd="3", bg="grey94")
+    uconname_entry.place(x="530", y="150")
 
-    conphone = Label(conentry, text="Phone No                    :", font="lucida 12 bold ", bg="white", fg="blue4")
-    conphone.place(x="300.5", y="200")
-    conphone_entry = Entry(conentry, width="20", font="lucida 12", bd="3", bg="grey94")
-    conphone_entry.place(x="530", y="200")
+    uconphone = Label(conentry, text="Phone No                    :", font="lucida 12 bold ", bg="white", fg="blue4")
+    uconphone.place(x="300.5", y="200")
+    uconphone_entry = Entry(conentry, width="20", font="lucida 12", bd="3", bg="grey94")
+    uconphone_entry.place(x="530", y="200")
 
-    address_label = Label(conentry, text="Address :", font="lucida 12 bold underline", bg="white")
-    address_label.place(x="300", y="250")
+    uaddress_label = Label(conentry, text="Address :", font="lucida 12 bold underline", bg="white")
+    uaddress_label.place(x="300", y="250")
 
-    address1_label = Label(conentry, text="Flat, House no./ Company  :", font="lucida 10 bold", bg="white", fg="blue4")
-    address1_label.place(x="300", y="290")
-    address1_entry = Entry(conentry, width="35", font="lucida 11", bd="3", bg="grey94")
-    address1_entry.place(x="530", y="290")
+    uaddress1_label = Label(conentry, text="Flat, House no./ Company  :", font="lucida 10 bold", bg="white", fg="blue4")
+    uaddress1_label.place(x="300", y="290")
+    uaddress1_entry = Entry(conentry, width="35", font="lucida 11", bd="3", bg="grey94")
+    uaddress1_entry.place(x="530", y="290")
 
-    address2_label = Label(conentry, text="Area, Street, Village           :", font="lucida 10 bold", bg="white",
+    uaddress2_label = Label(conentry, text="Area, Street, Village           :", font="lucida 10 bold", bg="white",
                            fg="blue4")
-    address2_label.place(x="301", y="330")
-    address2_entry = Entry(conentry, width="35", font="lucida 11", bd="3", bg="grey94")
-    address2_entry.place(x="530", y="330")
+    uaddress2_label.place(x="301", y="330")
+    uaddress2_entry = Entry(conentry, width="35", font="lucida 11", bd="3", bg="grey94")
+    uaddress2_entry.place(x="530", y="330")
 
-    address3_label = Label(conentry, text="Landmark, Town/City         :", font="lucida 10 bold", bg="white",
+    uaddress3_label = Label(conentry, text="Landmark, Town/City         :", font="lucida 10 bold", bg="white",
                            fg="blue4")
-    address3_label.place(x="300", y="370")
-    address3_entry = Entry(conentry, width="35", font="lucida 11", bd="3", bg="grey94")
-    address3_entry.place(x="530", y="370")
+    uaddress3_label.place(x="300", y="370")
+    uaddress3_entry = Entry(conentry, width="35", font="lucida 11", bd="3", bg="grey94")
+    uaddress3_entry.place(x="530", y="370")
 
-    pincode_label = Label(conentry, text="Pincode                              :", font="lucida 10 bold", bg="white",
+    upincode_label = Label(conentry, text="Pincode                              :", font="lucida 10 bold", bg="white",
                           fg="blue4")
-    pincode_label.place(x="300", y="410")
-    pincode_entry = Entry(conentry, width="14", font="lucida 11", bd="3", bg="grey94")
-    pincode_entry.place(x="530", y="410")
+    upincode_label.place(x="300", y="410")
+    upincode_entry = Entry(conentry, width="14", font="lucida 11", bd="3", bg="grey94")
+    upincode_entry.place(x="530", y="410")
 
-    email_label = Label(conentry, text="Email                           :", font="lucida 12 bold", bg="white",
+    uemail_label = Label(conentry, text="Email                           :", font="lucida 12 bold", bg="white",
                         fg="blue4")
-    email_label.place(x="300", y="460")
-    email_entry = Entry(conentry, width="30", font="lucida 12", bd="3", bg="grey94")
-    email_entry.place(x="530", y="460")
+    uemail_label.place(x="300", y="460")
+    uemail_entry = Entry(conentry, width="30", font="lucida 12", bd="3", bg="grey94")
+    uemail_entry.place(x="530", y="460")
 
-    aadhar_label = Label(conentry, text="Aadhar No                   :", font="lucida 12 bold", bg="white", fg="blue4")
-    aadhar_label.place(x="300", y="510")
-    aadhar_entry = Entry(conentry, width="13", font="lucida 12", bd="3", bg="grey94")
-    aadhar_entry.place(x="530", y="510")
+    uaadhar_label = Label(conentry, text="Aadhar No                   :", font="lucida 12 bold", bg="white", fg="blue4")
+    uaadhar_label.place(x="300", y="510")
+    uaadhar_entry = Entry(conentry, width="13", font="lucida 12", bd="3", bg="grey94")
+    uaadhar_entry.place(x="530", y="510")
 
-    pan_label = Label(conentry, text="PAN                             : ", font="lucida 12 bold", bg="white",
+    upan_label = Label(conentry, text="PAN                             : ", font="lucida 12 bold", bg="white",
                       fg="blue4")
-    pan_label.place(x="300", y="560")
-    pan_entry = Entry(conentry, width="13", font="lucida 12", bd="3", bg="grey94")
-    pan_entry.place(x="530", y="560")
+    upan_label.place(x="300", y="560")
+    upan_entry = Entry(conentry, width="13", font="lucida 12", bd="3", bg="grey94")
+    upan_entry.place(x="530", y="560")
 
     supplytype_label = Label(conentry, text="Supply Type                :", font="lucida 12 bold", bg="white",
                              fg="blue4")
     supplytype_label.place(x="300", y="610")
     list1 = ['SINGLE PHASE', 'THREE PHASE']
-    click = StringVar()
-    click.set("Select Type")
-    type_dropdown = OptionMenu(conentry, click, *list1)
-    type_dropdown.config(bg="blue4", fg="white", width="12", activebackground="dodger blue", activeforeground="black")
-    type_dropdown.place(x="530", y="605")
+    uclick = StringVar()
+    uclick.set("Select Type")
+    utype_dropdown = OptionMenu(conentry, uclick, *list1)
+    utype_dropdown.config(bg="blue4", fg="white", width="12", activebackground="dodger blue", activeforeground="black")
+    utype_dropdown.place(x="530", y="605")
 
     list2 = ['Up to 5 kW', '5-10 kW', '10-20 kW', '20-50 kW', '50-150 kW', 'Above 150 kW']
-    click2 = StringVar()
-    click2.set("Select Requirement")
-    test_dropdown = OptionMenu(conentry, click2, *list2)
-    test_dropdown.config(bg="blue4", fg="white", width="15", activebackground="dodger blue", activeforeground="black")
-    test_dropdown.place(x="690", y="605")
+    uclick2 = StringVar()
+    uclick2.set("Select Requirement")
+    utest_dropdown = OptionMenu(conentry, uclick2, *list2)
+    utest_dropdown.config(bg="blue4", fg="white", width="15", activebackground="dodger blue", activeforeground="black")
+    utest_dropdown.place(x="690", y="605")
 
-    usage_label = Label(conentry, text="Purpose of Supply      :", font="lucida 12 bold", bg="white", fg="blue4")
-    usage_label.place(x="301", y="660")
-    var = StringVar()
+    uusage_label = Label(conentry, text="Purpose of Supply      :", font="lucida 12 bold", bg="white", fg="blue4")
+    uusage_label.place(x="301", y="660")
+    uvar = StringVar()
     domsymbol = Image.open("Images/domesticss_btn.png")
     domsymbol = ImageTk.PhotoImage(domsymbol)
     conentry.photo = domsymbol  # solution for bug in `PhotoImage`
-    domestic_radio = Radiobutton(conentry, image=domsymbol, variable=var, bg="white", fg="blue", font="2",
+    domestic_radio = Radiobutton(conentry, image=domsymbol, variable=uvar, bg="white", fg="blue", font="2",
                                  value="DOMESTIC", bd="0", activebackground="white")
     domestic_radio.place(x="530", y="650")
 
     indsymbol = Image.open("Images/industrialss_btn.png")
     indsymbol = ImageTk.PhotoImage(indsymbol)
     conentry.photo = indsymbol  # solution for bug in `PhotoImage`
-    industry_radio = Radiobutton(conentry, image=indsymbol, variable=var, bg="white", fg="blue", font="2",
+    industry_radio = Radiobutton(conentry, image=indsymbol, variable=uvar, bg="white", fg="blue", font="2",
                                  value="INDUSTRIAL", bd="0", activebackground="white")
     industry_radio.place(x="600", y="650")
 
-    meter_label = Label(conentry, text="Meter No                     : ", font="lucida 12 bold", bg="white", fg="blue4")
-    meter_label.place(x="300", y="710")
-    meter_entry = Entry(conentry, width="13", font="lucida 12", bd="3", bg="grey94")
-    meter_entry.place(x="530", y="710")
+    umeter_label = Label(conentry, text="Meter No                     : ", font="lucida 12 bold", bg="white", fg="blue4")
+    umeter_label.place(x="300", y="710")
+    umeter_entry = Entry(conentry, width="13", font="lucida 12", bd="3", bg="grey94")
+    umeter_entry.place(x="530", y="710")
 
 
-    submitsymbol = Image.open("Images/save_changes_button.png")
-    submitsymbol = ImageTk.PhotoImage(submitsymbol)
-    conentry.photo3 = submitsymbol
-    submit_receipt = Button(conentry, image=submitsymbol, bg="white", bd="0", activebackground='green', command=submit)
-    submit_receipt.place(x="785", y="750")
+    savechangessymbol = Image.open("Images/save_changes_button.png")
+    savechangessymbol = ImageTk.PhotoImage(savechangessymbol)
+    conentry.photo3 = savechangessymbol
+    savechanges_receipt = Button(conentry, image=savechangessymbol, bg="white", bd="0", activebackground='green', command=submit)
+    savechanges_receipt.place(x="785", y="750")
+
+    #insert details in the entry box
+    identered = id_entry.get()
+    con = cx_Oracle.connect('system/12345@localhost:1521/xe')
+    cursor = con.cursor()
+    x = cursor.execute(f"SELECT * FROM ADD_CONSUMER WHERE CON_ID = {identered}")
+    values = x.fetchall()
+    # global uconname_entry, uconphone_entry, uaddress1_entry, uaddress2_entry, uaddress3_entry, upincode_entry, uemail_entry, uaadhar_entry, upan_entry, uclick, uclick2, uvar, umeter_entry
+
+    for i in values:
+        uconname_entry.insert(0, i[1])
+        uconphone_entry.insert(0, i[2])
+        uaddress1_entry.insert(0, i[3])
+        uaddress2_entry.insert(0, i[4])
+        uaddress3_entry.insert(0, i[5])
+        upincode_entry.insert(0, i[6])
+        uemail_entry.insert(0, i[7])
+        uaadhar_entry.insert(0, i[8])
+        upan_entry.insert(0, i[9])
+        uclick.set(i[10])
+        uclick2.set(i[14])
+        uvar.set(i[11])
+        umeter_entry.insert(0,i[12])
+
 
     conentry.mainloop()
 
+def security():
+    conentry = Toplevel()
+    window_width, window_height = 200,140
+    screen_width = conentry.winfo_screenwidth()
+    screen_height = conentry.winfo_screenheight()
+    position_top = int(screen_height / 2 - window_height / 2)
+    position_right = int(screen_width / 2 - window_width / 2)
+    conentry.geometry(f"{window_width}x{window_height}+{position_right}+{position_top}")
+
+    conentry.title("CONSUMER DETAILS ENTRY")
+    conentry.configure(bg="black")
+    conentry.resizable(width=False, height=False)
+    conentry.iconbitmap('Images/icon2.ico')
+
+    text_label = Label(conentry,text="Enter security password",font="lucida 8 bold",bg="black",fg="white")
+    text_label.place(x="20",y="10")
+    global pass_entry
+    pass_entry = Entry(conentry,font="lucida 11 bold",width="4",bd="3")
+    pass_entry.place(x="75",y="40")
+
+    unlockbtn = Image.open("Images/unlock_btn.png")
+    unlockbtn = ImageTk.PhotoImage(unlockbtn)
+    conentry.photo3 = unlockbtn
+    submit_receipt = Button(conentry, image=unlockbtn, bg="black", bd="0", activebackground='black',command=passCheck)
+    submit_receipt.place(x="20", y="75")
+
+    conentry.mainloop()
+
+def passCheck():
+    passentered = pass_entry.get()
+    if (passentered=='1234'):
+        print("valid")
+    else:
+        print("invalid")
 
 homeWindow()
 # editwindow()
+# security()
