@@ -42,7 +42,29 @@ def sendmail():
         k.email_send()
         notifyrecmail()
 
+def sendeditmail():
+    identered = id_entry.get()
+    con = cx_Oracle.connect('system/12345@localhost:1521/xe')
+    cursor = con.cursor()
+    x = cursor.execute(f"SELECT * FROM ADD_CONSUMER WHERE CON_ID = {identered}")
+    values = x.fetchall()
+    for i in values:
+        name = i[1]
+        supply = i[10]
+        requrement = i[14]
+        email = i[7]
+        # Create an object of sendpdf function
+        k = sendpdf("electrica.org@gmail.com",
+                    f"{email}",
+                    "Electrica@1234",
+                    "Electrica New Connection",
+                    f"Dear {name} ,\nYour connection for request for {supply} ({requrement}) current supply has been approved.\nConnection will be established within 24hrs.\n\nRegards,\nElectrica",
+                    "Receipt",
+                    "C:/Users/Vandana/Documents/Clg Doc/OneDrive/ProjectGit/Electrica")
 
+        # sending an email
+        k.email_send()
+        notifyrecmail()
 
 def homeWindow():
     home = Tk()
@@ -355,7 +377,7 @@ def printreceipt():
 
 
 def displayentry():
-    # conentry.destroy()
+    conentry.destroy()
     condisplay = Toplevel()
     window_width, window_height = 1000, 950
     screen_width = condisplay.winfo_screenwidth()
@@ -502,7 +524,7 @@ def displayentry():
 
 
 
-    y = cursor.execute("SELECT to_char(JOINDATE,'DD-MON-YYYY'),to_char(JOINDATE,'hh24:mi') FROM ADD_CONSUMER")
+    y = cursor.execute("SELECT to_char(JOINDATE,'DD-MON-YYYY'),to_char(JOINDATE,'hh24:mi') FROM ADD_CONSUMER WHERE CON_ID = (SELECT MAX(CON_ID) FROM ADD_CONSUMER)")
     time_date = y.fetchall()
     for i in time_date:
 
@@ -532,7 +554,6 @@ def displayentry():
     condisplay.mainloop()
 
 def editwindow():
-
     editentry = Toplevel()
     global id_entry
     window_width, window_height = 583,430
@@ -555,29 +576,28 @@ def editwindow():
     background_logo.place(x="0", y="0")
 
     id_label = Label(editentry, text="CON_ID : ", font="lucida 14 bold ", bg="goldenrod1", fg="black")
-    id_label.place(x="185", y="130")
+    id_label.place(x="185", y="100")
 
     id_entry = Entry(editentry, width="8", font="lucida 12 bold", bd="3", bg="grey94")
-    id_entry.place(x="300", y="132")
+    id_entry.place(x="300", y="102")
 
     showdetailsbtn = Image.open("Images/showdetails_btn2.png")
     showdetailsbtn = ImageTk.PhotoImage(showdetailsbtn)
     editentry.photo3 = showdetailsbtn
     submit_receipt = Button(editentry, image=showdetailsbtn, bg="goldenrod1", bd="0", activebackground='green',command=showentry)
-    submit_receipt.place(x="190", y="195")
+    submit_receipt.place(x="190", y="170")
 
     editdetailsbtn = Image.open("Images/editdetails_btn.png")
     editdetailsbtn = ImageTk.PhotoImage(editdetailsbtn)
     editentry.photo3 = editdetailsbtn
     submit_receipt = Button(editentry, image=editdetailsbtn, bg="goldenrod1", bd="0", activebackground='green',command=editentries)
-    submit_receipt.place(x="190", y="250")
+    submit_receipt.place(x="190", y="220")
 
     deletedetailsbtn = Image.open("Images/delete_details_btn.png")
     deletedetailsbtn = ImageTk.PhotoImage(deletedetailsbtn)
     editentry.photo3 = deletedetailsbtn
     submit_receipt = Button(editentry, image=deletedetailsbtn, bg="goldenrod1", bd="0", activebackground='green',command=security)
-    submit_receipt.place(x="190", y="305")
-
+    submit_receipt.place(x="190", y="270")
     editentry.mainloop()
 
 
@@ -730,7 +750,7 @@ def showentry():
 
 
 
-    y = cursor.execute("SELECT to_char(JOINDATE,'DD-MON-YYYY'),to_char(JOINDATE,'hh24:mi') FROM ADD_CONSUMER")
+    y = cursor.execute(f"SELECT to_char(JOINDATE,'DD-MON-YYYY'),to_char(JOINDATE,'hh24:mi') FROM ADD_CONSUMER WHERE CON_ID = {identered}")
     time_date = y.fetchall()
     for i in time_date:
 
@@ -752,7 +772,7 @@ def showentry():
     mailbtn = Image.open("Images/mail_btn.png")
     mailbtn = ImageTk.PhotoImage(mailbtn)
     condisplay.photo3 = mailbtn
-    submit_receipt = Button(condisplay, image=mailbtn, bg="white", bd="0", activebackground='green',command=sendmail)
+    submit_receipt = Button(condisplay, image=mailbtn, bg="white", bd="0", activebackground='green',command=sendeditmail)
     submit_receipt.place(x="530", y="850")
 
     print("Consumer details displayed")
@@ -949,27 +969,33 @@ def security():
     secure.mainloop()
 
 def passCheck():
+    try:
+        identered = id_entry.get()
+        passentered = pass_entry.get()
+        if (passentered=='1234'):
+            con = cx_Oracle.connect('system/12345@localhost:1521/xe')
+            cursor = con.cursor()
+            x = cursor.execute(f"SELECT * FROM ADD_CONSUMER WHERE CON_ID = {identered}")
+            values = x.fetchall()
+            for i in values:
+                response = messagebox.askyesno("Ask Question", f"Are you sure you want to delete details\n\nCONSUMER ID: {i[0]}\nNAME: {i[1]}\nMETER NO: {i[12]}")
 
-    identered = id_entry.get()
-    passentered = pass_entry.get()
-    if (passentered=='1234'):
-        con = cx_Oracle.connect('system/12345@localhost:1521/xe')
-        cursor = con.cursor()
-        x = cursor.execute(f"SELECT * FROM ADD_CONSUMER WHERE CON_ID = {identered}")
-        values = x.fetchall()
-        for i in values:
-            response = messagebox.askyesno("Ask Question", f"Are you sure you want to delete details\n\nCONSUMER ID: {i[0]}\nNAME: {i[1]}\nMETER NO: {i[12]}")
+                if response == True:
+                     cursor.execute(f"DELETE FROM ADD_CONSUMER WHERE CON_ID={identered}")
+                     secure.destroy()
+                     messagebox.showinfo("MESSAGE",f"Consumer No {identered} deleted from record.")
 
-            if response == True:
-                 cursor.execute(f"DELETE FROM ADD_CONSUMER WHERE CON_ID={identered}")
-                 secure.destroy()
-                 messagebox.showinfo("MESSAGE",f"Consumer No {identered} deleted from record.")
-
-            elif response == False:
-                pass
-        cursor.close()
-        con.commit()
-        con.close()
+                elif response == False:
+                    pass
+            cursor.close()
+            con.commit()
+            con.close()
+            secure.destroy()
+        else:
+            messagebox.showinfo("MESSAGE","INVALID PASSWORD")
+            secure.destroy()
+    except Exception as e:
+        messagebox.showerror("ERROR","Some Error Occured\n\n⭕ Enter Valid Consumer_id\n⭕ Try again.")
         secure.destroy()
 
 def Updatedb():
@@ -1022,17 +1048,16 @@ def Updatedb():
                     REQUIREMENT='{urequirement}',
                     TOTAL_CC={cc}
                     WHERE CON_ID={identered}
-                    
                     """)
 
     cursor.close()
     con.commit()
-    showupdatemessage()
     con.close()
+    editconentry.destroy()
+    showupdatemessage()
 
 def showupdatemessage():
     messagebox.showinfo("Message", "Details Updated Successfully!")
-    editconentry.destroy()
     showentry()
 
 
