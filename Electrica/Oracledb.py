@@ -3,7 +3,7 @@ con = cx_Oracle.connect('system/12345@localhost:1521/xe')
 print(con.version)
 cursor = con.cursor()
 cursor.execute("""
-                CREATE SEQUENCE consumer_seq3
+                CREATE SEQUENCE consumer_seq_test
                 START WITH    111111
                 INCREMENT BY   1
                 CACHE   10
@@ -11,7 +11,7 @@ cursor.execute("""
                 """)
 
 cursor.execute("""
-                CREATE TABLE ADD_CONSUMER 
+                CREATE TABLE ADD_CONSUMER_TEST 
                 (
                   CON_ID NUMBER(10, 0) 
                 , CON_NAME VARCHAR2(30 BYTE) 

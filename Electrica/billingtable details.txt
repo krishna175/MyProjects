@@ -1,0 +1,11 @@
+con_id 
+meter_no  -- add_consumer table
+supplytype   -- add_consumer table
+requirement
+kWh
+charge_per_unit (based on supplytype and requirement)
+billingdate
+unit consumed
+pre_month_kwh
+current_month_kwh
+new_kwh = (current_month_kwh - pre_month_kwh)

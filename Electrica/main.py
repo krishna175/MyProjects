@@ -113,7 +113,7 @@ def homeWindow():
     readings_resized = readings_size.resize((220, 50), Image.ANTIALIAS)
     readings_image = ImageTk.PhotoImage(readings_resized)
     Label(image=readings_image)
-    button_readings = Button(home, image=readings_image, borderwidth="0")
+    button_readings = Button(home, image=readings_image, borderwidth="0",command=enterReadings)
     button_readings.place(x=530, y=170)
 
     generatebill_size = Image.open("Images/generatebill_btn.png")
@@ -1060,7 +1060,59 @@ def showupdatemessage():
     messagebox.showinfo("Message", "Details Updated Successfully!")
     showentry()
 
+def enterReadings():
+    meterread = Toplevel()
+    window_width, window_height = 800, 600
+    screen_width = meterread.winfo_screenwidth()
+    screen_height = meterread.winfo_screenheight()
+    position_top = int(screen_height / 2 - window_height / 2)
+    position_right = int(screen_width / 2 - window_width / 2)
+    meterread.geometry(f"{window_width}x{window_height}+{position_right}+{position_top}")
+
+    meterread.title("ENTER METER READINGS")
+    meterread.configure(bg="white")
+    meterread.resizable(width=False, height=False)
+    meterread.iconbitmap('Images/icon2.ico')
+
+    conentry_top = Image.open("Images/readings_topbg.png")
+    entrytop = ImageTk.PhotoImage(conentry_top)
+    meterread.photo = entrytop  # solution for bug in `PhotoImage`
+    receipt_toplogo = Label(meterread, image=entrytop, borderwidth="0")
+    receipt_toplogo.place(x="37", y="2")
+
+    unitslab = Image.open("Images/unit_slab (1).png")
+    unitslabimg = ImageTk.PhotoImage(unitslab)
+    meterread.photo = unitslabimg  # solution for bug in `PhotoImage`
+    receipt_toplogo = Label(meterread, image=unitslabimg, borderwidth="0")
+    receipt_toplogo.place(x="37", y="250")
+
+    readings_down = Image.open("Images/readings_downtemp.png")
+    readingdown = ImageTk.PhotoImage(readings_down)
+    meterread.photo = readingdown  # solution for bug in `PhotoImage`
+    receipt_toplogo = Label(meterread, image=readingdown, borderwidth="0")
+    receipt_toplogo.place(x="37", y="510")
+
+    conid_label = Label(meterread, text="CON_ID                           :", font="lucida 12 bold", bg="white",fg="blue4")
+    conid_label.place(x="226", y="130")
+    conid_entry = Entry(meterread, font="lucida 13 bold ",width="10", bg="grey94", fg="black")
+    conid_entry.place(x="480", y="130")
+
+    meterread_label = Label(meterread, text="METER READING (kW h) :", font="lucida 12 bold", bg="white", fg="blue4")
+    meterread_label.place(x="225", y="170")
+    meterread_entry = Entry(meterread, font="lucida 13 bold ", width="10", bg="grey94", fg="black")
+    meterread_entry.place(x="480", y="170")
+
+
+
+
+    meterread.mainloop()
+
+
+
+
 
 homeWindow()
+
 # editwindow()
 # security()
+# enterReadings()
