@@ -723,93 +723,99 @@ def showentry():
     meter_label = Label(condisplay, text="Meter No                     : ", font="lucida 12 bold", bg="white", fg="blue4")
     meter_label.place(x="300", y="650")
 
-
-
-    #CONNECTION DB
-    identered = id_entry.get()
-    con = cx_Oracle.connect('system/12345@localhost:1521/xe')
-    cursor = con.cursor()
-    x = cursor.execute(f"SELECT * FROM ADD_CONSUMER WHERE CON_ID = {identered}")
-    values = x.fetchall()
-    for i in values:
-        con_iddis = Label(condisplay, text=i[0], font="lucida 13 bold ", bg="midnight blue", fg="white")
-        con_iddis.place(x="170", y="240")
-
-        con_namedis = Label(condisplay, text= i[1], font="lucida 12 bold ", bg="white", fg="black")
-        con_namedis.place(x="530", y="152")
-
-        conphonedis = Label(condisplay, text= i[2], font="lucida 12 bold ", bg="white", fg="black")
-        conphonedis.place(x="530", y="202")
-
-        address1 = Label(condisplay, text= i[3], font="lucida 11 bold ", bg="white", fg="black")
-        address1.place(x="530", y="252")
-        address2 = Label(condisplay, text= i[4], font="lucida 11 bold ", bg="white", fg="black")
-        address2.place(x="530", y="280")
-        address3 = Label(condisplay, text= i[5], font="lucida 11 bold ", bg="white", fg="black")
-        address3.place(x="530", y="310")
-        pincode = Label(condisplay, text=f"PINCODE : {i[6]}", font="lucida 11 bold ", bg="white", fg="black")
-        pincode.place(x="530", y="340")
-
-        emaildis = Label(condisplay, text= i[7], font="lucida 11 bold ", bg="white",fg="black")
-        emaildis.place(x="530", y="400")
-
-        aadhardis = Label(condisplay, text= i[8], font="lucida 11 bold ", bg="white", fg="black")
-        aadhardis.place(x="530", y="450")
-
-        pandis = Label(condisplay, text= i[9], font="lucida 11 bold ", bg="white", fg="black")
-        pandis.place(x="530", y="500")
-
-        supplytypedis = Label(condisplay, text= i[10]+ f" ({i[14]})", font="lucida 11 bold ", bg="white", fg="black")
-        supplytypedis.place(x="530", y="550")
-
-        usagedis = Label(condisplay, text= i[11], font="lucida 11 bold ", bg="white", fg="black")
-        usagedis.place(x="530", y="600")
-
-        meterdis = Label(condisplay, text= i[12], font="lucida 11 bold ", bg="white", fg="black")
-        meterdis.place(x="530", y="650")
-
-        total_amount = i[15]
-        supplytypeamount = total_amount%100
-        cc_amount = total_amount - supplytypeamount
-        stcharge = Label(condisplay, text=supplytypeamount, font="lucida 11 bold ", bg="goldenrod1", fg="black")
-        stcharge.place(x="185", y="343")
-
-        cc = Label(condisplay, text=cc_amount, font="lucida 11 bold ", bg="goldenrod1", fg="black")
-        cc.place(x="185", y="394")
-
-        cctotal = Label(condisplay, text=total_amount, font="lucida 11 bold ", bg="goldenrod1", fg="black")
-        cctotal.place(x="185", y="433")
-
-        gpayamount = Label(condisplay, text=f"Amount : {total_amount} Rs", font="lucida 11 bold ", bg="white", fg="black")
-        gpayamount.place(x="80", y="670")
-
-
-
-
-    y = cursor.execute(f"SELECT to_char(JOINDATE,'DD-MON-YYYY'),to_char(JOINDATE,'hh24:mi') FROM ADD_CONSUMER WHERE CON_ID = {identered}")
-    time_date = y.fetchall()
-    for i in time_date:
-
-        date_label = Label(condisplay, text=f"{i[0]} |", font="lucida 9 bold ", bg="white", fg="black")
-        date_label.place(x="800", y="120")
-
-        time_label = Label(condisplay, text=i[1], font="lucida 9 bold ", bg="white", fg="black")
-        time_label.place(x="900", y="120")
-
-    cursor.close()
-    con.close()
-
     printbtn = Image.open("Images/print_btn.png")
     printbtn = ImageTk.PhotoImage(printbtn)
     condisplay.photo3 = printbtn
-    submit_receipt = Button(condisplay, image=printbtn, bg="white", bd="0", activebackground='green',command=printrec)
+    submit_receipt = Button(condisplay, image=printbtn, bg="white", bd="0", activebackground='green', command=printrec)
     submit_receipt.place(x="370", y="850")
 
     mailbtn = Image.open("Images/mail_btn.png")
     mailbtn = ImageTk.PhotoImage(mailbtn)
     condisplay.photo3 = mailbtn
-    submit_receipt = Button(condisplay, image=mailbtn, bg="white", bd="0", activebackground='green',command=ssformail)
+    submit_receipt = Button(condisplay, image=mailbtn, bg="white", bd="0", activebackground='green', command=ssformail)
     submit_receipt.place(x="530", y="850")
+
+
+    #CONNECTION DB
+    try:
+        identered = id_entry.get()
+        con = cx_Oracle.connect('system/12345@localhost:1521/xe')
+        cursor = con.cursor()
+        x = cursor.execute(f"SELECT * FROM ADD_CONSUMER WHERE CON_ID = {identered}")
+        values = x.fetchall()
+        for i in values:
+            con_iddis = Label(condisplay, text=i[0], font="lucida 13 bold ", bg="midnight blue", fg="white")
+            con_iddis.place(x="170", y="240")
+
+            con_namedis = Label(condisplay, text= i[1], font="lucida 12 bold ", bg="white", fg="black")
+            con_namedis.place(x="530", y="152")
+
+            conphonedis = Label(condisplay, text= i[2], font="lucida 12 bold ", bg="white", fg="black")
+            conphonedis.place(x="530", y="202")
+
+            address1 = Label(condisplay, text= i[3], font="lucida 11 bold ", bg="white", fg="black")
+            address1.place(x="530", y="252")
+            address2 = Label(condisplay, text= i[4], font="lucida 11 bold ", bg="white", fg="black")
+            address2.place(x="530", y="280")
+            address3 = Label(condisplay, text= i[5], font="lucida 11 bold ", bg="white", fg="black")
+            address3.place(x="530", y="310")
+            pincode = Label(condisplay, text=f"PINCODE : {i[6]}", font="lucida 11 bold ", bg="white", fg="black")
+            pincode.place(x="530", y="340")
+
+            emaildis = Label(condisplay, text= i[7], font="lucida 11 bold ", bg="white",fg="black")
+            emaildis.place(x="530", y="400")
+
+            aadhardis = Label(condisplay, text= i[8], font="lucida 11 bold ", bg="white", fg="black")
+            aadhardis.place(x="530", y="450")
+
+            pandis = Label(condisplay, text= i[9], font="lucida 11 bold ", bg="white", fg="black")
+            pandis.place(x="530", y="500")
+
+            supplytypedis = Label(condisplay, text= i[10]+ f" ({i[14]})", font="lucida 11 bold ", bg="white", fg="black")
+            supplytypedis.place(x="530", y="550")
+
+            usagedis = Label(condisplay, text= i[11], font="lucida 11 bold ", bg="white", fg="black")
+            usagedis.place(x="530", y="600")
+
+            meterdis = Label(condisplay, text= i[12], font="lucida 11 bold ", bg="white", fg="black")
+            meterdis.place(x="530", y="650")
+
+            total_amount = i[15]
+            supplytypeamount = total_amount%100
+            cc_amount = total_amount - supplytypeamount
+            stcharge = Label(condisplay, text=supplytypeamount, font="lucida 11 bold ", bg="goldenrod1", fg="black")
+            stcharge.place(x="185", y="343")
+
+            cc = Label(condisplay, text=cc_amount, font="lucida 11 bold ", bg="goldenrod1", fg="black")
+            cc.place(x="185", y="394")
+
+            cctotal = Label(condisplay, text=total_amount, font="lucida 11 bold ", bg="goldenrod1", fg="black")
+            cctotal.place(x="185", y="433")
+
+            gpayamount = Label(condisplay, text=f"Amount : {total_amount} Rs", font="lucida 11 bold ", bg="white", fg="black")
+            gpayamount.place(x="80", y="670")
+
+
+
+
+        y = cursor.execute(f"SELECT to_char(JOINDATE,'DD-MON-YYYY'),to_char(JOINDATE,'hh24:mi') FROM ADD_CONSUMER WHERE CON_ID = {identered}")
+        time_date = y.fetchall()
+        for i in time_date:
+
+            date_label = Label(condisplay, text=f"{i[0]} |", font="lucida 9 bold ", bg="white", fg="black")
+            date_label.place(x="800", y="120")
+
+            time_label = Label(condisplay, text=i[1], font="lucida 9 bold ", bg="white", fg="black")
+            time_label.place(x="900", y="120")
+
+        cursor.close()
+        con.close()
+
+    except Exception as e:
+        messagebox.showerror("Error","Some error occured\n\n ⭕ Enter valid CON_ID")
+        condisplay.destroy()
+
+
 
     print("Consumer details displayed")
 
