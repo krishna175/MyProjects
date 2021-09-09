@@ -42,6 +42,38 @@ def sendmail():
         k.email_send()
         notifyrecmail()
 
+
+def ssformail():
+    path = "C:/Users/Vandana/Documents/Clg Doc/OneDrive/ProjectGit/Electrica/Receipt_img.png"
+    titles =pygetwindow.getAllTitles()
+
+    # x1, y1 = width, height = pygetwindow.getWindowsWithTitle('Patholab')
+    window = pygetwindow.getWindowsWithTitle('RECEIPT')[0]
+    x1 = window.left+10
+    y1 = window.top+30
+    height = window.height-150
+    width = window.width-20
+    x2 = x1 + width
+    y2 = y1 + height
+
+    pyautogui.screenshot(path)
+
+    im = Image.open(path)
+    im = im.crop((x1,y1,x2,y2))
+    im.save(path)
+    # im.show(path)
+    sstopdfformail()
+
+def sstopdfformail():
+    filename = "C:/Users/Vandana/Documents/Clg Doc/OneDrive/ProjectGit/Electrica/Receipt_img.png"
+    image = Image.open(filename)
+
+    if image.mode == "RGBA":
+        image = image.convert("RGB")
+    output = "C:/Users/Vandana/Documents/Clg Doc/OneDrive/ProjectGit/Electrica/Receipt.pdf"
+    image.save(output, "PDF", resolution=100.0)
+    sendeditmail()
+
 def sendeditmail():
     identered = id_entry.get()
     con = cx_Oracle.connect('system/12345@localhost:1521/xe')
@@ -328,17 +360,21 @@ def addconsumerdb():
         cc = 250075
     else:
         cc = 2050
+    try:
+        con = cx_Oracle.connect('system/12345@localhost:1521/xe')
+        print(con.version)
+        cursor = con.cursor()
+        cursor.execute(f"INSERT INTO ADD_CONSUMER VALUES(consumer_seq.nextval,'{name}',{phone},'{address1}','{address2}','{address3}',{pincode},'{email}',{aadhar},'{pan}','{supply}','{pos}',{meterno},sysdate,'{requirement}',{cc})")
+        messagebox.showinfo("Message", "Consumer Added Successfully")
+        cursor.close()
+        con.commit()
+        print('Consumer added!')
+        displayentry()
+        con.close()
+    except Exception as e:
+        messagebox.showerror("Error","Some error occured.\n\n⭕ Enter valid details. \n⭕ Fields should not be empty.")
 
-    con = cx_Oracle.connect('system/12345@localhost:1521/xe')
-    print(con.version)
-    cursor = con.cursor()
-    cursor.execute(f"INSERT INTO ADD_CONSUMER VALUES(consumer_seq.nextval,'{name}',{phone},'{address1}','{address2}','{address3}',{pincode},'{email}',{aadhar},'{pan}','{supply}','{pos}',{meterno},sysdate,'{requirement}',{cc})")
-    messagebox.showinfo("Message", "Consumer Added Successfully")
-    cursor.close()
-    con.commit()
-    print('Consumer added!')
-    displayentry()
-    con.close()
+
 
 #print the consuemr receipt
 def printrec():
@@ -772,7 +808,7 @@ def showentry():
     mailbtn = Image.open("Images/mail_btn.png")
     mailbtn = ImageTk.PhotoImage(mailbtn)
     condisplay.photo3 = mailbtn
-    submit_receipt = Button(condisplay, image=mailbtn, bg="white", bd="0", activebackground='green',command=sendeditmail)
+    submit_receipt = Button(condisplay, image=mailbtn, bg="white", bd="0", activebackground='green',command=ssformail)
     submit_receipt.place(x="530", y="850")
 
     print("Consumer details displayed")
@@ -1061,7 +1097,9 @@ def showupdatemessage():
     showentry()
 
 def enterReadings():
+    global meterread
     meterread = Toplevel()
+    global conid_entry, meterread_entry
     window_width, window_height = 800, 600
     screen_width = meterread.winfo_screenwidth()
     screen_height = meterread.winfo_screenheight()
@@ -1097,15 +1135,46 @@ def enterReadings():
     conid_entry = Entry(meterread, font="lucida 13 bold ",width="10", bg="grey94", fg="black")
     conid_entry.place(x="480", y="130")
 
+
     meterread_label = Label(meterread, text="METER READING (kW h) :", font="lucida 12 bold", bg="white", fg="blue4")
     meterread_label.place(x="225", y="170")
     meterread_entry = Entry(meterread, font="lucida 13 bold ", width="10", bg="grey94", fg="black")
     meterread_entry.place(x="480", y="170")
 
-
+    submitreading = Image.open("Images/submit_reading_button.png")
+    submitreading = ImageTk.PhotoImage(submitreading)
+    meterread.photo3 = submitreading
+    savechanges_receipt = Button(meterread, image=submitreading, bg="white", bd="0", command=insertreadings)
+    savechanges_receipt.place(x="320", y="430")
 
 
     meterread.mainloop()
+
+def insertreadings():
+
+    conid = conid_entry.get()
+    meterreading = meterread_entry.get()
+    try:
+        con = cx_Oracle.connect('system/12345@localhost:1521/xe')
+        cursor = con.cursor()
+        x = cursor.execute(f"SELECT COUNT(*) FROM ADD_CONSUMER WHERE CON_ID={conid} ")
+        list1  = x.fetchall()
+        for i in list1:
+            if (i[0]==0):
+                messagebox.showerror("Error",f"CON_ID {conid} Does not exist. ")
+                break
+            else:
+                cursor.execute(f"INSERT INTO METER_READING VALUES ({conid},{meterreading},sysdate)")
+                messagebox.showinfo("Message", "Readings Added Successfully!")
+                cursor.close()
+                con.commit()
+
+                con.close()
+                meterread.destroy()
+
+
+    except Exception as e:
+        messagebox.showerror("Error", "Error occured\n\n ⭕ Enter Valid CON_ID\n ⭕ Meter reading should be greater than previous reading. ")
 
 
 
