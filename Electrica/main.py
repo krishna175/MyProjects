@@ -838,164 +838,178 @@ def showentry():
 
 
 def editentries():
-    global editconentry
-    editconentry = Toplevel()
-    global uconname_entry, uconphone_entry, uaddress1_entry, uaddress2_entry, uaddress3_entry, upincode_entry, uemail_entry, uaadhar_entry, upan_entry, uclick, uclick2, uvar, umeter_entry
-    window_width, window_height = 1000, 950
-    screen_width = editconentry.winfo_screenwidth()
-    screen_height = editconentry.winfo_screenheight()
-    position_top = int(screen_height / 2 - window_height / 2)
-    position_right = int(screen_width / 2 - window_width / 2)
-    editconentry.geometry(f"{window_width}x{window_height}+{position_right}+{position_top}")
+    try:
+        identered = id_entry.get()
+        con = cx_Oracle.connect('system/12345@localhost:1521/xe')
+        cursor = con.cursor()
+        x = cursor.execute(f"SELECT COUNT(*) FROM ADD_CONSUMER WHERE CON_ID={identered} ")
+        list1 = x.fetchall()
+        for i in list1:
+            if (i[0] == 0):
+                messagebox.showerror("Error", f"CON_ID {identered} Does not exist. ")
+                break
+            else:
+                global editconentry
+                editconentry = Toplevel()
+                global uconname_entry, uconphone_entry, uaddress1_entry, uaddress2_entry, uaddress3_entry, upincode_entry, uemail_entry, uaadhar_entry, upan_entry, uclick, uclick2, uvar, umeter_entry
+                window_width, window_height = 1000, 950
+                screen_width = editconentry.winfo_screenwidth()
+                screen_height = editconentry.winfo_screenheight()
+                position_top = int(screen_height / 2 - window_height / 2)
+                position_right = int(screen_width / 2 - window_width / 2)
+                editconentry.geometry(f"{window_width}x{window_height}+{position_right}+{position_top}")
 
-    editconentry.title("CONSUMER DETAILS ENTRY")
-    editconentry.configure(bg="white")
-    editconentry.resizable(width=False, height=False)
-    editconentry.iconbitmap('Images/icon2.ico')
+                editconentry.title("CONSUMER DETAILS ENTRY")
+                editconentry.configure(bg="white")
+                editconentry.resizable(width=False, height=False)
+                editconentry.iconbitmap('Images/icon2.ico')
 
-    conentry_top = Image.open("Images/adcon_toptemp.png")
-    entrytop = ImageTk.PhotoImage(conentry_top)
-    editconentry.photo = entrytop  # solution for bug in `PhotoImage`
-    receipt_toplogo = Label(editconentry, image=entrytop, borderwidth="0")
-    receipt_toplogo.place(x="37", y="2")
+                conentry_top = Image.open("Images/adcon_toptemp.png")
+                entrytop = ImageTk.PhotoImage(conentry_top)
+                editconentry.photo = entrytop  # solution for bug in `PhotoImage`
+                receipt_toplogo = Label(editconentry, image=entrytop, borderwidth="0")
+                receipt_toplogo.place(x="37", y="2")
 
-    conentry_left = Image.open("Images/charges2.png")
-    entryleft = ImageTk.PhotoImage(conentry_left)
-    editconentry.photo = entryleft  # solution for bug in `PhotoImage`
-    receipt_leftcharges = Label(editconentry, image=entryleft, borderwidth="0")
-    receipt_leftcharges.place(x="70", y="230")
+                conentry_left = Image.open("Images/charges2.png")
+                entryleft = ImageTk.PhotoImage(conentry_left)
+                editconentry.photo = entryleft  # solution for bug in `PhotoImage`
+                receipt_leftcharges = Label(editconentry, image=entryleft, borderwidth="0")
+                receipt_leftcharges.place(x="70", y="230")
 
-    entrydown = Image.open("Images/adcon_downtempnew.png")
-    entrydown = ImageTk.PhotoImage(entrydown)
-    editconentry.photo = entrydown  # solution for bug in `PhotoImage`
-    receipt_toplogo = Label(editconentry, image=entrydown, borderwidth="0")
-    receipt_toplogo.place(x="37", y="800")
+                entrydown = Image.open("Images/adcon_downtempnew.png")
+                entrydown = ImageTk.PhotoImage(entrydown)
+                editconentry.photo = entrydown  # solution for bug in `PhotoImage`
+                receipt_toplogo = Label(editconentry, image=entrydown, borderwidth="0")
+                receipt_toplogo.place(x="37", y="800")
 
-    ucon_name = Label(editconentry, text="Name                           : ", font="lucida 12 bold ", bg="white", fg="blue4")
-    ucon_name.place(x="300", y="150")
-    uconname_entry = Entry(editconentry, width="32", font="lucida 12", bd="3", bg="grey94")
-    uconname_entry.place(x="530", y="150")
+                ucon_name = Label(editconentry, text="Name                           : ", font="lucida 12 bold ", bg="white", fg="blue4")
+                ucon_name.place(x="300", y="150")
+                uconname_entry = Entry(editconentry, width="32", font="lucida 12", bd="3", bg="grey94")
+                uconname_entry.place(x="530", y="150")
 
-    uconphone = Label(editconentry, text="Phone No                    :", font="lucida 12 bold ", bg="white", fg="blue4")
-    uconphone.place(x="300.5", y="200")
-    uconphone_entry = Entry(editconentry, width="20", font="lucida 12", bd="3", bg="grey94")
-    uconphone_entry.place(x="530", y="200")
+                uconphone = Label(editconentry, text="Phone No                    :", font="lucida 12 bold ", bg="white", fg="blue4")
+                uconphone.place(x="300.5", y="200")
+                uconphone_entry = Entry(editconentry, width="20", font="lucida 12", bd="3", bg="grey94")
+                uconphone_entry.place(x="530", y="200")
 
-    uaddress_label = Label(editconentry, text="Address :", font="lucida 12 bold underline", bg="white")
-    uaddress_label.place(x="300", y="250")
+                uaddress_label = Label(editconentry, text="Address :", font="lucida 12 bold underline", bg="white")
+                uaddress_label.place(x="300", y="250")
 
-    uaddress1_label = Label(editconentry, text="Flat, House no./ Company  :", font="lucida 10 bold", bg="white", fg="blue4")
-    uaddress1_label.place(x="300", y="290")
-    uaddress1_entry = Entry(editconentry, width="35", font="lucida 11", bd="3", bg="grey94")
-    uaddress1_entry.place(x="530", y="290")
+                uaddress1_label = Label(editconentry, text="Flat, House no./ Company  :", font="lucida 10 bold", bg="white", fg="blue4")
+                uaddress1_label.place(x="300", y="290")
+                uaddress1_entry = Entry(editconentry, width="35", font="lucida 11", bd="3", bg="grey94")
+                uaddress1_entry.place(x="530", y="290")
 
-    uaddress2_label = Label(editconentry, text="Area, Street, Village           :", font="lucida 10 bold", bg="white",
-                           fg="blue4")
-    uaddress2_label.place(x="301", y="330")
-    uaddress2_entry = Entry(editconentry, width="35", font="lucida 11", bd="3", bg="grey94")
-    uaddress2_entry.place(x="530", y="330")
+                uaddress2_label = Label(editconentry, text="Area, Street, Village           :", font="lucida 10 bold", bg="white",
+                                       fg="blue4")
+                uaddress2_label.place(x="301", y="330")
+                uaddress2_entry = Entry(editconentry, width="35", font="lucida 11", bd="3", bg="grey94")
+                uaddress2_entry.place(x="530", y="330")
 
-    uaddress3_label = Label(editconentry, text="Landmark, Town/City         :", font="lucida 10 bold", bg="white",
-                           fg="blue4")
-    uaddress3_label.place(x="300", y="370")
-    uaddress3_entry = Entry(editconentry, width="35", font="lucida 11", bd="3", bg="grey94")
-    uaddress3_entry.place(x="530", y="370")
+                uaddress3_label = Label(editconentry, text="Landmark, Town/City         :", font="lucida 10 bold", bg="white",
+                                       fg="blue4")
+                uaddress3_label.place(x="300", y="370")
+                uaddress3_entry = Entry(editconentry, width="35", font="lucida 11", bd="3", bg="grey94")
+                uaddress3_entry.place(x="530", y="370")
 
-    upincode_label = Label(editconentry, text="Pincode                              :", font="lucida 10 bold", bg="white",
-                          fg="blue4")
-    upincode_label.place(x="300", y="410")
-    upincode_entry = Entry(editconentry, width="14", font="lucida 11", bd="3", bg="grey94")
-    upincode_entry.place(x="530", y="410")
+                upincode_label = Label(editconentry, text="Pincode                              :", font="lucida 10 bold", bg="white",
+                                      fg="blue4")
+                upincode_label.place(x="300", y="410")
+                upincode_entry = Entry(editconentry, width="14", font="lucida 11", bd="3", bg="grey94")
+                upincode_entry.place(x="530", y="410")
 
-    uemail_label = Label(editconentry, text="Email                           :", font="lucida 12 bold", bg="white",
-                        fg="blue4")
-    uemail_label.place(x="300", y="460")
-    uemail_entry = Entry(editconentry, width="30", font="lucida 12", bd="3", bg="grey94")
-    uemail_entry.place(x="530", y="460")
+                uemail_label = Label(editconentry, text="Email                           :", font="lucida 12 bold", bg="white",
+                                    fg="blue4")
+                uemail_label.place(x="300", y="460")
+                uemail_entry = Entry(editconentry, width="30", font="lucida 12", bd="3", bg="grey94")
+                uemail_entry.place(x="530", y="460")
 
-    uaadhar_label = Label(editconentry, text="Aadhar No                   :", font="lucida 12 bold", bg="white", fg="blue4")
-    uaadhar_label.place(x="300", y="510")
-    uaadhar_entry = Entry(editconentry, width="13", font="lucida 12", bd="3", bg="grey94")
-    uaadhar_entry.place(x="530", y="510")
+                uaadhar_label = Label(editconentry, text="Aadhar No                   :", font="lucida 12 bold", bg="white", fg="blue4")
+                uaadhar_label.place(x="300", y="510")
+                uaadhar_entry = Entry(editconentry, width="13", font="lucida 12", bd="3", bg="grey94")
+                uaadhar_entry.place(x="530", y="510")
 
-    upan_label = Label(editconentry, text="PAN                             : ", font="lucida 12 bold", bg="white",
-                      fg="blue4")
-    upan_label.place(x="300", y="560")
-    upan_entry = Entry(editconentry, width="13", font="lucida 12", bd="3", bg="grey94")
-    upan_entry.place(x="530", y="560")
+                upan_label = Label(editconentry, text="PAN                             : ", font="lucida 12 bold", bg="white",
+                                  fg="blue4")
+                upan_label.place(x="300", y="560")
+                upan_entry = Entry(editconentry, width="13", font="lucida 12", bd="3", bg="grey94")
+                upan_entry.place(x="530", y="560")
 
-    supplytype_label = Label(editconentry, text="Supply Type                :", font="lucida 12 bold", bg="white",
-                             fg="blue4")
-    supplytype_label.place(x="300", y="610")
-    list1 = ['SINGLE PHASE', 'THREE PHASE']
-    uclick = StringVar()
-    uclick.set("Select Type")
-    utype_dropdown = OptionMenu(editconentry, uclick, *list1)
-    utype_dropdown.config(bg="blue4", fg="white", width="12", activebackground="dodger blue", activeforeground="black")
-    utype_dropdown.place(x="530", y="605")
+                supplytype_label = Label(editconentry, text="Supply Type                :", font="lucida 12 bold", bg="white",
+                                         fg="blue4")
+                supplytype_label.place(x="300", y="610")
+                list1 = ['SINGLE PHASE', 'THREE PHASE']
+                uclick = StringVar()
+                uclick.set("Select Type")
+                utype_dropdown = OptionMenu(editconentry, uclick, *list1)
+                utype_dropdown.config(bg="blue4", fg="white", width="12", activebackground="dodger blue", activeforeground="black")
+                utype_dropdown.place(x="530", y="605")
 
-    list2 = ['Up to 5 kW', '5-10 kW', '10-20 kW', '20-50 kW', '50-150 kW', 'Above 150 kW']
-    uclick2 = StringVar()
-    uclick2.set("Select Requirement")
-    utest_dropdown = OptionMenu(editconentry, uclick2, *list2)
-    utest_dropdown.config(bg="blue4", fg="white", width="15", activebackground="dodger blue", activeforeground="black")
-    utest_dropdown.place(x="690", y="605")
+                list2 = ['Up to 5 kW', '5-10 kW', '10-20 kW', '20-50 kW', '50-150 kW', 'Above 150 kW']
+                uclick2 = StringVar()
+                uclick2.set("Select Requirement")
+                utest_dropdown = OptionMenu(editconentry, uclick2, *list2)
+                utest_dropdown.config(bg="blue4", fg="white", width="15", activebackground="dodger blue", activeforeground="black")
+                utest_dropdown.place(x="690", y="605")
 
-    uusage_label = Label(editconentry, text="Purpose of Supply      :", font="lucida 12 bold", bg="white", fg="blue4")
-    uusage_label.place(x="301", y="660")
-    uvar = StringVar()
-    domsymbol = Image.open("Images/domesticss_btn.png")
-    domsymbol = ImageTk.PhotoImage(domsymbol)
-    editconentry.photo = domsymbol  # solution for bug in `PhotoImage`
-    domestic_radio = Radiobutton(editconentry, image=domsymbol, variable=uvar, bg="white", fg="blue", font="2",
-                                 value="DOMESTIC", bd="0", activebackground="white")
-    domestic_radio.place(x="530", y="650")
+                uusage_label = Label(editconentry, text="Purpose of Supply      :", font="lucida 12 bold", bg="white", fg="blue4")
+                uusage_label.place(x="301", y="660")
+                uvar = StringVar()
+                domsymbol = Image.open("Images/domesticss_btn.png")
+                domsymbol = ImageTk.PhotoImage(domsymbol)
+                editconentry.photo = domsymbol  # solution for bug in `PhotoImage`
+                domestic_radio = Radiobutton(editconentry, image=domsymbol, variable=uvar, bg="white", fg="blue", font="2",
+                                             value="DOMESTIC", bd="0", activebackground="white")
+                domestic_radio.place(x="530", y="650")
 
-    indsymbol = Image.open("Images/industrialss_btn.png")
-    indsymbol = ImageTk.PhotoImage(indsymbol)
-    editconentry.photo = indsymbol  # solution for bug in `PhotoImage`
-    industry_radio = Radiobutton(editconentry, image=indsymbol, variable=uvar, bg="white", fg="blue", font="2",
-                                 value="INDUSTRIAL", bd="0", activebackground="white")
-    industry_radio.place(x="600", y="650")
+                indsymbol = Image.open("Images/industrialss_btn.png")
+                indsymbol = ImageTk.PhotoImage(indsymbol)
+                editconentry.photo = indsymbol  # solution for bug in `PhotoImage`
+                industry_radio = Radiobutton(editconentry, image=indsymbol, variable=uvar, bg="white", fg="blue", font="2",
+                                             value="INDUSTRIAL", bd="0", activebackground="white")
+                industry_radio.place(x="600", y="650")
 
-    umeter_label = Label(editconentry, text="Meter No                     : ", font="lucida 12 bold", bg="white", fg="blue4")
-    umeter_label.place(x="300", y="710")
-    umeter_entry = Entry(editconentry, width="13", font="lucida 12", bd="3", bg="grey94")
-    umeter_entry.place(x="530", y="710")
+                umeter_label = Label(editconentry, text="Meter No                     : ", font="lucida 12 bold", bg="white", fg="blue4")
+                umeter_label.place(x="300", y="710")
+                umeter_entry = Entry(editconentry, width="13", font="lucida 12", bd="3", bg="grey94")
+                umeter_entry.place(x="530", y="710")
 
 
-    savechangessymbol = Image.open("Images/save_changes_button.png")
-    savechangessymbol = ImageTk.PhotoImage(savechangessymbol)
-    editconentry.photo3 = savechangessymbol
-    savechanges_receipt = Button(editconentry, image=savechangessymbol, bg="white", bd="0", activebackground='green', command=Updatedb)
-    savechanges_receipt.place(x="785", y="750")
+                savechangessymbol = Image.open("Images/save_changes_button.png")
+                savechangessymbol = ImageTk.PhotoImage(savechangessymbol)
+                editconentry.photo3 = savechangessymbol
+                savechanges_receipt = Button(editconentry, image=savechangessymbol, bg="white", bd="0", activebackground='green', command=Updatedb)
+                savechanges_receipt.place(x="785", y="750")
 
-    #insert details in the entry box
-    identered = id_entry.get()
-    con = cx_Oracle.connect('system/12345@localhost:1521/xe')
-    cursor = con.cursor()
-    x = cursor.execute(f"SELECT * FROM ADD_CONSUMER WHERE CON_ID = {identered}")
-    values = x.fetchall()
-    # global uconname_entry, uconphone_entry, uaddress1_entry, uaddress2_entry, uaddress3_entry, upincode_entry, uemail_entry, uaadhar_entry, upan_entry, uclick, uclick2, uvar, umeter_entry
+                #insert details in the entry box
+                identered = id_entry.get()
+                con = cx_Oracle.connect('system/12345@localhost:1521/xe')
+                cursor = con.cursor()
+                x = cursor.execute(f"SELECT * FROM ADD_CONSUMER WHERE CON_ID = {identered}")
+                values = x.fetchall()
+                # global uconname_entry, uconphone_entry, uaddress1_entry, uaddress2_entry, uaddress3_entry, upincode_entry, uemail_entry, uaadhar_entry, upan_entry, uclick, uclick2, uvar, umeter_entry
 
-    for i in values:
-        uconname_entry.insert(0, i[1])
-        uconphone_entry.insert(0, i[2])
-        uaddress1_entry.insert(0, i[3])
-        uaddress2_entry.insert(0, i[4])
-        uaddress3_entry.insert(0, i[5])
-        upincode_entry.insert(0, i[6])
-        uemail_entry.insert(0, i[7])
-        uaadhar_entry.insert(0, i[8])
-        upan_entry.insert(0, i[9])
-        uclick.set(i[10])
-        uclick2.set(i[14])
-        uvar.set(i[11])
-        umeter_entry.insert(0,i[12])
+                for i in values:
+                    uconname_entry.insert(0, i[1])
+                    uconphone_entry.insert(0, i[2])
+                    uaddress1_entry.insert(0, i[3])
+                    uaddress2_entry.insert(0, i[4])
+                    uaddress3_entry.insert(0, i[5])
+                    upincode_entry.insert(0, i[6])
+                    uemail_entry.insert(0, i[7])
+                    uaadhar_entry.insert(0, i[8])
+                    upan_entry.insert(0, i[9])
+                    uclick.set(i[10])
+                    uclick2.set(i[14])
+                    uvar.set(i[11])
+                    umeter_entry.insert(0,i[12])
 
-    cursor.close()
-    con.close()
-    editconentry.mainloop()
+                cursor.close()
+                con.close()
+                editconentry.mainloop()
+    except Exception as e:
+        messagebox.showerror("Error", "Some Error Occured \n\n ⭕ Entry field should not be Empty.\n ⭕ Enter valid CON_ID")
+
 
 def security():
     global secure
@@ -1196,7 +1210,7 @@ def insertreadings():
 
 
     except Exception as e:
-        messagebox.showerror("Error", "Error occured\n\n ⭕ Enter Valid CON_ID\n ⭕ Meter reading should be greater than previous reading. ")
+        messagebox.showerror("Error", "Error occured\n\n ⭕ Enter Valid CON_ID\n ⭕ Entry field should not be Empty.\n ⭕ Meter reading should be greater than previous reading. ")
 
 
 
