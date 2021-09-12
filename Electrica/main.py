@@ -145,7 +145,7 @@ def homeWindow():
     readings_resized = readings_size.resize((220, 50), Image.ANTIALIAS)
     readings_image = ImageTk.PhotoImage(readings_resized)
     Label(image=readings_image)
-    button_readings = Button(home, image=readings_image, borderwidth="0",command=enterReadings)
+    button_readings = Button(home, image=readings_image, borderwidth="0",activebackground="blue",command=enterReadings)
     button_readings.place(x=530, y=170)
 
     generatebill_size = Image.open("Images/generatebill_btn.png")
@@ -1073,60 +1073,63 @@ def passCheck():
 def Updatedb():
     # global uconname_entry, uconphone_entry, uaddress1_entry, uaddress2_entry, uaddress3_entry, upincode_entry, uemail_entry, uaadhar_entry,
     # upan_entry, uclick, uclick2, uvar, umeter_entry
-    uname = uconname_entry.get()
-    uphone = uconphone_entry.get()
-    uaddress1 = uaddress1_entry.get()
-    uaddress2 = uaddress2_entry.get()
-    uaddress3 = uaddress3_entry.get()
-    upincode = upincode_entry.get()
-    uemail = uemail_entry.get()
-    uaadhar = uaadhar_entry.get()
-    upan = upan_entry.get()
-    usupply = uclick.get()
-    upos = uvar.get()
-    umeter = umeter_entry.get()
-    urequirement = uclick2.get()
-    identered = id_entry.get()
+    try:
+        uname = uconname_entry.get()
+        uphone = uconphone_entry.get()
+        uaddress1 = uaddress1_entry.get()
+        uaddress2 = uaddress2_entry.get()
+        uaddress3 = uaddress3_entry.get()
+        upincode = upincode_entry.get()
+        uemail = uemail_entry.get()
+        uaadhar = uaadhar_entry.get()
+        upan = upan_entry.get()
+        usupply = uclick.get()
+        upos = uvar.get()
+        umeter = umeter_entry.get()
+        urequirement = uclick2.get()
+        identered = id_entry.get()
 
-    if (usupply == 'SINGLE PHASE' and (urequirement=='Up to 5 kW' or urequirement=='5-10 kW')):
-        cc = 2050
-    elif (usupply == 'THREE PHASE' and urequirement=='10-20 kW'):
-        cc = 4575
-    elif  (usupply == 'THREE PHASE' and urequirement=='20-50 kW'):
-        cc = 6575
-    elif (usupply == 'THREE PHASE' and urequirement=='50-150 kW'):
-        cc = 12075
-    elif (usupply == 'THREE PHASE' and urequirement=='Above 150 kW'):
-        cc = 250075
-    else:
-        cc = 2050
+        if (usupply == 'SINGLE PHASE' and (urequirement=='Up to 5 kW' or urequirement=='5-10 kW')):
+            cc = 2050
+        elif (usupply == 'THREE PHASE' and urequirement=='10-20 kW'):
+            cc = 4575
+        elif  (usupply == 'THREE PHASE' and urequirement=='20-50 kW'):
+            cc = 6575
+        elif (usupply == 'THREE PHASE' and urequirement=='50-150 kW'):
+            cc = 12075
+        elif (usupply == 'THREE PHASE' and urequirement=='Above 150 kW'):
+            cc = 250075
+        else:
+            cc = 2050
 
-    con = cx_Oracle.connect('system/12345@localhost:1521/xe')
-    cursor = con.cursor()
-    cursor.execute(f"""
-                    UPDATE ADD_CONSUMER SET
-                    CON_NAME='{uname}',
-                    PHONE_NO={uphone},
-                    ADDRESS1='{uaddress1}',
-                    ADDRESS2='{uaddress2}',
-                    ADDRESS3='{uaddress3}',
-                    PIN_CODE={upincode},
-                    EMAILID='{uemail}',
-                    AADHAR={uaadhar},
-                    PAN='{upan}',
-                    SUPPLY_TYPE='{usupply}',
-                    POS='{upos}',
-                    METER_NO={umeter},
-                    REQUIREMENT='{urequirement}',
-                    TOTAL_CC={cc}
-                    WHERE CON_ID={identered}
-                    """)
+        con = cx_Oracle.connect('system/12345@localhost:1521/xe')
+        cursor = con.cursor()
+        cursor.execute(f"""
+                        UPDATE ADD_CONSUMER SET
+                        CON_NAME='{uname}',
+                        PHONE_NO={uphone},
+                        ADDRESS1='{uaddress1}',
+                        ADDRESS2='{uaddress2}',
+                        ADDRESS3='{uaddress3}',
+                        PIN_CODE={upincode},
+                        EMAILID='{uemail}',
+                        AADHAR={uaadhar},
+                        PAN='{upan}',
+                        SUPPLY_TYPE='{usupply}',
+                        POS='{upos}',
+                        METER_NO={umeter},
+                        REQUIREMENT='{urequirement}',
+                        TOTAL_CC={cc}
+                        WHERE CON_ID={identered}
+                        """)
 
-    cursor.close()
-    con.commit()
-    con.close()
-    editconentry.destroy()
-    showupdatemessage()
+        cursor.close()
+        con.commit()
+        con.close()
+        editconentry.destroy()
+        showupdatemessage()
+    except Exception as e:
+        messagebox.showerror("Error","Some Error Occured \n\n ⭕ Entry field should not be Empty.\n ⭕ Entry must be valid.")
 
 def showupdatemessage():
     messagebox.showinfo("Message", "Details Updated Successfully!")
@@ -1158,7 +1161,7 @@ def enterReadings():
     unitslabimg = ImageTk.PhotoImage(unitslab)
     meterread.photo = unitslabimg  # solution for bug in `PhotoImage`
     receipt_toplogo = Label(meterread, image=unitslabimg, borderwidth="0")
-    receipt_toplogo.place(x="37", y="250")
+    receipt_toplogo.place(x="37", y="280")
 
     readings_down = Image.open("Images/readings_downtemp.png")
     readingdown = ImageTk.PhotoImage(readings_down)
@@ -1177,11 +1180,20 @@ def enterReadings():
     meterread_entry = Entry(meterread, font="lucida 13 bold ", width="10", bg="grey94", fg="black")
     meterread_entry.place(x="480", y="170")
 
+    conid_label = Label(meterread, text="READING MONTH            :", font="lucida 12 bold", bg="white",fg="blue4")
+    conid_label.place(x="224", y="210")
+    list1 = ['JAN', 'FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC']
+    month = StringVar()
+    month.set(" Select Month")
+    month_dropdown = OptionMenu(meterread, month, *list1)
+    month_dropdown.config(bg="blue4", fg="white", width="9",font='lucida 8 bold', activebackground="dodger blue", activeforeground="black")
+    month_dropdown.place(x="478", y="205")
+
     submitreading = Image.open("Images/submit_reading_button.png")
     submitreading = ImageTk.PhotoImage(submitreading)
     meterread.photo3 = submitreading
-    savechanges_receipt = Button(meterread, image=submitreading, bg="white", bd="0", command=insertreadings)
-    savechanges_receipt.place(x="320", y="430")
+    savechanges_receipt = Button(meterread, image=submitreading, bg="white", bd="0",command=insertreadings)
+    savechanges_receipt.place(x="320", y="450")
 
 
     meterread.mainloop()
@@ -1195,22 +1207,33 @@ def insertreadings():
         cursor = con.cursor()
         x = cursor.execute(f"SELECT COUNT(*) FROM ADD_CONSUMER WHERE CON_ID={conid} ")
         list1  = x.fetchall()
-        for i in list1:
-            if (i[0]==0):
-                messagebox.showerror("Error",f"CON_ID {conid} Does not exist. ")
-                break
-            else:
-                cursor.execute(f"INSERT INTO METER_READING VALUES ({conid},{meterreading},sysdate)")
-                messagebox.showinfo("Message", "Readings Added Successfully!")
-                cursor.close()
-                con.commit()
+        y = cursor.execute(f"SELECT COUNT(*) FROM METER_READING WHERE CON_ID={conid} ")
+        readings = y.fetchall()
 
-                con.close()
-                meterread.destroy()
+
+
+        for i in list1:
+            for value in readings:
+                if (i[0]==0 ):
+                    messagebox.showerror("Error",f"CON_ID {conid} Does not exist. ")
+                    break
+                if (value[0] == 1):
+                    messagebox.showerror("Error", f"CON_ID {conid} Readings already inserted. ")
+                    break
+
+
+                else:
+                    cursor.execute(f"INSERT INTO METER_READING VALUES ({conid},{meterreading},sysdate)")
+                    messagebox.showinfo("Message", "Readings Added Successfully!")
+                    cursor.close()
+                    con.commit()
+
+                    con.close()
+                    meterread.destroy()
 
 
     except Exception as e:
-        messagebox.showerror("Error", "Error occured\n\n ⭕ Enter Valid CON_ID\n ⭕ Entry field should not be Empty.\n ⭕ Meter reading should be greater than previous reading. ")
+        messagebox.showerror("Error", "Error occured\n\n ⭕ Entry field should not be Empty.\n ⭕ Enter Valid CON_ID\n ⭕ Meter reading should be greater than previous reading. ")
 
 
 
