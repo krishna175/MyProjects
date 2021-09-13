@@ -1128,6 +1128,7 @@ def Updatedb():
         con.close()
         editconentry.destroy()
         showupdatemessage()
+
     except Exception as e:
         messagebox.showerror("Error","Some Error Occured \n\n ⭕ Entry field should not be Empty.\n ⭕ Entry must be valid.")
 
@@ -1138,7 +1139,7 @@ def showupdatemessage():
 def enterReadings():
     global meterread
     meterread = Toplevel()
-    global conid_entry, meterread_entry
+    global conid_entry, meterread_entry,month
     window_width, window_height = 800, 600
     screen_width = meterread.winfo_screenwidth()
     screen_height = meterread.winfo_screenheight()
@@ -1182,7 +1183,7 @@ def enterReadings():
 
     conid_label = Label(meterread, text="READING MONTH            :", font="lucida 12 bold", bg="white",fg="blue4")
     conid_label.place(x="224", y="210")
-    list1 = ['JAN', 'FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC']
+    list1 = ['JAN-21', 'FEB-21','MAR-21','APR-21','MAY-21','JUN-21','JUL-21','AUG-21','SEP-21','OCT-21','NOV-21','DEC-21']
     month = StringVar()
     month.set(" Select Month")
     month_dropdown = OptionMenu(meterread, month, *list1)
@@ -1199,15 +1200,15 @@ def enterReadings():
     meterread.mainloop()
 
 def insertreadings():
-
     conid = conid_entry.get()
     meterreading = meterread_entry.get()
+    entry_date = "01-"+str(month.get())
     try:
         con = cx_Oracle.connect('system/12345@localhost:1521/xe')
         cursor = con.cursor()
-        x = cursor.execute(f"SELECT COUNT(*) FROM ADD_CONSUMER WHERE CON_ID={conid} ")
+        x = cursor.execute(f"SELECT COUNT(*) FROM ADD_CONSUMER WHERE CON_ID={conid}  ")
         list1  = x.fetchall()
-        y = cursor.execute(f"SELECT COUNT(*) FROM METER_READING WHERE CON_ID={conid} ")
+        y = cursor.execute(f"SELECT COUNT(*) FROM METER_READING WHERE CON_ID={conid} and reading_date='{entry_date}'")
         readings = y.fetchall()
 
 
@@ -1218,12 +1219,17 @@ def insertreadings():
                     messagebox.showerror("Error",f"CON_ID {conid} Does not exist. ")
                     break
                 if (value[0] == 1):
-                    messagebox.showerror("Error", f"CON_ID {conid} Readings already inserted. ")
-                    break
+                    response = messagebox.askyesno("Ask Question",f"CON_ID {conid} Meter Reading already inserted\nfor current months billing.\n\nDo you want to edit and update reading?")
+
+                    if response == True:
+                        readingUpdate()
+
+                    elif response == False:
+                        pass
 
 
                 else:
-                    cursor.execute(f"INSERT INTO METER_READING VALUES ({conid},{meterreading},sysdate)")
+                    cursor.execute(f"INSERT INTO METER_READING VALUES ({conid},{meterreading},'{entry_date}')")
                     messagebox.showinfo("Message", "Readings Added Successfully!")
                     cursor.close()
                     con.commit()
@@ -1234,7 +1240,93 @@ def insertreadings():
 
     except Exception as e:
         messagebox.showerror("Error", "Error occured\n\n ⭕ Entry field should not be Empty.\n ⭕ Enter Valid CON_ID\n ⭕ Meter reading should be greater than previous reading. ")
+        print(Exception)
+        print(e)
+        print(entry_date)
 
+def readingUpdate():
+    conid = conid_entry.get()
+    entry_date = "01-"+str(month.get())
+    global umeterread_entry,umeterread
+    umeterread = Toplevel()
+    window_width, window_height = 800, 600
+    screen_width = umeterread.winfo_screenwidth()
+    screen_height = umeterread.winfo_screenheight()
+    position_top = int(screen_height / 2 - window_height / 2)
+    position_right = int(screen_width / 2 - window_width / 2)
+    umeterread.geometry(f"{window_width}x{window_height}+{position_right}+{position_top}")
+
+    umeterread.title("ENTER METER READINGS")
+    umeterread.configure(bg="white")
+    umeterread.resizable(width=False, height=False)
+    umeterread.iconbitmap('Images/icon2.ico')
+
+    conentry_top = Image.open("Images/readings_topbg.png")
+    entrytop = ImageTk.PhotoImage(conentry_top)
+    umeterread.photo = entrytop  # solution for bug in `PhotoImage`
+    receipt_toplogo = Label(umeterread, image=entrytop, borderwidth="0")
+    receipt_toplogo.place(x="37", y="2")
+
+    unitslab = Image.open("Images/unit_slab (1).png")
+    unitslabimg = ImageTk.PhotoImage(unitslab)
+    umeterread.photo = unitslabimg  # solution for bug in `PhotoImage`
+    receipt_toplogo = Label(umeterread, image=unitslabimg, borderwidth="0")
+    receipt_toplogo.place(x="37", y="280")
+
+    readings_down = Image.open("Images/readings_downtemp.png")
+    readingdown = ImageTk.PhotoImage(readings_down)
+    umeterread.photo = readingdown  # solution for bug in `PhotoImage`
+    receipt_toplogo = Label(umeterread, image=readingdown, borderwidth="0")
+    receipt_toplogo.place(x="37", y="510")
+
+    uconid_label = Label(umeterread, text="CON_ID                           :", font="lucida 12 bold", bg="white",fg="blue4")
+    uconid_label.place(x="226", y="130")
+
+
+
+    umeterread_label = Label(umeterread, text="METER READING (kW h) :", font="lucida 12 bold", bg="white", fg="blue4")
+    umeterread_label.place(x="225", y="170")
+    umeterread_entry = Entry(umeterread, font="lucida 13 bold ", width="10", bg="grey94", fg="black")
+    umeterread_entry.place(x="480", y="170")
+
+    conid_label = Label(umeterread, text="READING MONTH            :", font="lucida 12 bold", bg="white", fg="blue4")
+    conid_label.place(x="224", y="210")
+
+    con = cx_Oracle.connect('system/12345@localhost:1521/xe')
+    cursor = con.cursor()
+    x = cursor.execute(f"SELECT CON_ID,CURRENT_READING,to_char(sysdate,'MON-YY') FROM METER_READING WHERE CON_ID={conid} AND READING_DATE='{entry_date}'")
+    prevalue = x.fetchall()
+    for i in prevalue:
+        uconid_entry = Label(umeterread, text=i[0], font="lucida 13 bold ", bg="white", fg="black")
+        uconid_entry.place(x="480", y="130")
+        umeterread_label = Label(umeterread, text=i[2], font="lucida 12 bold", bg="white", fg="black")
+        umeterread_label.place(x="480", y="210")
+        umeterread_entry.insert(0,i[1])
+    cursor.close()
+    con.close()
+
+    submitreading = Image.open("Images/submit_reading_button.png")
+    submitreading = ImageTk.PhotoImage(submitreading)
+    umeterread.photo3 = submitreading
+    savechanges_receipt = Button(umeterread, image=submitreading, bg="white", bd="0", command=updatenewreading)
+    savechanges_receipt.place(x="320", y="450")
+
+    umeterread.mainloop()
+
+
+def updatenewreading():
+    conid = conid_entry.get()
+    entry_date = "01-" + str(month.get())
+    newreading = umeterread_entry.get()
+    con = cx_Oracle.connect('system/12345@localhost:1521/xe')
+    cursor = con.cursor()
+    cursor.execute(f"UPDATE METER_READING SET CURRENT_READING={newreading} WHERE  CON_ID={conid} AND READING_DATE='{entry_date}'")
+    cursor.close()
+    con.commit()
+    meterread.destroy()
+    umeterread.destroy()
+    messagebox.showinfo("Message","Readings Update Successfully!")
+    con.close()
 
 
 
