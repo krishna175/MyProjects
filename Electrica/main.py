@@ -1211,31 +1211,36 @@ def insertreadings():
         y = cursor.execute(f"SELECT COUNT(*) FROM METER_READING WHERE CON_ID={conid} and reading_date='{entry_date}'")
         readings = y.fetchall()
 
-
+        z = cursor.execute(f"select count(*) from charge_master_track  where last_day(bill_date)>'{entry_date}'")
+        cnt = z.fetchall()
 
         for i in list1:
             for value in readings:
-                if (i[0]==0 ):
-                    messagebox.showerror("Error",f"CON_ID {conid} Does not exist. ")
-                    break
-                if (value[0] == 1):
-                    response = messagebox.askyesno("Ask Question",f"CON_ID {conid} Meter Reading already inserted\nfor current months billing.\n\nDo you want to edit and update reading?")
+                for predat in cnt:
+                    if (i[0]==0 ):
+                        messagebox.showerror("Error",f"CON_ID {conid} Does not exist. ")
+                        break
+                    if (predat[0]>0):
+                        messagebox.showerror("Error","Billing already processed for this month")
+                        break
+                    if (value[0] == 1):
+                        response = messagebox.askyesno("Ask Question",f"CON_ID {conid} Meter Reading already inserted\nfor current months billing.\n\nDo you want to edit and update reading?")
 
-                    if response == True:
-                        readingUpdate()
+                        if response == True:
+                            readingUpdate()
 
-                    elif response == False:
-                        pass
+                        elif response == False:
+                            pass
 
 
-                else:
-                    cursor.execute(f"INSERT INTO METER_READING VALUES ({conid},{meterreading},'{entry_date}')")
-                    messagebox.showinfo("Message", "Readings Added Successfully!")
-                    cursor.close()
-                    con.commit()
+                    else:
+                        cursor.execute(f"INSERT INTO METER_READING VALUES ({conid},{meterreading},'{entry_date}',sysdate)")
+                        messagebox.showinfo("Message", "Readings Added Successfully!")
+                        cursor.close()
+                        con.commit()
 
-                    con.close()
-                    meterread.destroy()
+                        con.close()
+                        meterread.destroy()
 
 
     except Exception as e:
@@ -1323,6 +1328,7 @@ def updatenewreading():
     cursor.execute(f"UPDATE METER_READING SET CURRENT_READING={newreading} WHERE  CON_ID={conid} AND READING_DATE='{entry_date}'")
     cursor.close()
     con.commit()
+
     meterread.destroy()
     umeterread.destroy()
     messagebox.showinfo("Message","Readings Update Successfully!")
