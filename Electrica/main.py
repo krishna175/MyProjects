@@ -159,7 +159,7 @@ def homeWindow():
     sendalert_resized = sendalert_size.resize((220, 50), Image.ANTIALIAS)
     sendalert_image = ImageTk.PhotoImage(sendalert_resized)
     Label(image=sendalert_image)
-    button_sendalert = Button(home, image=sendalert_image, borderwidth="0")
+    button_sendalert = Button(home, image=sendalert_image, borderwidth="0",command=alerts)
     button_sendalert.place(x=530, y=310)
 
     defaulter_size = Image.open("Images/defaulters_btn.png")
@@ -965,8 +965,7 @@ def editentries():
                 indsymbol = Image.open("Images/industrialss_btn.png")
                 indsymbol = ImageTk.PhotoImage(indsymbol)
                 editconentry.photo = indsymbol  # solution for bug in `PhotoImage`
-                industry_radio = Radiobutton(editconentry, image=indsymbol, variable=uvar, bg="white", fg="blue", font="2",
-                                             value="INDUSTRIAL", bd="0", activebackground="white")
+                industry_radio = Radiobutton(editconentry, image=indsymbol, variable=uvar, bg="white", fg="blue", font="2",value="INDUSTRIAL", bd="0", activebackground="white")
                 industry_radio.place(x="600", y="650")
 
                 umeter_label = Label(editconentry, text="Meter No                     : ", font="lucida 12 bold", bg="white", fg="blue4")
@@ -1336,8 +1335,93 @@ def updatenewreading():
 
 
 
+def alerts():
+    alertbox = Toplevel()
+    global alert_text
+    window_width, window_height = 760, 600
+    screen_width = alertbox.winfo_screenwidth()
+    screen_height = alertbox.winfo_screenheight()
+    position_top = int(screen_height / 2 - window_height / 2)
+    position_right = int(screen_width / 2 - window_width / 2)
+    alertbox.geometry(f"{window_width}x{window_height}+{position_right}+{position_top}")
+
+    alertbox.title("Send Alert")
+    alertbox.configure(bg="white")
+    alertbox.resizable(width=False, height=False)
+    alertbox.iconbitmap('Images/icon2.ico')
+
+    alertwindow_top = Image.open("Images/aletrwindow_top1.png")
+    alerttop = ImageTk.PhotoImage(alertwindow_top)
+    alertbox.photo = alerttop  # solution for bug in `PhotoImage`
+    alertwindow_toplogo = Label(alertbox, image=alerttop, borderwidth="0")
+    alertwindow_toplogo.place(x="20", y="2")
+
+    alertwindow_down = Image.open("Images/alertwindow_down 1.png")
+    alertdown = ImageTk.PhotoImage(alertwindow_down)
+    alertbox.photo = alertdown  # solution for bug in `PhotoImage`
+    receipt_toplogo = Label(alertbox, image=alertdown, borderwidth="0")
+    receipt_toplogo.place(x="20", y="480")
+
+    alertconid_label = Label(alertbox, text="CON_ID            :", font="lucida 12 bold", bg="white",fg="blue4")
+    alertconid_label.place(x="215", y="130")
+    alertconid_entry = Entry(alertbox, font="lucida 13 bold ", width="10", bg="grey94", fg="black")
+    alertconid_entry.place(x="390", y="130")
+
+    alertmessage_label = Label(alertbox, text="ALERT MESSAGE", font="lucida 13 bold underline", bg="white", fg="blue4")
+    alertmessage_label.place(x="280", y="180")
+
+
+    alert_text = Text(alertbox,font="lucida 10 bold ",width="40",height="5", bg="gray94",fg="black")
+    alert_text.place(x="200",y="230")
+
+    global website
+    website = IntVar()
+    websitelink = Checkbutton(alertbox, text="Include Website link. ", variable=website, font="lucida 7 ", bg="white", fg="black")
+    websitelink.place(x="200", y="340")
+
+    global payment
+    payment = IntVar()
+    paymentlink = Checkbutton(alertbox, text="Include Payment site link. ", variable=payment, font="lucida 7 ", bg="white", fg="black")
+    paymentlink.place(x="200", y="365")
+
+    whatsappalert = Image.open("Images/alert_whatsapp1.png")
+    whatsappalert = ImageTk.PhotoImage(whatsappalert)
+    alertbox.photo3 = whatsappalert
+    savechanges_receipt = Button(alertbox, image=whatsappalert, bg="white", bd="0", command=submitalertmessage)
+    savechanges_receipt.place(x="400", y="430")
+
+    gmailalert = Image.open("Images/alert_email1.png")
+    gmailalert = ImageTk.PhotoImage(gmailalert)
+    alertbox.photo3 = gmailalert
+    savechanges_receipt = Button(alertbox, image=gmailalert, bg="white", bd="0")
+    savechanges_receipt.place(x="200", y="430")
+
+    alertbox.mainloop()
+
+def submitalertmessage():
+    msg = alert_text.get("1.0",END)
+    websitelink = ""
+    paymentlink = ""
+
+    print(msg)
+    web = website.get()
+    pay = payment.get()
+    if web == 1:
+        websitelink = "https://www.adanielectricity.com/"
+    if pay == 1:
+        paymentlink = "\nhttps://www.adanielectricity.com/Payment/Online-Payments"
+    try:
+        import pywhatkit as kit
+        import datetime
+        now = datetime.datetime.now()
+        kit.sendwhatmsg("+919224450029",f"🛑🛑🛑🛑🛑🛑🛑\n*Alert*\n{msg}{websitelink}{paymentlink}\n⚠⚠⚠⚠⚠⚠⚠",now.hour, now.minute+1)
+    except Exception as e:
+        messagebox.showerror("ERROR","Some Error Occured\n Please Try Again")
+        submitalertmessage()
+
 homeWindow()
 
+# alerts()
 # editwindow()
 # security()
 # enterReadings()
