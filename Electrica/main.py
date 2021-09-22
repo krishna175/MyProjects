@@ -8,7 +8,6 @@ import webbrowser
 from plyer import notification
 import time
 from pdf_mail import sendpdf
-import pywhatkit as kit
 import datetime
 
 
@@ -69,7 +68,7 @@ def sendmailsplash():
     sending_label.place(x="117", y="55")
     loading_label = Label(sendsplash, text="Please wait", font="lucida 8 ", bg="white", fg="black")
     loading_label.place(x="110", y="74")
-    sendsplash.after(2000, sendmail)
+    sendsplash.after(3000, sendmail)
 
     sendsplash.mainloop()
 
@@ -97,8 +96,68 @@ def sendmail():
         k.email_send()
         notifyrecmail()
 
+# SEND MAIL AFTER UPDATING
+
+def editmailsplash():
+    global sendsplash
+    sendsplash = Toplevel()
+    window_width, window_height = 300, 100
+    screen_width = sendsplash.winfo_screenwidth()
+    screen_height = sendsplash.winfo_screenheight()
+    position_top = int(screen_height / 2 - window_height / 2)
+    position_right = int(screen_width / 2 - window_width / 2)
+    sendsplash.geometry(f"{window_width}x{window_height}+{position_right}+{position_top}")
+
+    sendsplash.configure(bg="white")
+    sendsplash.resizable(width=False, height=False)
+    sendsplash.overrideredirect(True)
+
+    splashframe = Frame(sendsplash, highlightbackground="black", highlightthickness=3, width=300, height=110, bd="0",bg="white")
+    splashframe.pack()
+
+
+
+
+
+
+    file = "Images/loader2.gif"
+
+    info = Image.open(file)
+
+    frames = info.n_frames  # gives total number of frames that gif contains
+
+    # creating list of PhotoImage objects for each frames
+    im = [PhotoImage(file=file, format=f"gif -index {i}") for i in range(frames)]
+
+    count = 0
+    anim = None
+
+    def animation(count):
+        global anim
+        im2 = im[count]
+
+        gif_label.configure(image=im2)
+        count += 1
+        if count == frames:
+            count = 0
+        anim = sendsplash.after(50, lambda: animation(count))
+
+    gif_label = Label(sendsplash, image="", bd="0")
+    gif_label.place(x="110", y="3")
+    animation(count)
+
+    sending_label = Label(sendsplash, text="Sending...", font="lucida 8 ", bg="white", fg="black")
+    sending_label.place(x="117", y="55")
+    loading_label = Label(sendsplash, text="Please wait", font="lucida 8 ", bg="white", fg="black")
+    loading_label.place(x="110", y="74")
+    sendsplash.after(3000, ssformail)
+
+    sendsplash.mainloop()
+
+
 
 def ssformail():
+    sendsplash.destroy()
     path = "C:/Users/Vandana/Documents/Clg Doc/OneDrive/ProjectGit/Electrica/Receipt_img.png"
     titles =pygetwindow.getAllTitles()
 
@@ -798,7 +857,7 @@ def showentry():
                 mailbtn = Image.open("Images/mail_btn.png")
                 mailbtn = ImageTk.PhotoImage(mailbtn)
                 condisplay.photo3 = mailbtn
-                submit_receipt = Button(condisplay, image=mailbtn, bg="white", bd="0", activebackground='green', command=ssformail)
+                submit_receipt = Button(condisplay, image=mailbtn, bg="white", bd="0", activebackground='green', command=editmailsplash)
                 submit_receipt.place(x="530", y="850")
 
 
@@ -1454,39 +1513,54 @@ def alerts():
     alertbox.mainloop()
 
 def submitalertmessage():
-    alertconid = alertconid_entry.get()
-    msg = alert_text.get("1.0",END)
-    websitelink = ""
-    paymentlink = ""
+    try:
+        alertconid = alertconid_entry.get()
+        msg = alert_text.get("1.0",END)
+        websitelink = ""
+        paymentlink = ""
 
-    print(msg)
-    web = website.get()
-    pay = payment.get()
-    if web == 1:
-        websitelink = "*Visit Website*:https://www.adanielectricity.com/"
-    if pay == 1:
-        paymentlink = "\n*Pay Bill*:https://www.adanielectricity.com/Payment/Online-Payments"
+        print(msg)
+        web = website.get()
+        pay = payment.get()
+        if web == 1:
+            websitelink = "*Visit Website*:https://www.adanielectricity.com/"
+        if pay == 1:
+            paymentlink = "\n*Pay Bill*:https://www.adanielectricity.com/Payment/Online-Payments"
 
-    con = cx_Oracle.connect('system/12345@localhost:1521/xe')
-    cursor = con.cursor()
-    values = cursor.execute(f"SELECT * FROM ADD_CONSUMER WHERE CON_ID={alertconid}")
-    phoneno = values.fetchall()
-    for i in phoneno:
-        print(i[2])
+        con = cx_Oracle.connect('system/12345@localhost:1521/xe')
+        cursor = con.cursor()
+        checkcount = cursor.execute(f"SELECT COUNT(*) FROM ADD_CONSUMER WHERE CON_ID={alertconid} ")
+        count = checkcount.fetchall()
+        values = cursor.execute(f"SELECT * FROM ADD_CONSUMER WHERE CON_ID={alertconid}")
+        phoneno = values.fetchall()
+        for number in count:
+            print(number[0])
+            if (number[0]==0):
+                sendsplash.destroy()
+                messagebox.showerror("Error", f"CON_ID {alertconid} does not Exist.")
+                break
+            else:
+                    try:
+                        for i in phoneno:
+                            now = datetime.datetime.now()
+                            import pywhatkit as kit
+                            kit.sendwhatmsg(f"+91{i[2]}",f"🛑🛑🛑🛑🛑🛑🛑\n*Alert*\n{msg}{websitelink}{paymentlink}\n⚠⚠⚠⚠⚠⚠⚠",now.hour, now.minute+1)
 
-        try:
-            now = datetime.datetime.now()
-            kit.sendwhatmsg(f"+91{i[2]}",f"🛑🛑🛑🛑🛑🛑🛑\n*Alert*\n{msg}{websitelink}{paymentlink}\n⚠⚠⚠⚠⚠⚠⚠",now.hour, now.minute+1)
+                    except Exception as e:
+                        messagebox.showerror("ERROR","Network Error Occured\nPlease check your Internet connection and Try Again")
+                        tryagainSplash()
 
-        except Exception as e:
-            messagebox.showerror("ERROR","Network Error Occured\nPlease check your Internet connection and Try Again")
-            tryagainSplash()
 
-    cursor.close()
-    con.close()
+        cursor.close()
+        con.close()
+    except Exception as e:
+        messagebox.showerror("Error", "Some error occured.\n\n⭕ Enter valid details. \n⭕ Fields should not be empty.")
+
+
 
 
 def sendingwmsg():
+    global sendsplash
     sendsplash = Toplevel()
     window_width, window_height = 300, 100
     screen_width = sendsplash.winfo_screenwidth()
