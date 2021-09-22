@@ -1507,7 +1507,7 @@ def alerts():
     gmailalert = Image.open("Images/alert_email1.png")
     gmailalert = ImageTk.PhotoImage(gmailalert)
     alertbox.photo3 = gmailalert
-    savechanges_receipt = Button(alertbox, image=gmailalert, bg="white", bd="0")
+    savechanges_receipt = Button(alertbox, image=gmailalert, bg="white", bd="0", command=alertmailsplash)
     savechanges_receipt.place(x="200", y="430")
 
     alertbox.mainloop()
@@ -1667,6 +1667,66 @@ def tryagainSplash():
     splashwin.after(7000,submitalertmessage)
 
     splashwin.mainloop()
+
+def alertmailsplash():
+    global sendsplash
+    sendsplash = Toplevel()
+    window_width, window_height = 300, 100
+    screen_width = sendsplash.winfo_screenwidth()
+    screen_height = sendsplash.winfo_screenheight()
+    position_top = int(screen_height / 2 - window_height / 2)
+    position_right = int(screen_width / 2 - window_width / 2)
+    sendsplash.geometry(f"{window_width}x{window_height}+{position_right}+{position_top}")
+
+    sendsplash.configure(bg="white")
+    sendsplash.resizable(width=False, height=False)
+    sendsplash.overrideredirect(True)
+
+    splashframe = Frame(sendsplash, highlightbackground="black", highlightthickness=3, width=300, height=110, bd="0",bg="white")
+    splashframe.pack()
+
+
+
+
+
+
+    file = "Images/loader2.gif"
+
+    info = Image.open(file)
+
+    frames = info.n_frames  # gives total number of frames that gif contains
+
+    # creating list of PhotoImage objects for each frames
+    im = [PhotoImage(file=file, format=f"gif -index {i}") for i in range(frames)]
+
+    count = 0
+    anim = None
+
+    def animation(count):
+        global anim
+        im2 = im[count]
+
+        gif_label.configure(image=im2)
+        count += 1
+        if count == frames:
+            count = 0
+        anim = sendsplash.after(50, lambda: animation(count))
+
+    gif_label = Label(sendsplash, image="", bd="0")
+    gif_label.place(x="110", y="3")
+    animation(count)
+
+    sending_label = Label(sendsplash, text="Sending...", font="lucida 8 ", bg="white", fg="black")
+    sending_label.place(x="117", y="55")
+    loading_label = Label(sendsplash, text="Please wait", font="lucida 8 ", bg="white", fg="black")
+    loading_label.place(x="110", y="74")
+    sendsplash.after(3000,sendalertmail)
+
+    sendsplash.mainloop()
+
+def sendalertmail():
+
+
 
 
 
