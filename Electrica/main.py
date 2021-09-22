@@ -8,16 +8,71 @@ import webbrowser
 from plyer import notification
 import time
 from pdf_mail import sendpdf
+import pywhatkit as kit
+import datetime
 
 
 
 def notifyrecmail():
-    notification.notify(
-        title = "Mail send",
-        message = "Receipt sent to the Consumer",
-        timeout = 1
-    )
-    time.sleep(0)
+    messagebox.showinfo("Message","Mail send successfully!")
+    sendsplash.destroy()
+
+def sendmailsplash():
+    global sendsplash
+    sendsplash = Toplevel()
+    window_width, window_height = 300, 100
+    screen_width = sendsplash.winfo_screenwidth()
+    screen_height = sendsplash.winfo_screenheight()
+    position_top = int(screen_height / 2 - window_height / 2)
+    position_right = int(screen_width / 2 - window_width / 2)
+    sendsplash.geometry(f"{window_width}x{window_height}+{position_right}+{position_top}")
+
+    sendsplash.configure(bg="white")
+    sendsplash.resizable(width=False, height=False)
+    sendsplash.overrideredirect(True)
+
+    splashframe = Frame(sendsplash, highlightbackground="black", highlightthickness=3, width=300, height=110, bd="0",bg="white")
+    splashframe.pack()
+
+
+
+
+
+
+    file = "Images/loader2.gif"
+
+    info = Image.open(file)
+
+    frames = info.n_frames  # gives total number of frames that gif contains
+
+    # creating list of PhotoImage objects for each frames
+    im = [PhotoImage(file=file, format=f"gif -index {i}") for i in range(frames)]
+
+    count = 0
+    anim = None
+
+    def animation(count):
+        global anim
+        im2 = im[count]
+
+        gif_label.configure(image=im2)
+        count += 1
+        if count == frames:
+            count = 0
+        anim = sendsplash.after(50, lambda: animation(count))
+
+    gif_label = Label(sendsplash, image="", bd="0")
+    gif_label.place(x="110", y="3")
+    animation(count)
+
+    sending_label = Label(sendsplash, text="Sending...", font="lucida 8 ", bg="white", fg="black")
+    sending_label.place(x="117", y="55")
+    loading_label = Label(sendsplash, text="Please wait", font="lucida 8 ", bg="white", fg="black")
+    loading_label.place(x="110", y="74")
+    sendsplash.after(2000, sendmail)
+
+    sendsplash.mainloop()
+
 
 def sendmail():
     con = cx_Oracle.connect('system/12345@localhost:1521/xe')
@@ -582,7 +637,7 @@ def displayentry():
     mailbtn = Image.open("Images/mail_btn.png")
     mailbtn = ImageTk.PhotoImage(mailbtn)
     condisplay.photo3 = mailbtn
-    submit_receipt = Button(condisplay, image=mailbtn, bg="white", bd="0", activebackground='green',command=sendmail)
+    submit_receipt = Button(condisplay, image=mailbtn, bg="white", bd="0", activebackground='green',command=sendmailsplash)
     submit_receipt.place(x="530", y="850")
 
     print("Consumer details displayed")
@@ -1337,7 +1392,7 @@ def updatenewreading():
 
 def alerts():
     alertbox = Toplevel()
-    global alert_text
+    global alert_text, alertconid_entry
     window_width, window_height = 760, 600
     screen_width = alertbox.winfo_screenwidth()
     screen_height = alertbox.winfo_screenheight()
@@ -1363,9 +1418,9 @@ def alerts():
     receipt_toplogo.place(x="20", y="480")
 
     alertconid_label = Label(alertbox, text="CON_ID            :", font="lucida 12 bold", bg="white",fg="blue4")
-    alertconid_label.place(x="215", y="130")
+    alertconid_label.place(x="235", y="130")
     alertconid_entry = Entry(alertbox, font="lucida 13 bold ", width="10", bg="grey94", fg="black")
-    alertconid_entry.place(x="390", y="130")
+    alertconid_entry.place(x="420", y="130")
 
     alertmessage_label = Label(alertbox, text="ALERT MESSAGE", font="lucida 13 bold underline", bg="white", fg="blue4")
     alertmessage_label.place(x="280", y="180")
@@ -1387,7 +1442,7 @@ def alerts():
     whatsappalert = Image.open("Images/alert_whatsapp1.png")
     whatsappalert = ImageTk.PhotoImage(whatsappalert)
     alertbox.photo3 = whatsappalert
-    savechanges_receipt = Button(alertbox, image=whatsappalert, bg="white", bd="0", command=submitalertmessage)
+    savechanges_receipt = Button(alertbox, image=whatsappalert, bg="white", bd="0", command=sendingwmsg)
     savechanges_receipt.place(x="400", y="430")
 
     gmailalert = Image.open("Images/alert_email1.png")
@@ -1399,6 +1454,7 @@ def alerts():
     alertbox.mainloop()
 
 def submitalertmessage():
+    alertconid = alertconid_entry.get()
     msg = alert_text.get("1.0",END)
     websitelink = ""
     paymentlink = ""
@@ -1407,20 +1463,146 @@ def submitalertmessage():
     web = website.get()
     pay = payment.get()
     if web == 1:
-        websitelink = "https://www.adanielectricity.com/"
+        websitelink = "*Visit Website*:https://www.adanielectricity.com/"
     if pay == 1:
-        paymentlink = "\nhttps://www.adanielectricity.com/Payment/Online-Payments"
-    try:
-        import pywhatkit as kit
-        import datetime
-        now = datetime.datetime.now()
-        kit.sendwhatmsg("+919224450029",f"🛑🛑🛑🛑🛑🛑🛑\n*Alert*\n{msg}{websitelink}{paymentlink}\n⚠⚠⚠⚠⚠⚠⚠",now.hour, now.minute+1)
-    except Exception as e:
-        messagebox.showerror("ERROR","Some Error Occured\n Please Try Again")
-        submitalertmessage()
+        paymentlink = "\n*Pay Bill*:https://www.adanielectricity.com/Payment/Online-Payments"
+
+    con = cx_Oracle.connect('system/12345@localhost:1521/xe')
+    cursor = con.cursor()
+    values = cursor.execute(f"SELECT * FROM ADD_CONSUMER WHERE CON_ID={alertconid}")
+    phoneno = values.fetchall()
+    for i in phoneno:
+        print(i[2])
+
+        try:
+            now = datetime.datetime.now()
+            kit.sendwhatmsg(f"+91{i[2]}",f"🛑🛑🛑🛑🛑🛑🛑\n*Alert*\n{msg}{websitelink}{paymentlink}\n⚠⚠⚠⚠⚠⚠⚠",now.hour, now.minute+1)
+
+        except Exception as e:
+            messagebox.showerror("ERROR","Network Error Occured\nPlease check your Internet connection and Try Again")
+            tryagainSplash()
+
+    cursor.close()
+    con.close()
+
+
+def sendingwmsg():
+    sendsplash = Toplevel()
+    window_width, window_height = 300, 100
+    screen_width = sendsplash.winfo_screenwidth()
+    screen_height = sendsplash.winfo_screenheight()
+    position_top = int(screen_height / 2 - window_height / 2)
+    position_right = int(screen_width / 2 - window_width / 2)
+    sendsplash.geometry(f"{window_width}x{window_height}+{position_right}+{position_top}")
+
+    sendsplash.configure(bg="white")
+    sendsplash.resizable(width=False, height=False)
+    sendsplash.overrideredirect(True)
+
+    # loadingwindow_top = Image.open("Images/loading_btn.png")
+    # loadingtop = ImageTk.PhotoImage(loadingwindow_top)
+    # sendsplash.photo = loadingtop  # solution for bug in `PhotoImage`
+    # alertwindow_toplogo = Label(sendsplash, image=loadingtop, borderwidth="0")
+    # alertwindow_toplogo.place(x="120", y="10")
+
+    splashframe = Frame(sendsplash, highlightbackground="black", highlightthickness=3, width=300, height=111, bd="0", bg="white")
+    splashframe.pack()
+
+    file = "Images/loader2.gif"
+
+    info = Image.open(file)
+
+    frames = info.n_frames  # gives total number of frames that gif contains
+
+    # creating list of PhotoImage objects for each frames
+    im = [PhotoImage(file=file, format=f"gif -index {i}") for i in range(frames)]
+
+    count = 0
+    anim = None
+
+    def animation(count):
+        global anim
+        im2 = im[count]
+
+        gif_label.configure(image=im2)
+        count += 1
+        if count == frames:
+            count = 0
+        anim = sendsplash.after(50, lambda: animation(count))
+
+    gif_label = Label(sendsplash, image="", bd="0",bg="white")
+    gif_label.place(x="110", y="3")
+    animation(count)
+
+    sending_label = Label(sendsplash, text="Sending...", font="lucida 8 ", bg="white", fg="black")
+    sending_label.place(x="117", y="55")
+    loading_label = Label(sendsplash, text="Please wait", font="lucida 8 ", bg="white", fg="black")
+    loading_label.place(x="110", y="74")
+    sendsplash.after(2000,submitalertmessage)
+
+    sendsplash.mainloop()
+
+def tryagainSplash():
+    splashwin = Toplevel()
+    window_width, window_height = 300,110
+    screen_width = splashwin.winfo_screenwidth()
+    screen_height = splashwin.winfo_screenheight()
+    position_top = int(screen_height / 2 - window_height / 2)
+    position_right = int(screen_width / 2 - window_width / 2)
+    splashwin.geometry(f"{window_width}x{window_height}+{position_right}+{position_top}")
+
+    splashwin.configure(bg="white")
+    splashwin.resizable(width=False, height=False)
+    splashwin.overrideredirect(True)
+
+    splashframe = Frame(splashwin, highlightbackground="black", highlightthickness=3, width=300, height=111, bd="0", bg="white" )
+    splashframe.pack()
+
+    file = "Images/loader2.gif"
+
+    info = Image.open(file)
+
+    frames = info.n_frames  # gives total number of frames that gif contains
+
+    # creating list of PhotoImage objects for each frames
+    im = [PhotoImage(file=file, format=f"gif -index {i}") for i in range(frames)]
+
+    count = 0
+    anim = None
+
+    def animation(count):
+        global anim
+        im2 = im[count]
+
+        gif_label.configure(image=im2)
+        count += 1
+        if count == frames:
+            count = 0
+        anim = splashwin.after(50, lambda: animation(count))
+
+
+
+    gif_label = Label(splashwin, image="",bd="0")
+    gif_label.place(x="110", y="5")
+    animation(count)
+
+    sending_label = Label(splashwin,text="Sending...",font="lucida 8 ",bg="white",fg="black")
+    sending_label.place(x="117",y="60")
+    loading_label = Label(splashwin, text="Please wait", font="lucida 8 ", bg="white", fg="black")
+    loading_label.place(x="110", y="79")
+    splashwin.after(7000,submitalertmessage)
+
+    splashwin.mainloop()
+
+
+
 
 homeWindow()
+# sendmailsplash()
 
+# splash()
+# sendingwmsg()
+# splash()
 # alerts()
 # editwindow()
 # security()
