@@ -1575,11 +1575,6 @@ def sendingwmsg():
     sendsplash.resizable(width=False, height=False)
     sendsplash.overrideredirect(True)
 
-    # loadingwindow_top = Image.open("Images/loading_btn.png")
-    # loadingtop = ImageTk.PhotoImage(loadingwindow_top)
-    # sendsplash.photo = loadingtop  # solution for bug in `PhotoImage`
-    # alertwindow_toplogo = Label(sendsplash, image=loadingtop, borderwidth="0")
-    # alertwindow_toplogo.place(x="120", y="10")
 
     splashframe = Frame(sendsplash, highlightbackground="black", highlightthickness=3, width=300, height=111, bd="0", bg="white")
     splashframe.pack()
