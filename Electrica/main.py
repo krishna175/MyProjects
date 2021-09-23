@@ -9,6 +9,8 @@ from plyer import notification
 import time
 from pdf_mail import sendpdf
 import datetime
+import smtplib
+from email.message import EmailMessage
 
 
 
@@ -1725,9 +1727,58 @@ def alertmailsplash():
     sendsplash.mainloop()
 
 def sendalertmail():
+    try:
+        alertconid = alertconid_entry.get()
+        message = alert_text.get("1.0",END)
+        websitelink = ""
+        paymentlink = ""
 
+        web = website.get()
+        pay = payment.get()
+        if web == 1:
+            websitelink = "Visit Website: https://www.adanielectricity.com/"
+        if pay == 1:
+            paymentlink = "\nPay Bill: https://www.adanielectricity.com/Payment/Online-Payments"
 
+        con = cx_Oracle.connect('system/12345@localhost:1521/xe')
+        cursor = con.cursor()
+        checkcount = cursor.execute(f"SELECT COUNT(*) FROM ADD_CONSUMER WHERE CON_ID={alertconid} ")
+        count = checkcount.fetchall()
+        values = cursor.execute(f"SELECT * FROM ADD_CONSUMER WHERE CON_ID={alertconid}")
+        emailid = values.fetchall()
+        for number in count:
+            print(number[0])
+            if (number[0]==0):
+                sendsplash.destroy()
+                messagebox.showerror("Error", f"CON_ID {alertconid} does not Exist.")
+                break
+            else:
+                try:
+                    for i in emailid:
+                        msg = EmailMessage()
+                        msg.set_content(f"{message}{websitelink}{paymentlink}")
 
+                        msg['Subject'] = 'Alert'
+                        msg['From'] = "electrica.org@gmail.com"
+                        msg['To'] = f"{i[7]}"
+
+                        # Send the message via our own SMTP server.
+                        server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
+                        server.login("electrica.org@gmail.com", "Electrica@1234")
+                        server.send_message(msg)
+                        server.quit()
+                        messagebox.showinfo('Message',"Mail sent Successfully")
+                        sendsplash.destroy()
+                except Exception as e:
+                    messagebox.showerror("ERROR","Network Error Occured\nPlease check your Internet connection and Try Again")
+                    print(e)
+                    # tryagainSplash()
+
+        cursor.close()
+        con.close()
+    except Exception as e:
+        messagebox.showerror("Error", "Some error occured.\n\n⭕ Enter valid details. \n⭕ Fields should not be empty.")
+        print(e)
 
 
 
