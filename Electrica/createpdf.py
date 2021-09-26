@@ -85,6 +85,11 @@ pdf.text(20,250,"If paying by cheque, please remember:")
 pdf.text(20,254,"- Cheque should be Account payee of local clearing and not post-dated")
 pdf.text(20,258,"- Always attach payment slip. Do not staple         - Make cheque payable to Electrica Electricity Mumbai Ltd. A/C No.:152191709")
 pdf.text(20,262,"- Mention A/c No. and respective amount on back of the cheque,when making multiple bill payments by single cheque")
+pdf.set_font('helvetica','B', 7)
+pdf.text(25,280,"BILL DATE : ")
+pdf.text(96,280,"BILL AMOUNT : ")
+pdf.text(25,284.5,"DUE DATE : ")
+pdf.text(96,284.5,"AMOUNT AFTER DUE DATE : ")
 
 
 
@@ -93,7 +98,6 @@ pdf.text(20,262,"- Mention A/c No. and respective amount on back of the cheque,w
 pdf.add_page()
 
 pdf.set_font('times', '', 12)
-pdf.cell(80, 0, 'Good Bye World!')
 
 pdf.output('C:/Users/Vandana/Documents/Clg Doc/OneDrive/ProjectGit/Electrica/pdf_1.pdf')
 webbrowser.open_new(r'file://C:/Users/Vandana/Documents/Clg Doc/OneDrive/ProjectGit/Electrica/pdf_1.pdf')

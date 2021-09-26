@@ -90,7 +90,7 @@ def sendmail():
                     f"{email}",
                     "Electrica@1234",
                     "Electrica New Connection",
-                    f"Dear {name} ,\nYour connection for request for {supply} ({requrement}) current supply has been approved.\nConnection will be established within 24hrs.\n\nRegards,\nElectrica",
+                    f"Dear {name} ,\nYour connection request for {supply} ({requrement}) current supply has been approved.\nConnection will be established within 24hrs.\n\nRegards,\nElectrica",
                     "Receipt",
                     "C:/Users/Vandana/Documents/Clg Doc/OneDrive/ProjectGit/Electrica")
 
@@ -206,7 +206,7 @@ def sendeditmail():
                     f"{email}",
                     "Electrica@1234",
                     "Electrica New Connection",
-                    f"Dear {name} ,\nYour connection for request for {supply} ({requrement}) current supply has been approved.\nConnection will be established within 24hrs.\n\nRegards,\nElectrica",
+                    f"Dear {name} ,\nYour connection request for {supply} ({requrement}) current supply has been approved.\nConnection will be established within 24hrs.\n\nRegards,\nElectrica",
                     "Receipt",
                     "C:/Users/Vandana/Documents/Clg Doc/OneDrive/ProjectGit/Electrica")
 
@@ -285,7 +285,7 @@ def homeWindow():
     button_defaulter = Button(home, image=defaulter_image, borderwidth="0")
     button_defaulter.place(x=530, y=380)
 
-    fraud_size = Image.open("Images/fraud.png")
+    fraud_size = Image.open("Images/sendbill_btn.png")
     fraud_resized = fraud_size.resize((220, 50), Image.ANTIALIAS)
     fraud_image = ImageTk.PhotoImage(fraud_resized)
     Label(image=fraud_image)
