@@ -14,7 +14,7 @@ pdf.add_page()
 # fonts ('times', 'courier', 'helvetica', 'symbol', 'zpfdingbats')
 # 'B' (bold), 'U' (underline), 'I' (italics), '' (regular), combination (i.e., ('BU'))
 pdf.set_font('helvetica', 'B', 8)
-pdf.set_text_color(220,50,50)
+pdf.set_text_color(0,0,0)
 # Add text
 # w = width
 # h = height
@@ -23,7 +23,7 @@ pdf.set_text_color(220,50,50)
 
 # border (0 False; 1 True - add border around cell)
 # pdf.cell(20, 10, 'Hello World!', ln=True)
-pdf.image('Images/adcon_toptemp.png',5,5,200,47)
+pdf.image('Images/bill_toptemplate.png',5,5,200,47)
 pdf.image("Images/bill_nametemplate.png",20,55,80,80)
 pdf.image("Images/bill_amounttemplate.png",17,135,85,65)
 pdf.image("Images/bill_contacttemplate.png",115,60,75,37)
@@ -35,8 +35,12 @@ pdf.image("Images/bill_cuttemplate.png",5,240,200,8)
 
 name = "HARIKRISHNAN SATHYAN"
 phone = 9820767941
-pdf.text(30,79,f'NAME : {name}')
-pdf.text(30,84,f'PHONE NO : {phone}')
+pdf.text(30,79,'NAME          : ')
+pdf.text(29.9,84,'PHONE NO  :')
+pdf.text(30,89,'ADDRESS   :')
+pdf.text(30,104,'PINCODE    :')
+pdf.text(30,109,'EMAIL         :')
+pdf.text(30,114,'CL in kW     :')
 
 pdf.set_font('helvetica', 'B', 8)
 pdf.set_text_color(0,0,0)
@@ -57,6 +61,33 @@ pdf.image("Images/bill_fbtemplate.png",30,213,10,10,link="https://www.facebook.c
 pdf.image("Images/bill_instatemplate.png",45,213,10,10,link="https://www.instagram.com/?hl=en")
 pdf.image("Images/bill_youtubetemplate.png",60,213,10,10,link="https://www.youtube.com/")
 pdf.image("Images/bill_linkedintemplate.png",75,213,10,10,link="https://in.linkedin.com/")
+
+
+#VALUES OF THE FIELDS
+
+
+pdf.set_font('helvetica','', 7)
+pdf.text(50,79,"HARIKRISHNAN SATHYAN")
+pdf.text(50,84,"9820767941")
+pdf.text(50,89,"B-403 DIVYA APT, TRIVENI NAGAR")
+pdf.text(50,94,"NEAR JYOTHI HOTEL")
+pdf.text(50,99,"KURAR VILLAGE, MALAD(E)")
+pdf.text(50,104,"400097")
+pdf.text(50,109,"harik**********001@gmail.com")
+pdf.text(50,114,"5 - 10 kW")
+
+#Check slip
+pdf.image("Images/bill_paysliptemplate.png",7,248,8,40)
+pdf.image("Images/bill_barcodetemplate.png",20,264,100,10)
+pdf.image("Images/bill_payslip2template.png",20,276,145,10)
+pdf.set_font('helvetica','', 7)
+pdf.text(20,250,"If paying by cheque, please remember:")
+pdf.text(20,254,"- Cheque should be Account payee of local clearing and not post-dated")
+pdf.text(20,258,"- Always attach payment slip. Do not staple         - Make cheque payable to Electrica Electricity Mumbai Ltd. A/C No.:152191709")
+pdf.text(20,262,"- Mention A/c No. and respective amount on back of the cheque,when making multiple bill payments by single cheque")
+
+
+
 
 
 pdf.add_page()
