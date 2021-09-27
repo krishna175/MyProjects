@@ -1,3 +1,4 @@
+import cx_Oracle
 from fpdf import FPDF
 import webbrowser
 
@@ -80,6 +81,7 @@ pdf.text(50,114,"5 - 10 kW")
 pdf.image("Images/bill_paysliptemplate.png",7,248,8,40)
 pdf.image("Images/bill_barcodetemplate.png",20,264,100,10)
 pdf.image("Images/bill_payslip2template.png",20,276,145,10)
+
 pdf.set_font('helvetica','', 7)
 pdf.text(20,250,"If paying by cheque, please remember:")
 pdf.text(20,254,"- Cheque should be Account payee of local clearing and not post-dated")
@@ -95,9 +97,54 @@ pdf.text(96,284.5,"AMOUNT AFTER DUE DATE : ")
 
 
 
+
+
+
 pdf.add_page()
 
-pdf.set_font('times', '', 12)
+pdf.image("Images/bill_howtemplate.png",7,10,110,100)
+pdf.image("Images/bill_protocol2template.png",135,11,60,94)
+pdf.image("Images/bill_triff2template.png",68,120,130,35)
+pdf.image("Images/bill_trifftoptemplate.png",66,113,135,6)
+pdf.image("Images/bill_billsumtemplate.png",6,109,60,50)
+
+
+pdf.set_font('helvetica','B', 10)
+pdf.text(13,20,"HOW BILL WAS CALCULATED ")
+pdf.set_font('helvetica','B', 7)
+
+pdf.text(13,33,"FIXED CHARGE ")
+pdf.text(13,38.5,"WHEELING CHARGE")
+pdf.text(13,43.8,"REGULATORY ASSET CHARGE (RAC)")
+pdf.text(13,49.2,"ENERGY CHARGE")
+pdf.text(13,54.4,"FUEL ADJUSTMENT CHARGE (FAC)")
+pdf.text(13,60,"GOVERNMENT ELECTRICITY DUTY                                       16%")
+pdf.text(13,65.2,"MAHARASHTRA GOVT. TAX ON SALE OF ELECTRICITY     26.04 p/unit")
+pdf.text(13,70.5,"CURRENT MONTHS BILL AMOUNT (A)")
+pdf.text(13,75.8,"PREVIOUS MONTHS BILL AMOUNT")
+pdf.text(13,81.3,"PROMPT PAYMENT DISCOUNT")
+pdf.text(13,86.8,"NET PREVIOUS BALANCE (B)")
+pdf.text(13,91.9,"TOTAL BILL AMOUNT (A+B)")
+pdf.text(69,116,"KEEP A WATCH TO MANAGE YOUR ELECTRICITY CONSUPTION")
+
+pdf.set_font('helvetica','', 5)
+pdf.text(69,118,"YOUR TRIFF STRUCTURE")
+
+pdf.set_font('helvetica','B', 9)
+pdf.text(11,123,"ROUND SUM")
+pdf.text(11,128,"PAYABLE")
+pdf.text(11,133,"FOR THIS BILL")
+
+pdf.set_font('helvetica','B', 6)
+pdf.text(10,143,"METER READING DATE")
+pdf.text(10,149,"PREVIOUS METER")
+pdf.text(10,151,"READING DATE")
+
+
+
+
+
+
 
 pdf.output('C:/Users/Vandana/Documents/Clg Doc/OneDrive/ProjectGit/Electrica/pdf_1.pdf')
 webbrowser.open_new(r'file://C:/Users/Vandana/Documents/Clg Doc/OneDrive/ProjectGit/Electrica/pdf_1.pdf')
