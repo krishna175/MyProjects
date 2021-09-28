@@ -18,6 +18,59 @@ def notifyrecmail():
     messagebox.showinfo("Message","Mail send successfully!")
     sendsplash.destroy()
 
+
+def billingSplash():
+    billing = Toplevel()
+    window_width, window_height = 300, 100
+    screen_width = billing.winfo_screenwidth()
+    screen_height = billing.winfo_screenheight()
+    position_top = int(screen_height / 2 - window_height / 2)
+    position_right = int(screen_width / 2 - window_width / 2)
+    billing.geometry(f"{window_width}x{window_height}+{position_right}+{position_top}")
+
+    billing.configure(bg="white")
+    billing.resizable(width=False, height=False)
+    billing.overrideredirect(True)
+
+    splashframe = Frame(billing, highlightbackground="black", highlightthickness=3, width=300, height=110, bd="0",bg="white")
+    splashframe.pack()
+
+
+
+    file = "Images/preloader.gif"
+
+    info = Image.open(file)
+
+    frames = info.n_frames  # gives total number of frames that gif contains
+
+    # creating list of PhotoImage objects for each frames
+    im = [PhotoImage(file=file, format=f"gif -index {i}") for i in range(frames)]
+
+    count = 0
+    anim = None
+
+    def animation(count):
+        global anim
+        im2 = im[count]
+
+        gif_label.configure(image=im2)
+        count += 1
+        if count == frames:
+            count = 0
+        anim = billing.after(500, lambda: animation(count))
+
+    gif_label = Label(billing, image="", bd="0")
+    gif_label.place(x="75", y="25")
+    animation(count)
+
+    sending_label = Label(billing, text="Generating Bill...", font="lucida 8 ", bg="white", fg="black")
+    sending_label.place(x="100", y="53")
+    loading_label = Label(billing, text="Please wait", font="lucida 8 ", bg="white", fg="black")
+    loading_label.place(x="110", y="72")
+    billing.after(5000,notifyrecmail)
+
+    billing.mainloop()
+
 def sendmailsplash():
     global sendsplash
     sendsplash = Toplevel()
@@ -268,7 +321,7 @@ def homeWindow():
     generatebill_resized = generatebill_size.resize((220, 50), Image.ANTIALIAS)
     generatebill_image = ImageTk.PhotoImage(generatebill_resized)
     Label(image=generatebill_image)
-    button_generatebill = Button(home, image=generatebill_image, borderwidth="0")
+    button_generatebill = Button(home, image=generatebill_image, borderwidth="0",command=billingSplash)
     button_generatebill.place(x=530, y=240)
 
     sendalert_size = Image.open("Images/sendalert_btn.png")
@@ -296,7 +349,7 @@ def homeWindow():
     payment_resized = payment_size.resize((220, 50), Image.ANTIALIAS)
     payment_image = ImageTk.PhotoImage(payment_resized)
     Label(image=payment_image)
-    button_payment = Button(home, image=payment_image, borderwidth="0")
+    button_payment = Button(home, image=payment_image, borderwidth="0",command=billPayment)
     button_payment.place(x=530, y=520)
 
     home.mainloop()
@@ -1776,10 +1829,114 @@ def sendalertmail():
         print(e)
 
 
+def billPayment():
+    payment = Toplevel()
+    window_width, window_height = 760, 350
+    screen_width = payment.winfo_screenwidth()
+    screen_height = payment.winfo_screenheight()
+    position_top = int(screen_height / 2 - window_height / 2)
+    position_right = int(screen_width / 2 - window_width / 2)
+    payment.geometry(f"{window_width}x{window_height}+{position_right}+{position_top}")
 
-homeWindow()
+    payment.title("PAYMENT")
+    payment.configure(bg="white")
+    payment.resizable(width=False, height=False)
+    payment.iconbitmap('Images/icon2.ico')
+
+    paymentwindow_top = Image.open("Images/payment_templatetopss.png")
+    paymenttop = ImageTk.PhotoImage(paymentwindow_top)
+    payment.photo = paymenttop  # solution for bug in `PhotoImage`
+    paymentwindow_toplogo = Label(payment, image=paymenttop, borderwidth="0")
+    paymentwindow_toplogo.place(x="20", y="2")
+
+    paymentwindow_down = Image.open("Images/payment_templatedown.png")
+    paymentdown = ImageTk.PhotoImage(paymentwindow_down)
+    payment.photo = paymentdown  # solution for bug in `PhotoImage`
+    payment_toplogo = Label(payment, image=paymentdown, borderwidth="0")
+    payment_toplogo.place(x="20", y="250")
+    global paymentconid_entry
+    paymentconid_label = Label(payment, text="CON_ID            :", font="lucida 12 bold", bg="white", fg="blue4")
+    paymentconid_label.place(x="235", y="130")
+    paymentconid_entry = Entry(payment, font="lucida 13 bold ", width="10", bg="grey94", fg="black")
+    paymentconid_entry.place(x="420", y="130")
+
+    showbillbtn = Image.open("Images/showbill_btn1.png")
+    showbillbtn = ImageTk.PhotoImage(showbillbtn)
+    payment.photo3 = showbillbtn
+    submit_receipt = Button(payment, image=showbillbtn, bg="white", bd="0", activebackground='black',command=validateid)
+    submit_receipt.place(x="280", y="200")
+
+    payment.mainloop()
+
+def validateid():
+    try:
+        conid = paymentconid_entry.get()
+        con = cx_Oracle.connect('system/12345@localhost:1521/xe')
+        cursor = con.cursor()
+        getcount = cursor.execute(f"SELECT COUNT(*) FROM ADD_CONSUMER WHERE CON_ID={conid}")
+        validate = getcount.fetchall()
+        for value in validate:
+            if value[0] == 0:
+                messagebox.showerror("Error",f"CON_ID {conid} does not exist.")
+            else:
+                showbilling()
+
+    except Exception as e:
+        messagebox.showerror("Error", "Some error occured.\n\n⭕ Enter valid details. \n⭕ Fields should not be empty.")
+
+
+def showbilling():
+    seebill = Toplevel()
+    window_width, window_height = 760, 600
+    screen_width = seebill.winfo_screenwidth()
+    screen_height = seebill.winfo_screenheight()
+    position_top = int(screen_height / 2 - window_height / 2)
+    position_right = int(screen_width / 2 - window_width / 2)
+    seebill.geometry(f"{window_width}x{window_height}+{position_right}+{position_top}")
+
+    seebill.title("BILL")
+    seebill.configure(bg="white")
+    seebill.resizable(width=False, height=False)
+    seebill.iconbitmap('Images/icon2.ico')
+
+    billbg_size = Image.open("Images/billwindowbg.png")
+    billbg_resized = billbg_size.resize((700, 580), Image.ANTIALIAS)
+    billbg_image = ImageTk.PhotoImage(billbg_resized)
+    Label(image=billbg_image)
+    label_bg = Label(seebill, image=billbg_image, borderwidth="0", )
+    label_bg.place(x=28, y=0)
+
+    paymentconid_label = Label(seebill, text="CON_ID         :", font="lucida 10 bold", bg="white", fg="blue4")
+    paymentconid_label.place(x="200", y="80")
+
+    conname_label = Label(seebill, text="NAME            :", font="lucida 10 bold", bg="white", fg="blue4")
+    conname_label.place(x="200", y="140")
+
+    conphone_label = Label(seebill, text="PHONE NO   :", font="lucida 10 bold", bg="white", fg="blue4")
+    conphone_label.place(x="200", y="200")
+
+    balance_label = Label(seebill, text="BALANCE AMOUNT  :", font="lucida 10 bold", bg="white", fg="blue4")
+    balance_label.place(x="200", y="260")
+
+    netbill_label = Label(seebill, text="NET BILL AMOUNT   :", font="lucida 10 bold", bg="white", fg="blue4")
+    netbill_label.place(x="200", y="320")
+
+    paynowbtn = Image.open("Images/proceedtopay_btn.png")
+    paynowbtn = ImageTk.PhotoImage(paynowbtn)
+    seebill.photo3 = paynowbtn
+    submit_receipt = Button(seebill, image=paynowbtn, bg="white", bd="0", activebackground='black')
+    submit_receipt.place(x="280", y="400")
+
+
+    seebill.mainloop()
+
+# homeWindow()
+
+
+
+showbilling()
+
 # sendmailsplash()
-
 # splash()
 # sendingwmsg()
 # splash()
