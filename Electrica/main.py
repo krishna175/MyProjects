@@ -1828,8 +1828,8 @@ def sendalertmail():
         messagebox.showerror("Error", "Some error occured.\n\n⭕ Enter valid details. \n⭕ Fields should not be empty.")
         print(e)
 
-
 def billPayment():
+    global payment
     payment = Toplevel()
     window_width, window_height = 760, 350
     screen_width = payment.winfo_screenwidth()
@@ -1863,8 +1863,8 @@ def billPayment():
     showbillbtn = Image.open("Images/showbill_btn1.png")
     showbillbtn = ImageTk.PhotoImage(showbillbtn)
     payment.photo3 = showbillbtn
-    submit_receipt = Button(payment, image=showbillbtn, bg="white", bd="0", activebackground='black',command=validateid)
-    submit_receipt.place(x="280", y="200")
+    shobill_btn = Button(payment, image=showbillbtn, bg="white", bd="0", activebackground='black',command=validateid)
+    shobill_btn.place(x="280", y="200")
 
     payment.mainloop()
 
@@ -1886,6 +1886,7 @@ def validateid():
 
 
 def showbilling():
+    global seebill
     seebill = Toplevel()
     window_width, window_height = 760, 600
     screen_width = seebill.winfo_screenwidth()
@@ -1906,35 +1907,277 @@ def showbilling():
     label_bg = Label(seebill, image=billbg_image, borderwidth="0", )
     label_bg.place(x=28, y=0)
 
-    paymentconid_label = Label(seebill, text="CON_ID         :", font="lucida 10 bold", bg="white", fg="blue4")
+    paymentconid_label = Label(seebill, text="CON_ID                    :", font="lucida 10 bold", bg="white", fg="blue4")
     paymentconid_label.place(x="200", y="80")
 
-    conname_label = Label(seebill, text="NAME            :", font="lucida 10 bold", bg="white", fg="blue4")
+    conname_label = Label(seebill, text="NAME                       :", font="lucida 10 bold", bg="white", fg="blue4")
     conname_label.place(x="200", y="140")
 
-    conphone_label = Label(seebill, text="PHONE NO   :", font="lucida 10 bold", bg="white", fg="blue4")
+    conphone_label = Label(seebill, text="PHONE NO               :", font="lucida 10 bold", bg="white", fg="blue4")
+
     conphone_label.place(x="200", y="200")
 
     balance_label = Label(seebill, text="BALANCE AMOUNT  :", font="lucida 10 bold", bg="white", fg="blue4")
     balance_label.place(x="200", y="260")
 
+    balance_label = Label(seebill, text="BILL DATE                :", font="lucida 10 bold", bg="white", fg="blue4")
+    balance_label.place(x="200", y="320")
+
+    balance_label = Label(seebill, text="PAYMENT STATUS   :", font="lucida 10 bold", bg="white", fg="blue4")
+    balance_label.place(x="200", y="380")
+
     netbill_label = Label(seebill, text="NET BILL AMOUNT   :", font="lucida 10 bold", bg="white", fg="blue4")
-    netbill_label.place(x="200", y="320")
+    netbill_label.place(x="200", y="440")
 
     paynowbtn = Image.open("Images/proceedtopay_btn.png")
     paynowbtn = ImageTk.PhotoImage(paynowbtn)
     seebill.photo3 = paynowbtn
-    submit_receipt = Button(seebill, image=paynowbtn, bg="white", bd="0", activebackground='black')
-    submit_receipt.place(x="280", y="400")
+    submit_receipt = Button(seebill, image=paynowbtn, bg="white", bd="0", activebackground='black',command=checkstatus)
+    submit_receipt.place(x="280", y="490")
 
+    conid = paymentconid_entry.get()
+    con = cx_Oracle.connect('system/12345@localhost:1521/xe')
+    cursor = con.cursor()
 
+    paydetails = cursor.execute(f"""
+                                SELECT T1.CON_ID,T1.CON_NAME,T1.PHONE_NO,T2.BALANCE_AMT,to_char(T2.BILL_DATE,'DD-MON-YY')
+                                ,T2.BILL_STATUS,T2.CHARGE_AMT FROM ADD_CONSUMER T1, CHARGE_MASTER_TRACK T2 
+                                WHERE T1.CON_ID =T2.CON_ID   AND T2.CON_ID = {conid} AND 
+                                BILL_DATE=(SELECT MAX(BILL_DATE) FROM CHARGE_MASTER_TRACK)
+                                """)
+    showbill_list = paydetails.fetchall()
+    for values in showbill_list:
+        disid_label = Label(seebill, text=f"{values[0]}", font="lucida 10 bold", bg="white", fg="black")
+        disid_label.place(x="380", y="80")
+
+        disname_label = Label(seebill, text=f"{values[1]}", font="lucida 10 bold", bg="white", fg="black")
+        disname_label.place(x="380", y="140")
+
+        disphone_label = Label(seebill, text=f"{values[2]}", font="lucida 10 bold", bg="white", fg="black")
+        disphone_label.place(x="380", y="200")
+
+        disbalamt_label = Label(seebill, text=u"\u20B9"+f" {values[3]}", font="lucida 10 bold", bg="white", fg="black")
+        disbalamt_label.place(x="380", y="260")
+
+        disbildate_label = Label(seebill, text=f"{values[4]}", font="lucida 10 bold", bg="white", fg="black")
+        disbildate_label.place(x="380", y="320")
+        if (values[5]=="PAID"):
+            dispaystat_label = Label(seebill, text=f"{values[5]}", font="lucida 10 bold", bg="white", fg="green")
+            dispaystat_label.place(x="380", y="380")
+            print(values[5])
+        else:
+            dispaystat_label = Label(seebill, text=f"{values[5]}", font="lucida 10 bold", bg="white", fg="red")
+            dispaystat_label.place(x="380", y="380")
+
+        disbilamt_label = Label(seebill, text=u"\u20B9"+f" {values[6]}", font="lucida 10 bold", bg="white", fg="black")
+        disbilamt_label.place(x="380", y="440")
+    cursor.close()
+    con.close()
     seebill.mainloop()
 
-# homeWindow()
+
+def checkstatus():
+    con_id = paymentconid_entry.get()
+    con = cx_Oracle.connect('system/12345@localhost:1521/xe')
+    cursor = con.cursor()
+    paydetails = cursor.execute(f"""
+                                    SELECT BILL_STATUS FROM CHARGE_MASTER_TRACK WHERE CON_ID = {con_id}
+                                     AND BILL_DATE =(SELECT MAX(BILL_DATE) FROM CHARGE_MASTER_TRACK)
+                                    """)
+    status_list = paydetails.fetchall()
+    for value in status_list:
+        if (value[0]=="PAID"):
+            messagebox.showinfo("Message","Bill already payed for this month.")
+        else:
+            pay()
+
+    cursor.close()
+    con.close()
+
+
+def pay():
+    seebill.destroy()
+    global paynow
+    paynow = Toplevel()
+    window_width, window_height = 400, 320
+    screen_width = paynow.winfo_screenwidth()
+    screen_height = paynow.winfo_screenheight()
+    position_top = int(screen_height / 2 - window_height / 2)
+    position_right = int(screen_width / 2 - window_width / 2)
+    paynow.geometry(f"{window_width}x{window_height}+{position_right}+{position_top}")
+
+    paynow.title("BILL")
+    paynow.configure(bg="white")
+    paynow.resizable(width=False, height=False)
+    paynow.iconbitmap('Images/icon2.ico')
+
+    billbg_size = Image.open("Images/billwindowbg.png")
+    billbg_resized = billbg_size.resize((380, 300), Image.ANTIALIAS)
+    billbg_image = ImageTk.PhotoImage(billbg_resized)
+    Label(image=billbg_image)
+    label_bg = Label(paynow, image=billbg_image, borderwidth="0", )
+    label_bg.place(x=10, y=-5)
+
+    payamt_label = Label(paynow, text="BILL AMOUNT            : ", font="lucida 10 bold", bg="white",fg="blue4")
+    payamt_label.place(x="30", y="80")
+
+    receivedamt_label = Label(paynow, text="RECEIVED AMOUNT   : ", font="lucida 10 bold", bg="white", fg="blue4")
+    receivedamt_label.place(x="30", y="140")
+
+    paynowbtn = Image.open("Images/submit_btn2pay.png")
+    paynowbtn = ImageTk.PhotoImage(paynowbtn)
+    paynow.photo3 = paynowbtn
+    submit_receipt = Button(paynow, image=paynowbtn, bg="white", bd="0", activebackground='black', command=securitycheck)
+    submit_receipt.place(x="140", y="200")
+    con_id = paymentconid_entry.get()
+    con = cx_Oracle.connect('system/12345@localhost:1521/xe')
+    cursor = con.cursor()
+    paydetails = cursor.execute(f"""
+                                        SELECT CHARGE_AMT FROM CHARGE_MASTER_TRACK WHERE CON_ID = {con_id}
+                                         AND BILL_DATE =(SELECT MAX(BILL_DATE) FROM CHARGE_MASTER_TRACK)
+                                        """)
+    status_list = paydetails.fetchall()
+    for value in status_list:
+        payamt_label = Label(paynow, text=u"\u20B9"+f" {value[0]}", font="lucida 10 bold", bg="white", fg="black")
+        payamt_label.place(x="220", y="80")
+
+    amtreceived_entry = Entry(paynow, font="lucida 13 bold ", width="10", bg="grey94", fg="black")
+    amtreceived_entry.place(x="220", y="140")
 
 
 
-showbilling()
+    paynow.mainloop()
+
+def securitycheck():
+    global secure
+    secure = Toplevel()
+    window_width, window_height = 200,140
+    screen_width = secure.winfo_screenwidth()
+    screen_height = secure.winfo_screenheight()
+    position_top = int(screen_height / 2 - window_height / 2)
+    position_right = int(screen_width / 2 - window_width / 2)
+    secure.geometry(f"{window_width}x{window_height}+{position_right}+{position_top}")
+
+    secure.title("CONSUMER DETAILS ENTRY")
+    secure.configure(bg="black")
+    secure.resizable(width=False, height=False)
+    secure.iconbitmap('Images/icon2.ico')
+
+    text_label = Label(secure,text="Enter security password",font="lucida 8 bold",bg="black",fg="white")
+    text_label.place(x="20",y="10")
+    global pass_entry
+    pass_entry = Entry(secure,font="lucida 11 bold",width="4",bd="3")
+    pass_entry.place(x="75",y="40")
+
+    unlockbtn = Image.open("Images/unlock_btn.png")
+    unlockbtn = ImageTk.PhotoImage(unlockbtn)
+    secure.photo3 = unlockbtn
+    submit_receipt = Button(secure, image=unlockbtn, bg="black", bd="0", activebackground='black',command=checkPassword)
+    submit_receipt.place(x="20", y="75")
+
+    secure.mainloop()
+
+
+
+
+def checkPassword():
+    try:
+        passentered = pass_entry.get()
+        if (passentered=='1234'):
+            paySplash()
+
+        else:
+            messagebox.showinfo("MESSAGE","INVALID PASSWORD")
+            secure.destroy()
+    except Exception as e:
+        messagebox.showerror("ERROR","Some Error Occured\n\n⭕ Enter Valid Consumer_id\n⭕ Try again.")
+        secure.destroy()
+
+
+def paySplash():
+    secure.destroy()
+    global billing
+    billing = Toplevel()
+    window_width, window_height = 300, 100
+    screen_width = billing.winfo_screenwidth()
+    screen_height = billing.winfo_screenheight()
+    position_top = int(screen_height / 2 - window_height / 2)
+    position_right = int(screen_width / 2 - window_width / 2)
+    billing.geometry(f"{window_width}x{window_height}+{position_right}+{position_top}")
+
+    billing.configure(bg="white")
+    billing.resizable(width=False, height=False)
+    billing.overrideredirect(True)
+
+    splashframe = Frame(billing, highlightbackground="black", highlightthickness=3, width=300, height=110, bd="0",bg="white")
+    splashframe.pack()
+
+
+
+    file = "Images/preloader.gif"
+
+    info = Image.open(file)
+
+    frames = info.n_frames  # gives total number of frames that gif contains
+
+    # creating list of PhotoImage objects for each frames
+    im = [PhotoImage(file=file, format=f"gif -index {i}") for i in range(frames)]
+
+    count = 0
+    anim = None
+
+    def animation(count):
+        global anim
+        im2 = im[count]
+
+        gif_label.configure(image=im2)
+        count += 1
+        if count == frames:
+            count = 0
+        anim = billing.after(500, lambda: animation(count))
+
+    gif_label = Label(billing, image="", bd="0")
+    gif_label.place(x="75", y="25")
+    animation(count)
+
+    sending_label = Label(billing, text="Payment Processing...", font="lucida 8 ", bg="white", fg="black")
+    sending_label.place(x="100", y="53")
+    loading_label = Label(billing, text="Please wait", font="lucida 8 ", bg="white", fg="black")
+    loading_label.place(x="110", y="72")
+    billing.after(5000,updateStatus)
+
+    billing.mainloop()
+
+
+def updateStatus():
+    billing.destroy()
+    con_id = paymentconid_entry.get()
+    try:
+        con = cx_Oracle.connect('system/12345@localhost:1521/xe')
+        cursor = con.cursor()
+        cursor.execute(f"""
+                        UPDATE CHARGE_MASTER_TRACK SET BILL_STATUS = 'PAID',PAY_DATE = SYSDATE 
+                        WHERE CON_ID={con_id} AND BILL_STATUS = 'UNPAID'
+                        """)
+
+        cursor.close()
+        con.commit()
+        messagebox.showinfo("Message","Bill Payed Successfully!")
+        con.close()
+    except Exception as e:
+        messagebox.showerror("Error","Some error occured.")
+
+
+
+
+
+
+
+homeWindow()
+
+
+# pay()
+# showbilling()
 
 # sendmailsplash()
 # splash()
