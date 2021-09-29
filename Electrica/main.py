@@ -1977,6 +1977,7 @@ def showbilling():
 
 
 def checkstatus():
+    seebill.destroy()
     con_id = paymentconid_entry.get()
     con = cx_Oracle.connect('system/12345@localhost:1521/xe')
     cursor = con.cursor()
@@ -2096,6 +2097,7 @@ def checkPassword():
 
 def paySplash():
     secure.destroy()
+    paynow.destroy()
     global billing
     billing = Toplevel()
     window_width, window_height = 300, 100
@@ -2141,7 +2143,7 @@ def paySplash():
     animation(count)
 
     sending_label = Label(billing, text="Payment Processing...", font="lucida 8 ", bg="white", fg="black")
-    sending_label.place(x="100", y="53")
+    sending_label.place(x="80", y="53")
     loading_label = Label(billing, text="Please wait", font="lucida 8 ", bg="white", fg="black")
     loading_label.place(x="110", y="72")
     billing.after(5000,updateStatus)
