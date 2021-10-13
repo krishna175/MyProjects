@@ -88,7 +88,7 @@ con = cx_Oracle.connect('system/12345@localhost:1521/xe')
 cursor = con.cursor()
 consumer_details = cursor.execute(f"""
                                SELECT CON_NAME,PHONE_NO,ADDRESS1,ADDRESS2,ADDRESS3,PIN_CODE,EMAILID,AADHAR,
-                               SUPPLY_TYPE,REQUIREMENT FROM ADD_CONSUMER WHERE CON_ID=111116
+                               SUPPLY_TYPE,REQUIREMENT FROM ADD_CONSUMER WHERE CON_ID=111115
                                 """)
 details_list = consumer_details.fetchall()
 for con_values in details_list:
@@ -153,6 +153,8 @@ for details in bill_details_list:
 
 pdf.add_page()
 
+
+
 pdf.image("Images/bill_howtemplate.png",7,10,110,100)
 pdf.image("Images/bill_protocol2template.png",135,11,60,94)
 pdf.image("Images/bill_triff2template.png",68,120,130,35)
@@ -190,6 +192,33 @@ pdf.set_font('helvetica','B', 6)
 pdf.text(10,143,"METER READING DATE")
 pdf.text(10,149,"PREVIOUS METER")
 pdf.text(10,151,"READING DATE")
+
+bill_details = cursor.execute(f"""
+                               SELECT *  FROM CHARGE_MASTER_TRACK WHERE CON_ID = 111116
+                                """)
+bill_details_list = bill_details.fetchall()
+for details in bill_details_list:
+    pdf.set_font('helvetica', '', 8)
+    pdf.text(103, 33, f"{details[8]}/-")
+    pdf.text(103, 38.3, f"{details[10]}/-")
+    pdf.text(103, 43.7, f"0.00/-")
+    pdf.text(103, 49.3, f"{details[9]}/-")
+    pdf.text(103, 54.4, f"0.00/-")
+    pdf.text(103, 60, f"{details[11]}/-")
+    pdf.text(103, 65.4, f"{details[4]*0.26}/-")
+    pdf.text(103, 70.5, f"{details[7]}/-")
+    pdf.text(103, 75.5, f"{details[6]}/-")
+    pdf.text(103, 81, f"0/-")
+    pdf.text(103, 87.1, f"{details[6]}/-")
+    pdf.text(103, 92, f"{details[7]}/-")
+
+    pdf.set_font('helvetica', 'B', 9)
+    pdf.text(43, 127, f"{details[7]}/- Rs")
+
+
+
+
+
 
 
 
