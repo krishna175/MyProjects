@@ -84,11 +84,12 @@ pdf.text(96,284.5,"AMOUNT AFTER DUE DATE : ")
 
 #VALUES OF THE FIELDS
 
+bill_conid = 111115
 con = cx_Oracle.connect('system/12345@localhost:1521/xe')
 cursor = con.cursor()
 consumer_details = cursor.execute(f"""
                                SELECT CON_NAME,PHONE_NO,ADDRESS1,ADDRESS2,ADDRESS3,PIN_CODE,EMAILID,AADHAR,
-                               SUPPLY_TYPE,REQUIREMENT FROM ADD_CONSUMER WHERE CON_ID=111115
+                               SUPPLY_TYPE,REQUIREMENT FROM ADD_CONSUMER WHERE CON_ID={bill_conid}
                                 """)
 details_list = consumer_details.fetchall()
 for con_values in details_list:
@@ -112,7 +113,7 @@ for con_values in details_list:
     pdf.text(63, 62, f"{con_values[8]}")
 
 bill_details = cursor.execute(f"""
-                               SELECT *  FROM CHARGE_MASTER_TRACK WHERE CON_ID = 111116
+                               SELECT *  FROM CHARGE_MASTER_TRACK WHERE CON_ID = {bill_conid}
                                 """)
 bill_details_list = bill_details.fetchall()
 for details in bill_details_list:
@@ -140,14 +141,6 @@ for details in bill_details_list:
 
     pdf.text(65, 148, f"{details[0]}")
     pdf.text(65, 159, f"{details[15]}")
-
-
-
-
-
-
-
-
 
 
 

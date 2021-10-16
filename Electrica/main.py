@@ -342,7 +342,7 @@ def homeWindow():
     fraud_resized = fraud_size.resize((220, 50), Image.ANTIALIAS)
     fraud_image = ImageTk.PhotoImage(fraud_resized)
     Label(image=fraud_image)
-    button_fraud = Button(home, image=fraud_image, borderwidth="0")
+    button_fraud = Button(home, image=fraud_image, borderwidth="0",command=sendbill)
     button_fraud.place(x=530, y=450)
 
     payment_size = Image.open( "Images/payment_btn.png")
@@ -2171,9 +2171,43 @@ def updateStatus():
 
 
 
+def sendbill():
+    sendb = Toplevel()
+    window_width, window_height = 760, 350
+    screen_width = sendb.winfo_screenwidth()
+    screen_height = sendb.winfo_screenheight()
+    position_top = int(screen_height / 2 - window_height / 2)
+    position_right = int(screen_width / 2 - window_width / 2)
+    sendb.geometry(f"{window_width}x{window_height}+{position_right}+{position_top}")
+    sendb.title("Send Bill")
+    sendb.configure(bg="white")
+    sendb.resizable(width=False, height=False)
+
+    paymentwindow_top = Image.open("Images/sendbill_top.png")
+    paymenttop = ImageTk.PhotoImage(paymentwindow_top)
+    sendb.photo = paymenttop  # solution for bug in `PhotoImage`
+    paymentwindow_toplogo = Label(sendb, image=paymenttop, borderwidth="0")
+    paymentwindow_toplogo.place(x="20", y="2")
+
+    paymentwindow_down = Image.open('Images/sendbill_down.png')
+    paymentdown = ImageTk.PhotoImage(paymentwindow_down)
+    sendb.photo = paymentdown  # solution for bug in `PhotoImage`
+    payment_toplogo = Label(sendb, image=paymentdown, borderwidth="0")
+    payment_toplogo.place(x="20", y="250")
 
 
 
+    sendbillconid_label = Label(sendb, text="CON_ID    :", font="lucida 12 bold", bg="white", fg="blue4")
+    sendbillconid_label.place(x="235", y="130")
+    sendbillconid_entry = Entry(sendb, font="lucida 13 bold ", width="10", bg="grey90", fg="black")
+    sendbillconid_entry.place(x="370", y="130")
+
+    sendbillbillno_label = Label(sendb, text="BILL_NO  :", font="lucida 12 bold", bg="white", fg="blue4")
+    sendbillbillno_label.place(x="235", y="190")
+    sendbillbillno_entry = Entry(sendb, font="lucida 13 bold ", width="10", bg="grey90", fg="black")
+    sendbillbillno_entry.place(x="370", y="190")
+
+    sendb.mainloop()
 
 homeWindow()
 
