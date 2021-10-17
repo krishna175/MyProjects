@@ -55,6 +55,8 @@ pdf.text(120,126,"TYPE OF SUPPLY                 :")
 pdf.text(120,132,"PRESENT READING             :")
 pdf.text(120,138,"PREVIOUS READING           :")
 pdf.text(120,144,"CONSUPTION (UNIT kWh)   :")
+pdf.set_xy(117,166)
+pdf.multi_cell(200,4,"o Tentative meter reading date for your NOV-21 bill is \n   05-11-2021.\no Pay your bill before 20-10-2021.\no")
 
 pdf.set_font('helvetica', 'B', 10)
 pdf.text(46,209,"JOIN US ON")
