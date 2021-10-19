@@ -1725,8 +1725,8 @@ def sendingwmsg():
 
     sending_label = Label(sendsplash, text="Sending...", font="lucida 8 ", bg="white", fg="black")
     sending_label.place(x="117", y="55")
-    loading_label = Label(sendsplash, text="Please wait", font="lucida 8 ", bg="white", fg="black")
-    loading_label.place(x="110", y="74")
+    loading_label = Label(sendsplash, text="Please wait, This may take a minute.", font="lucida 8 ", bg="white", fg="black")
+    loading_label.place(x="40", y="74")
     sendsplash.after(2000,submitalertmessage)
 
     sendsplash.mainloop()
@@ -1778,8 +1778,8 @@ def tryagainSplash():
 
     sending_label = Label(splashwin,text="Sending...",font="lucida 8 ",bg="white",fg="black")
     sending_label.place(x="117",y="60")
-    loading_label = Label(splashwin, text="Please wait", font="lucida 8 ", bg="white", fg="black")
-    loading_label.place(x="110", y="79")
+    loading_label = Label(splashwin, text="Please wait, This may take a minute.", font="lucida 8 ", bg="white", fg="black")
+    loading_label.place(x="40", y="79")
     splashwin.after(7000,submitalertmessage)
 
     splashwin.mainloop()
@@ -2289,6 +2289,7 @@ def sendbill():
     sendb.mainloop()
 
 def writeMessage():
+    global writemsg
     writemsg = Toplevel()
     window_width, window_height = 760, 350
     screen_width = writemsg.winfo_screenwidth()
@@ -2324,10 +2325,64 @@ def writeMessage():
     printbillbtn = Image.open("Images/printbill_btn.png")
     printbillbtn = ImageTk.PhotoImage(printbillbtn)
     writemsg.photo3 = printbillbtn
-    bill_print_btn = Button(writemsg, image=printbillbtn, bg="white", bd="0", activebackground='black',command=pdfGeneration)
+    bill_print_btn = Button(writemsg, image=printbillbtn, bg="white", bd="0", activebackground='black',command=printbillSplash)
     bill_print_btn.place(x="250", y="270")
 
     writemsg.mainloop()
+
+def printbillSplash():
+    global billing
+    billing = Toplevel()
+    window_width, window_height = 300, 100
+    screen_width = billing.winfo_screenwidth()
+    screen_height = billing.winfo_screenheight()
+    position_top = int(screen_height / 2 - window_height / 2)
+    position_right = int(screen_width / 2 - window_width / 2)
+    billing.geometry(f"{window_width}x{window_height}+{position_right}+{position_top}")
+
+    billing.configure(bg="white")
+    billing.resizable(width=False, height=False)
+    billing.overrideredirect(True)
+
+    splashframe = Frame(billing, highlightbackground="black", highlightthickness=3, width=300, height=110, bd="0",bg="white")
+    splashframe.pack()
+
+
+
+    file = "Images/preloader.gif"
+
+    info = Image.open(file)
+
+    frames = info.n_frames  # gives total number of frames that gif contains
+
+    # creating list of PhotoImage objects for each frames
+    im = [PhotoImage(file=file, format=f"gif -index {i}") for i in range(frames)]
+
+    count = 0
+    anim = None
+
+    def animation(count):
+        global anim
+        im2 = im[count]
+
+        gif_label.configure(image=im2)
+        count += 1
+        if count == frames:
+            count = 0
+        anim = billing.after(47, lambda: animation(count))
+
+    gif_label = Label(billing, image="", bd="0")
+    gif_label.place(x="75", y="25")
+    animation(count)
+
+    sending_label = Label(billing, text="Generating Bill...", font="lucida 8 ", bg="white", fg="black")
+    sending_label.place(x="100", y="53")
+    loading_label = Label(billing, text="Please wait", font="lucida 8 ", bg="white", fg="black")
+    loading_label.place(x="110", y="72")
+    billing.after(500,pdfGeneration)
+
+    billing.mainloop()
+
 
 def pdfGeneration():
     consumer_id = sendbillconid_entry.get()
@@ -2444,7 +2499,7 @@ def pdfGeneration():
         pdf.text(63, 62, f"{con_values[8]}")
 
     bill_details = cursor.execute(f"""
-                                   SELECT *  FROM CHARGE_MASTER_TRACK WHERE CON_ID = {consumer_id}
+                                   SELECT *  FROM CHARGE_MASTER_TRACK WHERE CON_ID = {consumer_id} AND BILL_DATE=(SELECT MAX(BILL_DATE) FROM CHARGE_MASTER_TRACK)
                                     """)
     bill_details_list = bill_details.fetchall()
     for details in bill_details_list:
@@ -2510,7 +2565,7 @@ def pdfGeneration():
     pdf.text(10, 151, "READING DATE")
 
     bill_details = cursor.execute(f"""
-                                   SELECT *  FROM CHARGE_MASTER_TRACK WHERE CON_ID = {consumer_id}
+                                   SELECT *  FROM CHARGE_MASTER_TRACK WHERE CON_ID = {consumer_id} AND BILL_DATE=(SELECT MAX(BILL_DATE) FROM CHARGE_MASTER_TRACK)
                                     """)
     bill_details_list = bill_details.fetchall()
     for details in bill_details_list:
@@ -2532,6 +2587,7 @@ def pdfGeneration():
         pdf.text(43, 127, f"{details[7]}/- Rs")
 
     pdf.output('C:/Users/Vandana/Documents/Clg Doc/OneDrive/ProjectGit/Electrica/Bill.pdf')
+    billing.destroy()
     webbrowser.open_new(r'file://C:/Users/Vandana/Documents/Clg Doc/OneDrive/ProjectGit/Electrica/Bill.pdf')
 
 def sendbillsplash():
@@ -2615,6 +2671,7 @@ def mailbill():
 def showpopup():
     sendsplash.destroy()
     messagebox.showinfo("Message","Mail send Successfully!")
+    writemsg.destroy()
 
 
 
