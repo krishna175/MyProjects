@@ -1503,7 +1503,7 @@ def updatenewreading():
     messagebox.showinfo("Message","Readings Update Successfully!")
     con.close()
 
-
+#Alert window
 
 def alerts():
     alertbox = Toplevel()
@@ -1540,19 +1540,43 @@ def alerts():
     alertmessage_label = Label(alertbox, text="ALERT MESSAGE", font="lucida 13 bold underline", bg="white", fg="blue4")
     alertmessage_label.place(x="280", y="180")
 
+    alertmsg1 = Image.open("Images/preload_alertmsg.png")
+    alertmsg1 = ImageTk.PhotoImage(alertmsg1)
+    alertbox.photo3 = alertmsg1
+    msg1_btn = Button(alertbox, image=alertmsg1, bg="white", bd="0",command=message1)
+    msg1_btn.place(x="203", y="230")
 
-    alert_text = Text(alertbox,font="lucida 10 bold ",width="40",height="5", bg="gray94",fg="black")
-    alert_text.place(x="200",y="230")
+    alertmsg2 = Image.open("Images/msg2.png")
+    alertmsg2 = ImageTk.PhotoImage(alertmsg2)
+    alertbox.photo3 = alertmsg2
+    msg2_btn = Button(alertbox, image=alertmsg2, bg="white", bd="0",command=message2)
+    msg2_btn.place(x="293", y="230")
+
+    alertmsg3 = Image.open("Images/msg3.png")
+    alertmsg3 = ImageTk.PhotoImage(alertmsg3)
+    alertbox.photo3 = alertmsg3
+    msg3_btn = Button(alertbox, image=alertmsg3, bg="white", bd="0",command=message3)
+    msg3_btn.place(x="383", y="230")
+
+    alertmsg4 = Image.open("Images/msg4.png")
+    alertmsg4 = ImageTk.PhotoImage(alertmsg4)
+    alertbox.photo3 = alertmsg4
+    msg4_btn = Button(alertbox, image=alertmsg4, bg="white", bd="0",command=message4)
+    msg4_btn.place(x="473", y="230")
+
+    global alert_text
+    alert_text = Text(alertbox,font="lucida 8 bold ",width="51",height="6", bg="gray94",fg="black")
+    alert_text.place(x="200",y="280")
 
     global website
     website = IntVar()
     websitelink = Checkbutton(alertbox, text="Include Website link. ", variable=website, font="lucida 7 ", bg="white", fg="black")
-    websitelink.place(x="200", y="340")
+    websitelink.place(x="200", y="380")
 
     global payment
     payment = IntVar()
     paymentlink = Checkbutton(alertbox, text="Include Payment site link. ", variable=payment, font="lucida 7 ", bg="white", fg="black")
-    paymentlink.place(x="200", y="365")
+    paymentlink.place(x="400", y="380")
 
     whatsappalert = Image.open("Images/alert_whatsapp1.png")
     whatsappalert = ImageTk.PhotoImage(whatsappalert)
@@ -1567,6 +1591,45 @@ def alerts():
     savechanges_receipt.place(x="200", y="430")
 
     alertbox.mainloop()
+
+# Message text for alert message
+def message1():
+    newtext="""Dear Consumer,
+we are experiencing service disruptions due to internal 
+agitation on past issues. Team Electrica is working to 
+resolve the issues at the earliest. 
+Regret the inconvenience caused, we will update you 
+on developments."""
+    alert_text.delete("1.0","end")
+    alert_text.config(alert_text.insert("1.0",newtext))
+
+
+def message2():
+    newtext = """Dear Consumer, 
+we are aware of the power interruption in your area 
+and are striving hard to restore supply by 01:21 AM. 
+Sorry for the inconvenience caused."""
+    alert_text.delete("1.0", "end")
+    alert_text.config(alert_text.insert("1.0", newtext))
+
+def message3():
+    newtext = """Dear Consumer,
+We have resorted to power supply switch off in your 
+area due to saftey reasons. We are monitoring the 
+situation and will restore the power supply post safety 
+checks of the system to avoid any mishaps.
+    """
+    alert_text.delete("1.0", "end")
+    alert_text.config(alert_text.insert("1.0", newtext))
+
+def message4():
+    newtext = """Dear Consumer,
+We have not received your bill paytment since 
+3 months.Please pay your bill through below link before 
+the due date to avoid power cut
+    """
+    alert_text.delete("1.0", "end")
+    alert_text.config(alert_text.insert("1.0", newtext))
 
 def submitalertmessage():
     try:
@@ -1601,7 +1664,7 @@ def submitalertmessage():
                             now = datetime.datetime.now()
                             import pywhatkit as kit
                             kit.sendwhatmsg(f"+91{i[2]}",f"🛑🛑🛑🛑🛑🛑🛑\n*Alert*\n{msg}{websitelink}{paymentlink}\n⚠⚠⚠⚠⚠⚠⚠",now.hour, now.minute+1)
-
+                            closesplash()
                     except Exception as e:
                         messagebox.showerror("ERROR","Network Error Occured\nPlease check your Internet connection and Try Again")
                         tryagainSplash()
@@ -1611,8 +1674,10 @@ def submitalertmessage():
         con.close()
     except Exception as e:
         messagebox.showerror("Error", "Some error occured.\n\n⭕ Enter valid details. \n⭕ Fields should not be empty.")
+        closesplash()
 
-
+def closesplash():
+    sendsplash.destroy()
 
 
 def sendingwmsg():
@@ -1668,6 +1733,7 @@ def sendingwmsg():
     sendsplash.mainloop()
 
 def tryagainSplash():
+    global splashwin
     splashwin = Toplevel()
     window_width, window_height = 300,110
     screen_width = splashwin.winfo_screenwidth()
@@ -1821,7 +1887,7 @@ def sendalertmail():
                 except Exception as e:
                     messagebox.showerror("ERROR","Network Error Occured\nPlease check your Internet connection and Try Again")
                     print(e)
-                    # tryagainSplash()
+
 
         cursor.close()
         con.close()
@@ -2253,7 +2319,7 @@ def writeMessage():
     mailbillbtn = Image.open("Images/mailbill_btn1.png")
     mailbillbtn = ImageTk.PhotoImage(mailbillbtn)
     writemsg.photo3 = mailbillbtn
-    bill_mail_btn = Button(writemsg, image=mailbillbtn, bg="white", bd="0", activebackground='black')
+    bill_mail_btn = Button(writemsg, image=mailbillbtn, bg="white", bd="0", activebackground='black',command=sendbillsplash)
     bill_mail_btn.place(x="400", y="270")
 
     printbillbtn = Image.open("Images/printbill_btn.png")
@@ -2445,7 +2511,7 @@ def pdfGeneration():
     pdf.text(10, 151, "READING DATE")
 
     bill_details = cursor.execute(f"""
-                                   SELECT *  FROM CHARGE_MASTER_TRACK WHERE CON_ID = 111116
+                                   SELECT *  FROM CHARGE_MASTER_TRACK WHERE CON_ID = {consumer_id}
                                     """)
     bill_details_list = bill_details.fetchall()
     for details in bill_details_list:
@@ -2466,8 +2532,91 @@ def pdfGeneration():
         pdf.set_font('helvetica', 'B', 9)
         pdf.text(43, 127, f"{details[7]}/- Rs")
 
-    pdf.output('C:/Users/Vandana/Documents/Clg Doc/OneDrive/ProjectGit/Electrica/pdf_1.pdf')
-    webbrowser.open_new(r'file://C:/Users/Vandana/Documents/Clg Doc/OneDrive/ProjectGit/Electrica/pdf_1.pdf')
+    pdf.output('C:/Users/Vandana/Documents/Clg Doc/OneDrive/ProjectGit/Electrica/Bill.pdf')
+    webbrowser.open_new(r'file://C:/Users/Vandana/Documents/Clg Doc/OneDrive/ProjectGit/Electrica/Bill.pdf')
+
+def sendbillsplash():
+    global sendsplash
+    sendsplash = Toplevel()
+    window_width, window_height = 300, 100
+    screen_width = sendsplash.winfo_screenwidth()
+    screen_height = sendsplash.winfo_screenheight()
+    position_top = int(screen_height / 2 - window_height / 2)
+    position_right = int(screen_width / 2 - window_width / 2)
+    sendsplash.geometry(f"{window_width}x{window_height}+{position_right}+{position_top}")
+
+    sendsplash.configure(bg="white")
+    sendsplash.resizable(width=False, height=False)
+    sendsplash.overrideredirect(True)
+
+    splashframe = Frame(sendsplash, highlightbackground="black", highlightthickness=3, width=300, height=110, bd="0",bg="white")
+    splashframe.pack()
+
+
+    file = "Images/loader2.gif"
+
+    info = Image.open(file)
+
+    frames = info.n_frames  # gives total number of frames that gif contains
+
+    # creating list of PhotoImage objects for each frames
+    im = [PhotoImage(file=file, format=f"gif -index {i}") for i in range(frames)]
+
+    count = 0
+    anim = None
+
+    def animation(count):
+        global anim
+        im2 = im[count]
+
+        gif_label.configure(image=im2)
+        count += 1
+        if count == frames:
+            count = 0
+        anim = sendsplash.after(50, lambda: animation(count))
+
+    gif_label = Label(sendsplash, image="", bd="0")
+    gif_label.place(x="110", y="3")
+    animation(count)
+
+    sending_label = Label(sendsplash, text="Sending...", font="lucida 8 ", bg="white", fg="black")
+    sending_label.place(x="117", y="55")
+    loading_label = Label(sendsplash, text="Please wait", font="lucida 8 ", bg="white", fg="black")
+    loading_label.place(x="110", y="74")
+    sendsplash.after(3000, mailbill)
+
+    sendsplash.mainloop()
+
+
+def mailbill():
+    consumer_id = sendbillconid_entry.get()
+    con = cx_Oracle.connect('system/12345@localhost:1521/xe')
+    cursor = con.cursor()
+    x = cursor.execute(f"SELECT * FROM ADD_CONSUMER WHERE CON_ID = {consumer_id}")
+    values = x.fetchall()
+    for i in values:
+        name = i[1]
+        supply = i[10]
+        requrement = i[14]
+        email = i[7]
+        print(name,supply,requrement,email)
+        # Create an object of sendpdf function
+        k = sendpdf("electrica.org@gmail.com",
+                    f"{email}",
+                    "Electrica@1234",
+                    "Electrica Bill",
+                    f"Dear {name} ,\nYour connection request for {supply} ({requrement}) current supply has been approved.\nConnection will be established within 24hrs.\n\nRegards,\nElectrica",
+                    "Bill",
+                    "C:/Users/Vandana/Documents/Clg Doc/OneDrive/ProjectGit/Electrica")
+
+    # sending an email
+        k.email_send()
+        showpopup()
+
+def showpopup():
+    sendsplash.destroy()
+    messagebox.showinfo("Message","Mail send Successfully!")
+
 
 
 homeWindow()
