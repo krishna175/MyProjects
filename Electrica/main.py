@@ -1664,7 +1664,7 @@ def submitalertmessage():
                             now = datetime.datetime.now()
                             import pywhatkit as kit
                             kit.sendwhatmsg(f"+91{i[2]}",f"🛑🛑🛑🛑🛑🛑🛑\n*Alert*\n{msg}{websitelink}{paymentlink}\n⚠⚠⚠⚠⚠⚠⚠",now.hour, now.minute+1)
-                            closesplash()
+
                     except Exception as e:
                         messagebox.showerror("ERROR","Network Error Occured\nPlease check your Internet connection and Try Again")
                         tryagainSplash()
@@ -1674,10 +1674,9 @@ def submitalertmessage():
         con.close()
     except Exception as e:
         messagebox.showerror("Error", "Some error occured.\n\n⭕ Enter valid details. \n⭕ Fields should not be empty.")
-        closesplash()
 
-def closesplash():
-    sendsplash.destroy()
+
+
 
 
 def sendingwmsg():
