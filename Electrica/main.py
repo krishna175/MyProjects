@@ -68,9 +68,12 @@ def billingSplash():
     sending_label.place(x="100", y="53")
     loading_label = Label(billing, text="Please wait", font="lucida 8 ", bg="white", fg="black")
     loading_label.place(x="110", y="72")
-    billing.after(5000,notifyrecmail)
+    billing.after(5000,monthbilling)
 
     billing.mainloop()
+
+def monthbilling():
+    messagebox.showinfo("Message","Bill Generated Successfully!")
 
 def sendmailsplash():
     global sendsplash
