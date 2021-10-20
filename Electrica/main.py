@@ -2277,7 +2277,7 @@ def sendbill():
     idnextbtn = Image.open("Images/next_btn1.png")
     idnextbtn = ImageTk.PhotoImage(idnextbtn)
     sendb.photo3 = idnextbtn
-    idnext = Button(sendb, image=idnextbtn, bg="white", bd="0", activebackground='black', command=writeMessage)
+    idnext = Button(sendb, image=idnextbtn, bg="white", bd="0", activebackground='black', command=sendbvalidate)
     idnext.place(x="540", y="127")
 
     bnonextbtn = Image.open("Images/next_btn1.png")
@@ -2287,6 +2287,23 @@ def sendbill():
     bnonext.place(x="540", y="187")
 
     sendb.mainloop()
+
+def sendbvalidate():
+    try:
+        consumer_id = sendbillconid_entry.get()
+        con = cx_Oracle.connect('system/12345@localhost:1521/xe')
+        cursor = con.cursor()
+        x = cursor.execute(f"SELECT COUNT(*) FROM ADD_CONSUMER WHERE CON_ID={consumer_id} ")
+        list1 = x.fetchall()
+        for i in list1:
+            if (i[0] == 0):
+                messagebox.showerror("Error", f"CON_ID {consumer_id} Does not exist. ")
+            else:
+                writeMessage()
+
+    except Exception as e:
+        messagebox.showerror("Error","Error occured\n\n ⭕ Entry field should not be Empty.\n ⭕ Enter Valid CON_ID")
+
 
 def writeMessage():
     global writemsg
@@ -2660,7 +2677,7 @@ def mailbill():
                     f"{email}",
                     "Electrica@1234",
                     "Electrica Bill",
-                    f"Dear {name} ,\nYour connection request for {supply} ({requrement}) current supply has been approved.\nConnection will be established within 24hrs.\n\nRegards,\nElectrica",
+                    f"Dear {name} ,\nThis is your Electricity Bill. Please download \nFor any complaints or queries visit our website. \nWebsite: https://www.adanielectricity.com/ \n\nRegards,\nElectrica.",
                     "Bill",
                     "C:/Users/Vandana/Documents/Clg Doc/OneDrive/ProjectGit/Electrica")
 
