@@ -13,7 +13,16 @@ import smtplib
 from email.message import EmailMessage
 from fpdf import FPDF
 
-
+print("""
+Welcome to 
+Electrica 2.0.1
+Devloped by HARIKRISHNAN SATHYAN (Bsc CS)
+-----------------------------------------
+Technologies used
+-> Python 3.9.6
+-> Oracle
+-----------------------------------------
+""")
 
 def notifyrecmail():
     messagebox.showinfo("Message","Mail send successfully!")
@@ -275,7 +284,7 @@ def homeWindow():
     home = Tk()
 
     home.configure(bg="white")
-    home.title('Electrica')
+    home.title('Electrica 2.0.1')
     home.iconbitmap("Images/icon2.ico")
     home.resizable(False, False)
     window_width, window_height = 885, 700
