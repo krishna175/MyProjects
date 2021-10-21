@@ -281,6 +281,7 @@ def sendeditmail():
         notifyrecmail()
 
 def homeWindow():
+    global home
     home = Tk()
 
     home.configure(bg="white")
@@ -297,17 +298,17 @@ def homeWindow():
 
     home.geometry(f"{window_width}x{window_height}+{position_right}+{position_top}")
 
-    temp_size = Image.open("Images/home_template2.png")
+    temp_size = Image.open("Images/home_template3.png")
     temp_resized = temp_size.resize((395, 704), Image.ANTIALIAS)
     template = ImageTk.PhotoImage(temp_resized)
     template_image = Label(home, image=template, borderwidth="0")
     template_image.place(x="-3", y="-3")
 
     backtemplate_size = Image.open("Images/backtemp1.png")
-    backtemplate_resized = backtemplate_size.resize((410, 700), Image.ANTIALIAS)
+    backtemplate_resized = backtemplate_size.resize((350, 690), Image.ANTIALIAS)
     backtemplate = ImageTk.PhotoImage(backtemplate_resized)
     backtemplate_image = Label(home, image=backtemplate, borderwidth="0")
-    backtemplate_image.place(x="430", y="0")
+    backtemplate_image.place(x="463", y="0")
 
     addcon_size = Image.open("Images/adconsumer_btn.png")
     addcon_resized = addcon_size.resize((220, 50), Image.ANTIALIAS)
@@ -334,39 +335,57 @@ def homeWindow():
     generatebill_resized = generatebill_size.resize((220, 50), Image.ANTIALIAS)
     generatebill_image = ImageTk.PhotoImage(generatebill_resized)
     Label(image=generatebill_image)
-    button_generatebill = Button(home, image=generatebill_image, borderwidth="0",command=billingSplash)
+    button_generatebill = Button(home, image=generatebill_image, borderwidth="0",activebackground="blue",command=billingSplash)
     button_generatebill.place(x=530, y=240)
 
     sendalert_size = Image.open("Images/sendalert_btn.png")
     sendalert_resized = sendalert_size.resize((220, 50), Image.ANTIALIAS)
     sendalert_image = ImageTk.PhotoImage(sendalert_resized)
     Label(image=sendalert_image)
-    button_sendalert = Button(home, image=sendalert_image, borderwidth="0",command=alerts)
+    button_sendalert = Button(home, image=sendalert_image, borderwidth="0",activebackground="blue",command=alerts)
     button_sendalert.place(x=530, y=310)
 
     defaulter_size = Image.open("Images/defaulters_btn.png")
     defaulter_resized = defaulter_size.resize((220, 50), Image.ANTIALIAS)
     defaulter_image = ImageTk.PhotoImage(defaulter_resized)
     Label(image=defaulter_image)
-    button_defaulter = Button(home, image=defaulter_image, borderwidth="0")
+    button_defaulter = Button(home, image=defaulter_image,activebackground="blue", borderwidth="0")
     button_defaulter.place(x=530, y=380)
 
     fraud_size = Image.open("Images/sendbill_btn.png")
     fraud_resized = fraud_size.resize((220, 50), Image.ANTIALIAS)
     fraud_image = ImageTk.PhotoImage(fraud_resized)
     Label(image=fraud_image)
-    button_fraud = Button(home, image=fraud_image, borderwidth="0",command=sendbill)
+    button_fraud = Button(home, image=fraud_image, borderwidth="0",activebackground="blue",command=sendbill)
     button_fraud.place(x=530, y=450)
 
     payment_size = Image.open( "Images/payment_btn.png")
     payment_resized = payment_size.resize((220, 50), Image.ANTIALIAS)
     payment_image = ImageTk.PhotoImage(payment_resized)
     Label(image=payment_image)
-    button_payment = Button(home, image=payment_image, borderwidth="0",command=billPayment)
+    button_payment = Button(home, image=payment_image, borderwidth="0",activebackground="blue",command=billPayment)
     button_payment.place(x=530, y=520)
+
+    exit_size = Image.open("Images/Exit_buttons.png")
+    exit_resized = exit_size.resize((65, 25), Image.ANTIALIAS)
+    exit_image = ImageTk.PhotoImage(exit_resized)
+    Label(image=exit_image)
+    button_exit = Button(home, image=exit_image, borderwidth="0", activebackground="blue",command=exitapp)
+    button_exit.place(x=805, y=660)
+
+    devinfo = Label(home,text="Developed by Harikrishnan Sathyan.",font="lucida 9 ",bg="white",fg="grey60")
+    devinfo.place(x=395,y=675)
 
     home.mainloop()
 
+def exitapp():
+    response = messagebox.askyesno("Electrica 2.0.1","Are you sure you want to quit? ")
+
+    if response == True:
+        home.destroy()
+
+    elif response == False:
+        pass
 
 def consumerEntry():
     global conentry
@@ -2295,7 +2314,7 @@ def sendbill():
     bnonextbtn = Image.open("Images/next_btn1.png")
     bnonextbtn = ImageTk.PhotoImage(bnonextbtn)
     sendb.photo3 = bnonextbtn
-    bnonext = Button(sendb, image=bnonextbtn, bg="white", bd="0", activebackground='black',command=sendbillno)
+    bnonext = Button(sendb, image=bnonextbtn, bg="white", bd="0", activebackground='black',command=billnovalidate)
     bnonext.place(x="540", y="187")
 
     sendb.mainloop()
@@ -2315,6 +2334,78 @@ def sendbvalidate():
 
     except Exception as e:
         messagebox.showerror("Error","Error occured\n\n ⭕ Entry field should not be Empty.\n ⭕ Enter Valid CON_ID")
+
+
+
+def billnovalidate():
+    try:
+        bill_no = sendbillbillno_entry.get()
+        con = cx_Oracle.connect('system/12345@localhost:1521/xe')
+        cursor = con.cursor()
+        x = cursor.execute(f"SELECT COUNT(*) FROM CHARGE_MASTER_TRACK WHERE BILL_NO={bill_no} ")
+        list1 = x.fetchall()
+        for i in list1:
+            if (i[0] == 0):
+                messagebox.showerror("Error", f"BILL_NO {bill_no} Does not exist. ")
+            else:
+                printbillnoSplash()
+
+    except Exception as e:
+        messagebox.showerror("Error","Error occured\n\n ⭕ Entry field should not be Empty.\n ⭕ Enter Valid CON_ID")
+
+def printbillnoSplash():
+    global billing
+    billing = Toplevel()
+    window_width, window_height = 300, 100
+    screen_width = billing.winfo_screenwidth()
+    screen_height = billing.winfo_screenheight()
+    position_top = int(screen_height / 2 - window_height / 2)
+    position_right = int(screen_width / 2 - window_width / 2)
+    billing.geometry(f"{window_width}x{window_height}+{position_right}+{position_top}")
+
+    billing.configure(bg="white")
+    billing.resizable(width=False, height=False)
+    billing.overrideredirect(True)
+
+    splashframe = Frame(billing, highlightbackground="black", highlightthickness=3, width=300, height=110, bd="0",bg="white")
+    splashframe.pack()
+
+
+
+    file = "Images/preloader.gif"
+
+    info = Image.open(file)
+
+    frames = info.n_frames  # gives total number of frames that gif contains
+
+    # creating list of PhotoImage objects for each frames
+    im = [PhotoImage(file=file, format=f"gif -index {i}") for i in range(frames)]
+
+    count = 0
+    anim = None
+
+    def animation(count):
+        global anim
+        im2 = im[count]
+
+        gif_label.configure(image=im2)
+        count += 1
+        if count == frames:
+            count = 0
+        anim = billing.after(47, lambda: animation(count))
+
+    gif_label = Label(billing, image="", bd="0")
+    gif_label.place(x="75", y="25")
+    animation(count)
+
+    sending_label = Label(billing, text="Generating Bill...", font="lucida 8 ", bg="white", fg="black")
+    sending_label.place(x="100", y="53")
+    loading_label = Label(billing, text="Please wait", font="lucida 8 ", bg="white", fg="black")
+    loading_label.place(x="110", y="72")
+    billing.after(500,sendbillno)
+
+    billing.mainloop()
+
 
 
 def writeMessage():
@@ -2911,6 +3002,7 @@ def sendbillno():
 
 
     pdf.output('C:/Users/Vandana/Documents/Clg Doc/OneDrive/ProjectGit/Electrica/pdf_1.pdf')
+    billing.destroy()
     webbrowser.open_new(r'file://C:/Users/Vandana/Documents/Clg Doc/OneDrive/ProjectGit/Electrica/pdf_1.pdf')
 
 
