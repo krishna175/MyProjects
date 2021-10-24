@@ -82,7 +82,7 @@ def billingSplash():
     billing.mainloop()
 
 def monthbilling():
-    messagebox.showinfo("Message","Bill Generated Successfully!")
+    messagebox.showinfo("Message",f"Bill Generated Successfully!\n\nBilling Month: {billmonth.get()}")
 
 def sendmailsplash():
     global sendsplash
@@ -335,7 +335,7 @@ def homeWindow():
     generatebill_resized = generatebill_size.resize((220, 50), Image.ANTIALIAS)
     generatebill_image = ImageTk.PhotoImage(generatebill_resized)
     Label(image=generatebill_image)
-    button_generatebill = Button(home, image=generatebill_image, borderwidth="0",activebackground="blue",command=billingSplash)
+    button_generatebill = Button(home, image=generatebill_image, borderwidth="0",activebackground="blue",command=generatebillWindow)
     button_generatebill.place(x=530, y=240)
 
     sendalert_size = Image.open("Images/sendalert_btn.png")
@@ -377,6 +377,43 @@ def homeWindow():
     devinfo.place(x=395,y=675)
 
     home.mainloop()
+
+def generatebillWindow():
+    billgenerate = Toplevel()
+    billgenerate.iconbitmap("Images/icon2.ico")
+    window_width, window_height = 500, 280
+    screen_width = billgenerate.winfo_screenwidth()
+    screen_height = billgenerate.winfo_screenheight()
+    position_top = int(screen_height / 2 - window_height / 2)
+    position_right = int(screen_width / 2 - window_width / 2)
+    billgenerate.geometry(f"{window_width}x{window_height}+{position_right}+{position_top}")
+    billgenerate.title("Generate Bill")
+    billgenerate.configure(bg="white")
+    billgenerate.resizable(width=False, height=False)
+
+    printbill_back = Image.open("Images/generatebill_background.png")
+    sendbillback = ImageTk.PhotoImage(printbill_back)
+    billgenerate.photo = sendbillback  # solution for bug in `PhotoImage`
+    sendbill_bg = Label(billgenerate, image=sendbillback, borderwidth="0")
+    sendbill_bg.place(x="2", y="2")
+
+    global billmonth
+    billing_month = Label(billgenerate, text="BILLING MONTH     :", font="lucida 12 bold", bg="white", fg="blue4")
+    billing_month.place(x="80", y="80")
+    list1 = ['JAN-21', 'FEB-21', 'MAR-21', 'APR-21', 'MAY-21', 'JUN-21', 'JUL-21', 'AUG-21', 'SEP-21', 'OCT-21', 'NOV-21', 'DEC-21']
+    billmonth = StringVar()
+    billmonth.set(" Select Month")
+    month_dropdown = OptionMenu(billgenerate, billmonth, *list1)
+    month_dropdown.config(bg="blue4", fg="white", width="9", font='lucida 8 bold', activebackground="dodger blue",activeforeground="black")
+    month_dropdown.place(x="290", y="76")
+
+    generatebillbtn = Image.open("Images/processbill_btn1.png")
+    generatebillbtn = ImageTk.PhotoImage(generatebillbtn)
+    billgenerate.photo3 = generatebillbtn
+    generatebill_btn = Button(billgenerate, image=generatebillbtn, bg="white", bd="0", activebackground='blue',command=billingSplash)
+    generatebill_btn.place(x="157", y="150")
+
+    billgenerate.mainloop()
 
 def exitapp():
     response = messagebox.askyesno("Electrica 2.0.1","Are you sure you want to quit? ")
@@ -2273,6 +2310,7 @@ def updateStatus():
 
 def sendbill():
     sendb = Toplevel()
+    sendb.iconbitmap("Images/icon2.ico")
     window_width, window_height = 760, 350
     screen_width = sendb.winfo_screenwidth()
     screen_height = sendb.winfo_screenheight()
@@ -2324,19 +2362,20 @@ def sendbill():
 
 def sendbvalidate():
     try:
-        consumer_id = sendbillconid_entry.get()
+        consumers_id = sendbillconid_entry.get()
         con = cx_Oracle.connect('system/12345@localhost:1521/xe')
         cursor = con.cursor()
-        x = cursor.execute(f"SELECT COUNT(*) FROM ADD_CONSUMER WHERE CON_ID={consumer_id} ")
+        x = cursor.execute(f"SELECT COUNT(*) FROM ADD_CONSUMER WHERE CON_ID={consumers_id} ")
         list1 = x.fetchall()
         for i in list1:
             if (i[0] == 0):
-                messagebox.showerror("Error", f"CON_ID {consumer_id} Does not exist. ")
+                messagebox.showerror("Error", f"CON_ID {consumers_id} Does not exist. ")
             else:
                 writeMessage()
 
     except Exception as e:
         messagebox.showerror("Error","Error occured\n\n ⭕ Entry field should not be Empty.\n ⭕ Enter Valid CON_ID")
+        print(e)
 
 
 
@@ -2414,6 +2453,7 @@ def printbillnoSplash():
 def writeMessage():
     global writemsg
     writemsg = Toplevel()
+    writemsg.iconbitmap("Images/icon2.ico")
     window_width, window_height = 760, 350
     screen_width = writemsg.winfo_screenwidth()
     screen_height = writemsg.winfo_screenheight()
@@ -3003,7 +3043,8 @@ def sendbillno():
         pdf.set_font('helvetica', 'B', 9)
         pdf.text(43, 127, f"{details[7]}/- Rs")
 
-
+    cursor.close()
+    con.close()
     pdf.output('C:/Users/Vandana/Documents/Clg Doc/OneDrive/ProjectGit/Electrica/pdf_1.pdf')
     billing.destroy()
     webbrowser.open_new(r'file://C:/Users/Vandana/Documents/Clg Doc/OneDrive/ProjectGit/Electrica/pdf_1.pdf')
