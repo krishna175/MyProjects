@@ -1411,8 +1411,11 @@ def insertreadings():
         y = cursor.execute(f"SELECT COUNT(*) FROM METER_READING WHERE CON_ID={conid} and reading_date='{entry_date}'")
         readings = y.fetchall()
 
-        z = cursor.execute(f"select count(*) from charge_master_track  where last_day(bill_date)>'{entry_date}'")
+        z = cursor.execute(f"select count(*) from charge_master_track  where BILL_MONTH='{month.get()}'")
         cnt = z.fetchall()
+
+        # l = cursor.execute(f"SELECT CURRENT_READING FROM METER_READING WHERE CURRENT_READING=(SELECT MAX(CURRENT_READING) FROM METER_READING WHERE CON_ID={conid})")
+        # val = l.fetchall()
 
         for i in list1:
             for value in readings:
