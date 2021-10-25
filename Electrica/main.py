@@ -568,9 +568,6 @@ def submit():
         addconsumerdb()
 
 def addconsumerdb():
-    # conname_entry, conphone_entry, address1_entry, address2_entry, address3_entry, pincode_entry, email_entry, aadhar_entry, pan_entry, click, var, meter_entry
-
-
 
     name = conname_entry.get()
     phone = conphone_entry.get()
