@@ -3108,7 +3108,7 @@ def defaulterWindow():
     billdefaultersbtn = Image.open("Images/defaulters_defaulters.png")
     billdefaultersbtn = ImageTk.PhotoImage(billdefaultersbtn)
     defaulterwin.photo3 = billdefaultersbtn
-    billdefaulters_btn = Button(defaulterwin, image=billdefaultersbtn, bg="white", bd="0", activebackground='blue', command=report_generated)
+    billdefaulters_btn = Button(defaulterwin, image=billdefaultersbtn, bg="white", bd="0", activebackground='blue', command=report_defaulter)
     billdefaulters_btn.place(x="157", y="190")
 
     defaulterwin.mainloop()
@@ -3116,9 +3116,12 @@ def defaulterWindow():
 def report_paid():
     defaulters("SELECT C.CON_ID, C.CON_NAME,M.SUPPLY_TYPE,M.CHARGE_AMT,M.BILL_STATUS,M.BILL_MONTH FROM ADD_CONSUMER C, CHARGE_MASTER_TRACK M WHERE C.CON_ID=M.CON_ID AND BILL_STATUS='PAID' ORDER BY CON_ID")
 def report_unpaid():
-    defaulters("SELECT C.CON_ID, C.CON_NAME,M.SUPPLY_TYPE,M.CHARGE_AMT,M.BILL_STATUS,M.BILL_MONTH FROM ADD_CONSUMER C, CHARGE_MASTER_TRACK M WHERE C.CON_ID=M.CON_ID AND BILL_STATUS='UNPAID' ORDER BY CON_ID")
+    defaulters("SELECT C.CON_ID, C.CON_NAME,M.SUPPLY_TYPE,M.CHARGE_AMT,M.BILL_STATUS,M.BILL_MONTH FROM ADD_CONSUMER C, CHARGE_MASTER_TRACK M WHERE C.CON_ID=M.CON_ID AND BILL_STATUS='UNPAID' AND BILL_DATE=(SELECT MAX(BILL_DATE) FROM CHARGE_MASTER_TRACK) ORDER BY CON_ID")
 def report_generated():
     defaulters("SELECT C.CON_ID, C.CON_NAME,M.SUPPLY_TYPE,M.CHARGE_AMT,M.BILL_STATUS,M.BILL_MONTH FROM ADD_CONSUMER C, CHARGE_MASTER_TRACK M WHERE C.CON_ID=M.CON_ID ORDER BY CON_ID")
+def report_defaulter():
+    defaulters("SELECT C.CON_ID, C.CON_NAME,M.SUPPLY_TYPE,M.CHARGE_AMT,M.BILL_STATUS,M.BILL_MONTH FROM ADD_CONSUMER C, CHARGE_MASTER_TRACK M WHERE C.CON_ID=M.CON_ID AND C.CON_ID IN(SELECT CON_ID FROM CHARGE_MASTER_TRACK WHERE  BILL_STATUS = 'UNPAID' AND BILL_DATE>ADD_MONTHS(TRUNC(SYSDATE,'MM'),-3) GROUP BY CON_ID HAVING COUNT(*)>=3)ORDER BY CON_ID")
+
 
 def defaulters(query):
     global viewreport
