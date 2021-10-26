@@ -92,6 +92,7 @@ def monthbilling():
         print(billingmonth)
         cursor.callproc(f"CHARGE_CALCULATE",[billingmonth])
         messagebox.showinfo("Message",f"Bill Generated Successfully!\n\nBilling Month: {billingmonth}")
+        billgenerate.destroy()
         cursor.close()
         con.commit()
         con.close()
@@ -395,6 +396,7 @@ def homeWindow():
     home.mainloop()
 
 def generatebillWindow():
+    global billgenerate
     billgenerate = Toplevel()
     billgenerate.iconbitmap("Images/icon2.ico")
     window_width, window_height = 500, 280
@@ -2687,6 +2689,7 @@ def pdfGeneration():
         pdf.text(155, 138, f"{details[3]}")
         pdf.text(155, 144, f"{details[5]}")
         pdf.text(40, 280, f"{str(details[2])[:11]}")
+        pdf.text(40, 284.5, f"{str(details[16])[:11]}")
         bill_amt = str(details[7])
         o = ".00"
         pdf.text(115, 280, f"{bill_amt}{o}/- Rs")
@@ -2700,6 +2703,7 @@ def pdfGeneration():
 
         pdf.text(65, 148, f"{details[0]}")
         pdf.text(65, 159, f"{details[15]}")
+        pdf.text(65, 170, f"{str(details[16])[:11]}")
 
     pdf.add_page()
 
@@ -2950,6 +2954,7 @@ def sendbillno():
         pdf.text(155, 138, f"{details[3]}")
         pdf.text(155, 144, f"{details[5]}")
         pdf.text(40, 280, f"{str(details[2])[:11]}")
+        pdf.text(40, 284.5, f"{str(details[16])[:11]}")
         bill_amt = str(details[7])
         o = ".00"
         pdf.text(115, 280, f"{bill_amt}{o}/- Rs")
@@ -2966,6 +2971,7 @@ def sendbillno():
 
         pdf.text(65, 148, f"{details[0]}")
         pdf.text(65, 159, f"{details[15]}")
+        pdf.text(65, 170, f"{str(details[16])[:11]}")
 
         consumer_details = cursor.execute(f"""
                                        SELECT CON_NAME,PHONE_NO,ADDRESS1,ADDRESS2,ADDRESS3,PIN_CODE,EMAILID,AADHAR,

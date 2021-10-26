@@ -127,6 +127,7 @@ for details in bill_details_list:
     pdf.text(155, 138, f"{details[3]}")
     pdf.text(155, 144, f"{details[5]}")
     pdf.text(40, 280, f"{str(details[2])[:11]}")
+    pdf.text(40,284.5,f"{str(details[16])[:11]}")
     bill_amt = str(details[7])
     o = ".00"
     pdf.text(115, 280, f"{bill_amt}{o}/- Rs")
@@ -143,6 +144,7 @@ for details in bill_details_list:
 
     pdf.text(65, 148, f"{details[0]}")
     pdf.text(65, 159, f"{details[15]}")
+    pdf.text(65, 170, f"{str(details[16])[:11]}")
 
 
 
