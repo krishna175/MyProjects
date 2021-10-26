@@ -12,6 +12,9 @@ import datetime
 import smtplib
 from email.message import EmailMessage
 from fpdf import FPDF
+from  tkinter import ttk
+import tkinter as tk
+
 
 print("""
 Welcome to 
@@ -82,7 +85,20 @@ def billingSplash():
     billing.mainloop()
 
 def monthbilling():
-    messagebox.showinfo("Message",f"Bill Generated Successfully!\n\nBilling Month: {billmonth.get()}")
+    billingmonth = billmonth.get()
+    try:
+        con = cx_Oracle.connect('system/12345@localhost:1521/xe')
+        cursor = con.cursor()
+        print(billingmonth)
+        cursor.callproc(f"CHARGE_CALCULATE",[billingmonth])
+        messagebox.showinfo("Message",f"Bill Generated Successfully!\n\nBilling Month: {billingmonth}")
+        cursor.close()
+        con.commit()
+        con.close()
+    except Exception as e :
+        messagebox.showerror("Error",f"Bill already generated for {billingmonth}")
+        print(e)
+        print(billingmonth)
 
 def sendmailsplash():
     global sendsplash
@@ -349,7 +365,7 @@ def homeWindow():
     defaulter_resized = defaulter_size.resize((220, 50), Image.ANTIALIAS)
     defaulter_image = ImageTk.PhotoImage(defaulter_resized)
     Label(image=defaulter_image)
-    button_defaulter = Button(home, image=defaulter_image,activebackground="blue", borderwidth="0")
+    button_defaulter = Button(home, image=defaulter_image,activebackground="blue", borderwidth="0",command=defaulterWindow)
     button_defaulter.place(x=530, y=380)
 
     fraud_size = Image.open("Images/sendbill_btn.png")
@@ -3046,8 +3062,132 @@ def sendbillno():
     billing.destroy()
     webbrowser.open_new(r'file://C:/Users/Vandana/Documents/Clg Doc/OneDrive/ProjectGit/Electrica/pdf_1.pdf')
 
+def defaulterWindow():
+    defaulterwin = Toplevel()
+    defaulterwin.iconbitmap("Images/icon2.ico")
+    window_width, window_height = 500, 280
+    screen_width = defaulterwin.winfo_screenwidth()
+    screen_height = defaulterwin.winfo_screenheight()
+    position_top = int(screen_height / 2 - window_height / 2)
+    position_right = int(screen_width / 2 - window_width / 2)
+    defaulterwin.geometry(f"{window_width}x{window_height}+{position_right}+{position_top}")
+    defaulterwin.title("Generate Report")
+    defaulterwin.configure(bg="white")
+    defaulterwin.resizable(width=False, height=False)
+
+    printbill_back = Image.open("Images/generatebill_background.png")
+    sendbillback = ImageTk.PhotoImage(printbill_back)
+    defaulterwin.photo = sendbillback  # solution for bug in `PhotoImage`
+    sendbill_bg = Label(defaulterwin, image=sendbillback, borderwidth="0")
+    sendbill_bg.place(x="2", y="2")
+
+    billgeneratedbtn = Image.open("Images/defaulters_billgeneratedss1.png")
+    billgeneratedbtn = ImageTk.PhotoImage(billgeneratedbtn)
+    defaulterwin.photo3 = billgeneratedbtn
+    billgenerated_btn = Button(defaulterwin, image=billgeneratedbtn, bg="white", bd="0", activebackground='blue', command=report_generated)
+    billgenerated_btn.place(x="157", y="40")
+
+    billpayedbtn = Image.open("Images/defaulters_billpayed.png")
+    billpayedbtn = ImageTk.PhotoImage(billpayedbtn)
+    defaulterwin.photo3 = billpayedbtn
+    billpayed_btn = Button(defaulterwin, image=billpayedbtn, bg="white", bd="0", activebackground='blue',command=report_paid)
+    billpayed_btn.place(x="157", y="90")
+
+    billunpaidbtn = Image.open("Images/defaulters_billunpaid.png")
+    billunpaidbtn = ImageTk.PhotoImage(billunpaidbtn)
+    defaulterwin.photo3 = billunpaidbtn
+    billunpaid_btn = Button(defaulterwin, image=billunpaidbtn, bg="white", bd="0", activebackground='blue',command=report_unpaid)
+    billunpaid_btn.place(x="157", y="140")
+
+    billdefaultersbtn = Image.open("Images/defaulters_defaulters.png")
+    billdefaultersbtn = ImageTk.PhotoImage(billdefaultersbtn)
+    defaulterwin.photo3 = billdefaultersbtn
+    billdefaulters_btn = Button(defaulterwin, image=billdefaultersbtn, bg="white", bd="0", activebackground='blue', command=report_generated)
+    billdefaulters_btn.place(x="157", y="190")
+
+    defaulterwin.mainloop()
+
+def report_paid():
+    defaulters("SELECT C.CON_ID, C.CON_NAME,M.SUPPLY_TYPE,M.CHARGE_AMT,M.BILL_STATUS,M.BILL_MONTH FROM ADD_CONSUMER C, CHARGE_MASTER_TRACK M WHERE C.CON_ID=M.CON_ID AND BILL_STATUS='PAID' ORDER BY CON_ID")
+def report_unpaid():
+    defaulters("SELECT C.CON_ID, C.CON_NAME,M.SUPPLY_TYPE,M.CHARGE_AMT,M.BILL_STATUS,M.BILL_MONTH FROM ADD_CONSUMER C, CHARGE_MASTER_TRACK M WHERE C.CON_ID=M.CON_ID AND BILL_STATUS='UNPAID' ORDER BY CON_ID")
+def report_generated():
+    defaulters("SELECT C.CON_ID, C.CON_NAME,M.SUPPLY_TYPE,M.CHARGE_AMT,M.BILL_STATUS,M.BILL_MONTH FROM ADD_CONSUMER C, CHARGE_MASTER_TRACK M WHERE C.CON_ID=M.CON_ID ORDER BY CON_ID")
+
+def defaulters(query):
+    viewreport = tk.Tk()
+    viewreport.title("Report")
+    viewreport.configure(bg="white")
+
+    window_width, window_height = 850, 350
+    screen_width = viewreport.winfo_screenwidth()
+    screen_height = viewreport.winfo_screenheight()
+    position_top = int(screen_height / 2 - window_height / 2)
+    position_right = int(screen_width / 2 - window_width / 2)
+    viewreport.geometry(f"{window_width}x{window_height}+{position_right}+{position_top}")
+    viewreport.resizable(width=False, height=False)
+    viewreport.iconbitmap('Images/icon2.ico')
+
+
+    con = cx_Oracle.connect('system/12345@localhost:1521/xe')
+
+    cursor = con.cursor()
+    cursor.execute(f"""{query}
+                    """)
+
+    tree= ttk.Treeview(viewreport)
+    tree['show']='headings'
+
+    tabtheme = ttk.Style(viewreport)
+    tabtheme.theme_use("clam")
+
+    tabtheme.configure(".",font=('lucida',10))
+    tabtheme.configure("Treeview.Heading",foreground="blue",font=('lucida',9,'bold'))
+
+
+    # defining the number of columns
+    tree["columns"]=("CON_ID","CON_NAME","SUPPLY_TYPE","CHARGE_AMT","BILL_STATUS","BILL_MONTH")
+
+    #assigning the width minwidth and anchor to the specified columns
+    tree.column("CON_ID",width=80,minwidth=80,anchor=tk.CENTER)
+    tree.column("CON_NAME",width=200,minwidth=200,anchor=tk.CENTER)
+    tree.column("SUPPLY_TYPE",width=150,minwidth=150,anchor=tk.CENTER)
+    tree.column("CHARGE_AMT",width=100,minwidth=100,anchor=tk.CENTER)
+    tree.column("BILL_STATUS",width=100,minwidth=100,anchor=tk.CENTER)
+    tree.column("BILL_MONTH",width=100,minwidth=100,anchor=tk.CENTER)
+
+    #assigning the heading of the columns
+    tree.heading("CON_ID",text="CON_ID",anchor=tk.CENTER)
+    tree.heading("CON_NAME",text="NAME",anchor=tk.CENTER)
+    tree.heading("SUPPLY_TYPE",text="TYPE",anchor=tk.CENTER)
+    tree.heading("CHARGE_AMT",text="AMOUNT",anchor=tk.CENTER)
+    tree.heading("BILL_STATUS",text="STATUS",anchor=tk.CENTER)
+    tree.heading("BILL_MONTH",text="MONTH",anchor=tk.CENTER)
+
+
+
+    i = 0
+    rupee_symbol = u"\u20B9"
+
+    for ro in  cursor:
+        tree.insert('',i,text="",values=(ro[0],ro[1],ro[2],rupee_symbol+" "+str(ro[3]),ro[4],ro[5]))
+        i+=1
+
+    # VERTICAL SCROLLBAR
+    scroll = ttk.Scrollbar(viewreport,orient="vertical")
+    scroll.configure(command=tree.yview)
+    tree.configure(yscrollcommand=scroll.set)
+    scroll.pack(fill="y",side="right")
+
+    tree.place(x=50,y=10)
+
+    viewreport.mainloop()
+
+
+
 
 homeWindow()
+# defaunterWindow()
 
 # writeMessage()
 # pay()
