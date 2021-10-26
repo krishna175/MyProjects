@@ -3129,7 +3129,7 @@ def defaulters(query):
     viewreport.title("Report")
     viewreport.configure(bg="white")
 
-    window_width, window_height = 850, 350
+    window_width, window_height = 850, 300
     screen_width = viewreport.winfo_screenwidth()
     screen_height = viewreport.winfo_screenheight()
     position_top = int(screen_height / 2 - window_height / 2)
@@ -3189,7 +3189,7 @@ def defaulters(query):
     tree.configure(yscrollcommand=scroll.set)
     scroll.pack(fill="y",side="right")
 
-    tree.place(x=50,y=10)
+    tree.place(x=45,y=20)
 
     viewreport.mainloop()
 
