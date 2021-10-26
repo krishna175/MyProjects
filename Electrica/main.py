@@ -3115,7 +3115,8 @@ def report_generated():
     defaulters("SELECT C.CON_ID, C.CON_NAME,M.SUPPLY_TYPE,M.CHARGE_AMT,M.BILL_STATUS,M.BILL_MONTH FROM ADD_CONSUMER C, CHARGE_MASTER_TRACK M WHERE C.CON_ID=M.CON_ID ORDER BY CON_ID")
 
 def defaulters(query):
-    viewreport = tk.Tk()
+    global viewreport
+    viewreport = tk.Toplevel()
     viewreport.title("Report")
     viewreport.configure(bg="white")
 
@@ -3150,7 +3151,7 @@ def defaulters(query):
 
     #assigning the width minwidth and anchor to the specified columns
     tree.column("CON_ID",width=80,minwidth=80,anchor=tk.CENTER)
-    tree.column("CON_NAME",width=200,minwidth=200,anchor=tk.CENTER)
+    tree.column("CON_NAME",width=220,minwidth=220,anchor=tk.CENTER)
     tree.column("SUPPLY_TYPE",width=150,minwidth=150,anchor=tk.CENTER)
     tree.column("CHARGE_AMT",width=100,minwidth=100,anchor=tk.CENTER)
     tree.column("BILL_STATUS",width=100,minwidth=100,anchor=tk.CENTER)
