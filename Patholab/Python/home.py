@@ -121,12 +121,12 @@ def homewindow():
     button_vaccineslot = Button(home,image=vaccineslot_image,borderwidth="0",command=age_pin)
     button_vaccineslot.place(x=530,y=520)
 
-    exit_size = Image.open("C:/Users/Vandana/Documents/Clg Doc/OneDrive/Patholab/Python/Images/exit_button.png")
-    exit_resized = exit_size.resize((60,40), Image.ANTIALIAS)
+    exit_size = Image.open("Images/Exit_buttons.png")
+    exit_resized = exit_size.resize((60,25), Image.ANTIALIAS)
     exit_image = ImageTk.PhotoImage(exit_resized)
     Label(image=exit_image)
     button_exit = Button(home,image=exit_image,borderwidth="0",activebackground='red',command=home.destroy)
-    button_exit.place(x=818,y=605)
+    button_exit.place(x=818,y=620)
 
     home.mainloop()
 
@@ -887,7 +887,6 @@ def loading():
     global load
     load = Tk()
     load.title("")
-    # load.wm_attributes("-transparentcolor", "black")
     load.configure(bg="white")
     window_width, window_height = 400, 120
 
@@ -994,7 +993,7 @@ def slotbook():
             break
         else:
             mixer.init()
-            mixer.music.load('C:/gui/beep.wav')
+            mixer.music.load('Images/beep.wav')
             mixer.music.play()
             slot.destroy()
             loading()
