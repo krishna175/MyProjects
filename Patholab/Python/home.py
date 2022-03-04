@@ -1,5 +1,5 @@
 from tkinter import *
-
+import os
 from PIL import ImageTk,Image
 import tkinter as tk
 import sqlite3
@@ -323,6 +323,7 @@ def sendmail():
         recepent_email = str(i[1])
         recepent_test = str(i[2])
 
+
     # Create an object of sendpdf function
         k = sendpdf("patholabsreport@gmail.com",
                     f"{recepent_email}",
@@ -330,8 +331,69 @@ def sendmail():
                     "Patholab Receipt",
                     f"Dear {recepent_name},\nThis is the receipt for your {recepent_test} test.\nTest report will be sent to you before 6:00 PM. \n\nRegards,\nPatholab",
                     "Receipt",
-                    "C:/Users/Vandana/Documents/Clg Doc/OneDrive/Patholab/Python")
+                    f"{os.getcwd()}"
+                    )
+        print(os.getcwd())
+    # sending an email
+        k.email_send()
+        # showmailmessage()
+        notifyrecmail()
 
+
+def eprintrec():
+    path = "Receipt_i.png"
+    titles =pygetwindow.getAllTitles()
+
+    # x1, y1 = width, height = pygetwindow.getWindowsWithTitle('Patholab')
+    window = pygetwindow.getWindowsWithTitle('RECEIPT')[0]
+    x1 = window.left+10
+    y1 = window.top+50
+    height = window.height-110
+    width = window.width-20
+    x2 = x1 + width
+    y2 = y1 + height
+
+    pyautogui.screenshot(path)
+
+    im = Image.open(path)
+    im = im.crop((x1,y1,x2,y2))
+    im.save(path)
+    # im.show(path)
+    epdfconv()
+
+def epdfconv():
+    filename = "Receipt_i.png"
+    image = Image.open(filename)
+
+    if image.mode == "RGBA":
+        image = image.convert("RGB")
+    output = "Receipt.pdf"
+    image.save(output, "PDF", resolution=100.0)
+    sendeditmail()
+
+
+def sendeditmail():
+    from pdf_mail import sendpdf
+    conn = sqlite3.connect('Labdb.db')
+    cur = conn.cursor()
+    rvalue = cur.execute(f"SELECT NAME,EMAIL_ID,TEST FROM Receipt WHERE REC_ID = {recid} ")
+    emaildetails = rvalue.fetchall()
+    for i in emaildetails:
+        recepent_name = str(i[0])
+        recepent_email = str(i[1])
+        recepent_test = str(i[2])
+
+
+    # Create an object of sendpdf function
+        k = sendpdf("patholabsreport@gmail.com",
+                    f"{recepent_email}",
+                    "Patho@175",
+                    "Patholab Receipt",
+                    f"Dear {recepent_name},\nThis is the receipt for your {recepent_test} test.\nTest report will be sent to you before 6:00 PM. \n\nRegards,\nPatholab",
+                    "Receipt",
+                    f"{os.getcwd()}"
+                    )
+        print(os.getcwd())
     # sending an email
         k.email_send()
         # showmailmessage()
@@ -494,12 +556,12 @@ def sstopdf():
     printreceipt()
 
 def printreceipt():
-    webbrowser.open_new(r'file://Receipt.pdf')
+    webbrowser.open_new(r'Receipt.pdf')
 def showmailmessage():
     messagebox.showinfo("Message", "Mail sent successfully!")
 
 def editReceipt():
-    global select_rec_entry, edrecwin
+    global select_rec_entry, edrecwin, select_rec_id
     edrecwin = Toplevel()
     edrecwin.configure(bg="white")
     window_width, window_height = 570,360
@@ -535,7 +597,7 @@ def editReceipt():
     edrecwin.mainloop()
 
 def showReceipt():
-    global rdisplay
+    global rdisplay,recid
     recid = int(select_rec_entry.get())
     rdisplay = Toplevel()
 
@@ -572,7 +634,7 @@ def showReceipt():
     emailsymbol = Image.open("Images/mail_button.png")
     emailsymbol = ImageTk.PhotoImage(emailsymbol)
     rdisplay.photo = emailsymbol  # solution for bug in `PhotoImage`
-    email_button = Button(rdisplay, image=emailsymbol, bg="white", bd="0", activebackground='blue', command=printrec)
+    email_button = Button(rdisplay, image=emailsymbol, bg="white", bd="0", activebackground='blue', command=eprintrec)
     email_button.place(x="350", y="580")
 
     printsymbol = Image.open("Images/print_button_size.png")
