@@ -63,21 +63,21 @@ def homewindow():
     backtemplate_image.place(x="430",y="0")
 
 
-    receipt_size = Image.open("C:/Users/Vandana/Documents/Clg Doc/OneDrive/Patholab/Python/Images/receipt_button.png")
+    receipt_size = Image.open("Images/receipt_button.png")
     receipt_resized = receipt_size.resize((220,50), Image.ANTIALIAS)
     receipt_image = ImageTk.PhotoImage(receipt_resized)
     Label(image=receipt_image)
     button_receipt = Button(home,image=receipt_image,borderwidth="0",activebackground='blue',command=receiptEntry)
     button_receipt.place(x=530,y=30)
 
-    editreceipt_size = Image.open("C:/Users/Vandana/Documents/Clg Doc/OneDrive/Patholab/Python/Images/editreceipt_button.png")
+    editreceipt_size = Image.open("Images/editreceipt_button.png")
     editreceipt_resized = editreceipt_size.resize((220,50), Image.ANTIALIAS)
     editreceipt_image = ImageTk.PhotoImage(editreceipt_resized)
     Label(image=editreceipt_image)
     button_editreceipt = Button(home,image=editreceipt_image,borderwidth="0",activebackground='blue',command=editReceipt)
     button_editreceipt.place(x=530,y=100)
 
-    taketest_size = Image.open("C:/Users/Vandana/Documents/Clg Doc/OneDrive/Patholab/Python/Images/taketest_button.png")
+    taketest_size = Image.open("Images/taketest_button.png")
     taketest_resized = taketest_size.resize((220,50), Image.ANTIALIAS)
     taketest_image = ImageTk.PhotoImage(taketest_resized)
     Label(image=taketest_image)
@@ -86,35 +86,35 @@ def homewindow():
 
 
 
-    covtest_size = Image.open("C:/Users/Vandana/Documents/Clg Doc/OneDrive/Patholab/Python/Images/covidtest_button.png")
+    covtest_size = Image.open("Images/covidtest_button.png")
     covtest_resized = covtest_size.resize((220,50), Image.ANTIALIAS)
     covtest_image = ImageTk.PhotoImage(covtest_resized)
     Label(image=covtest_image)
     button_covtest = Button(home,image=covtest_image,borderwidth="0")
     button_covtest.place(x=530,y=240)
 
-    sendreport_size = Image.open("C:/Users/Vandana/Documents/Clg Doc/OneDrive/Patholab/Python/Images/sendreport_button.png")
+    sendreport_size = Image.open("Images/sendreport_button.png")
     sendreport_resized = sendreport_size.resize((220,50), Image.ANTIALIAS)
     sendreport_image = ImageTk.PhotoImage(sendreport_resized)
     Label(image=sendreport_image)
     button_sendreport = Button(home,image=sendreport_image,borderwidth="0")
     button_sendreport.place(x=530,y=310)
 
-    deletereport_size = Image.open("C:/Users/Vandana/Documents/Clg Doc/OneDrive/Patholab/Python/Images/deletereport_button.png")
+    deletereport_size = Image.open("Images/deletereport_button.png")
     deletereport_resized = deletereport_size.resize((220,50), Image.ANTIALIAS)
     deletereport_image = ImageTk.PhotoImage(deletereport_resized)
     Label(image=deletereport_image)
     button_deletereport = Button(home,image=deletereport_image,borderwidth="0")
     button_deletereport.place(x=530,y=380)
 
-    vcard_size = Image.open("C:/Users/Vandana/Documents/Clg Doc/OneDrive/Patholab/Python/Images/vcard_button.png")
+    vcard_size = Image.open("Images/vcard_button.png")
     vcard_resized = vcard_size.resize((220,50), Image.ANTIALIAS)
     vcard_image = ImageTk.PhotoImage(vcard_resized)
     Label(image=vcard_image)
     button_vcard = Button(home,image=vcard_image,borderwidth="0")
     button_vcard.place(x=530,y=450)
 
-    vaccineslot_size = Image.open("C:/Users/Vandana/Documents/Clg Doc/OneDrive/Patholab/Python/Images/vaccineslot_button.png")
+    vaccineslot_size = Image.open("Images/vaccineslot_button.png")
     vaccineslot_resized = vaccineslot_size.resize((220,50), Image.ANTIALIAS)
     vaccineslot_image = ImageTk.PhotoImage(vaccineslot_resized)
     Label(image=vaccineslot_image)
@@ -282,7 +282,7 @@ def showmessage():
     displayReceipt()
 
 def printrec():
-    path = "C:/Users/Vandana/Documents/Clg Doc/OneDrive/Patholab/Python/Receipt_i.png"
+    path = "Receipt_i.png"
     titles =pygetwindow.getAllTitles()
 
     # x1, y1 = width, height = pygetwindow.getWindowsWithTitle('Patholab')
@@ -303,12 +303,12 @@ def printrec():
     pdfconv()
 
 def pdfconv():
-    filename = "C:/Users/Vandana/Documents/Clg Doc/OneDrive/Patholab/Python/Receipt_i.png"
+    filename = "Receipt_i.png"
     image = Image.open(filename)
 
     if image.mode == "RGBA":
         image = image.convert("RGB")
-    output = "C:/Users/Vandana/Documents/Clg Doc/OneDrive/Patholab/Python/Receipt.pdf"
+    output = "Receipt.pdf"
     image.save(output, "PDF", resolution=100.0)
     sendmail()
 
@@ -352,31 +352,31 @@ def displayReceipt():
     rdisplay.resizable(width=False, height=False)
     rdisplay.iconbitmap('C:/gui/icon4.ico')
 
-    rdisplay_top = Image.open("C:/Users/Vandana/Documents/Clg Doc/OneDrive/Patholab/Python/Images/receipt_temp.png")
+    rdisplay_top = Image.open("Images/receipt_temp.png")
     rephoto = ImageTk.PhotoImage(rdisplay_top)
     rdisplay.photo = rephoto  # solution for bug in `PhotoImage`
     receipt_toplogo = Label(rdisplay, image=rephoto, borderwidth="0")
     receipt_toplogo.place(x="37", y="15")
 
-    rdisplay_down = Image.open("C:/Users/Vandana/Documents/Clg Doc/OneDrive/Patholab/Python/Images/Receipt_temp_ss_down.png")
+    rdisplay_down = Image.open("Images/Receipt_temp_ss_down.png")
     rephoto2 = ImageTk.PhotoImage(rdisplay_down)
     rdisplay.photo2 = rephoto2  # solution for bug in `PhotoImage`
     receipt_downlogo = Label(rdisplay, image=rephoto2, borderwidth="0")
     receipt_downlogo.place(x="37", y="450")
 
-    gpay_logo = Image.open("C:/Users/Vandana/Documents/Clg Doc/OneDrive/Patholab/Python/Images/payment_image.png")
+    gpay_logo = Image.open("Images/payment_image.png")
     gpay_logo = ImageTk.PhotoImage(gpay_logo)
     rdisplay.photo2 = gpay_logo  # solution for bug in `PhotoImage`
     rec_gpay_logo = Label(rdisplay, image=gpay_logo, borderwidth="0", bg="white")
     rec_gpay_logo.place(x="100", y="225")
 
-    emailsymbol = Image.open("C:/Users/Vandana/Documents/Clg Doc/OneDrive/Patholab/Python/Images/mail_button.png")
+    emailsymbol = Image.open("Images/mail_button.png")
     emailsymbol = ImageTk.PhotoImage(emailsymbol)
     rdisplay.photo = emailsymbol  # solution for bug in `PhotoImage`
     email_button = Button(rdisplay, image=emailsymbol, bg="white", bd="0",activebackground='blue',command=printrec)
     email_button.place(x="350", y="580")
 
-    printsymbol = Image.open("C:/Users/Vandana/Documents/Clg Doc/OneDrive/Patholab/Python/Images/print_button_size.png")
+    printsymbol = Image.open("Images/print_button_size.png")
     printsymbol = ImageTk.PhotoImage(printsymbol)
     rdisplay.photo = printsymbol  # solution for bug in `PhotoImage`
     print_button = Button(rdisplay, image=printsymbol, bg="white", bd="0",activebackground='blue',command=priss)
@@ -463,7 +463,7 @@ def displayReceipt():
 
 
 def priss():
-    path = "C:/Users/Vandana/Documents/Clg Doc/OneDrive/Patholab/Python/Receipt_i.png"
+    path = "Receipt_i.png"
     titles =pygetwindow.getAllTitles()
 
     # x1, y1 = width, height = pygetwindow.getWindowsWithTitle('Patholab')
@@ -484,17 +484,17 @@ def priss():
     sstopdf()
 
 def sstopdf():
-    filename = "C:/Users/Vandana/Documents/Clg Doc/OneDrive/Patholab/Python/Receipt_i.png"
+    filename = "Receipt_i.png"
     image = Image.open(filename)
 
     if image.mode == "RGBA":
         image = image.convert("RGB")
-    output = "C:/Users/Vandana/Documents/Clg Doc/OneDrive/Patholab/Python/Receipt.pdf"
+    output = "Receipt.pdf"
     image.save(output, "PDF", resolution=100.0)
     printreceipt()
 
 def printreceipt():
-    webbrowser.open_new(r'file://C:/Users/Vandana/Documents/Clg Doc/OneDrive/Patholab/Python/Receipt.pdf')
+    webbrowser.open_new(r'file://Receipt.pdf')
 def showmailmessage():
     messagebox.showinfo("Message", "Mail sent successfully!")
 
@@ -509,7 +509,7 @@ def editReceipt():
     position_right = int(screen_width / 2 - window_width / 2)
     edrecwin.geometry(f"{window_width}x{window_height}+{position_right}+{position_top}")
 
-    reditselectionimg = Image.open("C:/Users/Vandana/Documents/Clg Doc/OneDrive/Patholab/Python/Images/backnew_3.png")
+    reditselectionimg = Image.open("Images/backnew_3.png")
     rebg = ImageTk.PhotoImage(reditselectionimg)
     edrecwin.photo = rebg  # solution for bug in `PhotoImage`
     receipt_editlogo = Label(edrecwin, image=rebg, borderwidth="0")
@@ -520,13 +520,13 @@ def editReceipt():
     select_rec_entry = Entry(edrecwin,font="lucida 13 bold",width="14",bg="grey93",bd="3")
     select_rec_entry.place(x="270",y="95")
 
-    showreceiptbtn = Image.open("C:/Users/Vandana/Documents/Clg Doc/OneDrive/Patholab/Python/Images/showReceipt.png")
+    showreceiptbtn = Image.open("Images/showReceipt.png")
     showreceiptbtn = ImageTk.PhotoImage(showreceiptbtn)
     edrecwin.photo = showreceiptbtn  # solution for bug in `PhotoImage`
     showrecbtn = Button(edrecwin, image=showreceiptbtn, bg="white", bd="0", activebackground='blue',command=showReceipt)
     showrecbtn.place(x="190", y="160")
 
-    editrecimg = Image.open("C:/Users/Vandana/Documents/Clg Doc/OneDrive/Patholab/Python/Images/editReceipt.png")
+    editrecimg = Image.open("Images/editReceipt.png")
     editrecimg = ImageTk.PhotoImage(editrecimg)
     edrecwin.photo = editrecimg  # solution for bug in `PhotoImage`
     editrecbtn = Button(edrecwin, image=editrecimg, bg="white", bd="0", activebackground='blue',command=recUpdate)
@@ -551,31 +551,31 @@ def showReceipt():
     rdisplay.resizable(width=False, height=False)
     rdisplay.iconbitmap('C:/gui/icon4.ico')
 
-    rdisplay_top = Image.open("C:/Users/Vandana/Documents/Clg Doc/OneDrive/Patholab/Python/Images/receipt_temp.png")
+    rdisplay_top = Image.open("Images/receipt_temp.png")
     rephoto = ImageTk.PhotoImage(rdisplay_top)
     rdisplay.photo = rephoto  # solution for bug in `PhotoImage`
     receipt_toplogo = Label(rdisplay, image=rephoto, borderwidth="0")
     receipt_toplogo.place(x="37", y="15")
 
-    rdisplay_down = Image.open("C:/Users/Vandana/Documents/Clg Doc/OneDrive/Patholab/Python/Images/Receipt_temp_ss_down.png")
+    rdisplay_down = Image.open("Images/Receipt_temp_ss_down.png")
     rephoto2 = ImageTk.PhotoImage(rdisplay_down)
     rdisplay.photo2 = rephoto2  # solution for bug in `PhotoImage`
     receipt_downlogo = Label(rdisplay, image=rephoto2, borderwidth="0")
     receipt_downlogo.place(x="37", y="450")
 
-    gpay_logo = Image.open("C:/Users/Vandana/Documents/Clg Doc/OneDrive/Patholab/Python/Images/payment_image.png")
+    gpay_logo = Image.open("Images/payment_image.png")
     gpay_logo = ImageTk.PhotoImage(gpay_logo)
     rdisplay.photo2 = gpay_logo  # solution for bug in `PhotoImage`
     rec_gpay_logo = Label(rdisplay, image=gpay_logo, borderwidth="0", bg="white")
     rec_gpay_logo.place(x="100", y="225")
 
-    emailsymbol = Image.open("C:/Users/Vandana/Documents/Clg Doc/OneDrive/Patholab/Python/Images/mail_button.png")
+    emailsymbol = Image.open("Images/mail_button.png")
     emailsymbol = ImageTk.PhotoImage(emailsymbol)
     rdisplay.photo = emailsymbol  # solution for bug in `PhotoImage`
     email_button = Button(rdisplay, image=emailsymbol, bg="white", bd="0", activebackground='blue', command=printrec)
     email_button.place(x="350", y="580")
 
-    printsymbol = Image.open("C:/Users/Vandana/Documents/Clg Doc/OneDrive/Patholab/Python/Images/print_button_size.png")
+    printsymbol = Image.open("Images/print_button_size.png")
     printsymbol = ImageTk.PhotoImage(printsymbol)
     rdisplay.photo = printsymbol  # solution for bug in `PhotoImage`
     print_button = Button(rdisplay, image=printsymbol, bg="white", bd="0", activebackground='blue',command=priss)
@@ -838,7 +838,7 @@ def takeTest():
     tktest.resizable(width=False, height=False)
     tktest.iconbitmap('C:/gui/icon4.ico')
 
-    taketest_temp = Image.open("C:/Users/Vandana/Documents/Clg Doc/OneDrive/Patholab/Python/Images/taketest_template.png")
+    taketest_temp = Image.open("Images/taketest_template.png")
     tktesttemp = ImageTk.PhotoImage(taketest_temp)
     tktest.photo = tktesttemp  # solution for bug in `PhotoImage`
     receipt_toplogo = Label(tktest, image=tktesttemp, borderwidth="0")
