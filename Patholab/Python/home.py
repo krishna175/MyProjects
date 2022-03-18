@@ -1068,6 +1068,40 @@ def slotbook():
             time.sleep(0)
 
 
-homewindow()
+def vcard_entry():
+    ventry = Tk()
+    ventry.iconbitmap("Images/icon4.ico")
+    ventry.config(bg="white")
+    window_width, window_height = 700, 400
+
+    screen_width = ventry.winfo_screenwidth()
+    screen_height = ventry.winfo_screenheight()
+
+    position_top = int(screen_height / 2 - window_height / 2)
+    position_right = int(screen_width / 2 - window_width / 2)
+
+    ventry.geometry(f"{window_width}x{window_height}+{position_right}+{position_top}")
+
+    ventry.title("V-CARD")
+
+
+
+    rentry_top = Image.open("Images/vcard_bg.png")
+    rephoto = ImageTk.PhotoImage(rentry_top)
+    ventry.photo = rephoto  # solution for bug in `PhotoImage`
+    receipt_toplogo = Label(ventry, image=rephoto, borderwidth="0")
+    receipt_toplogo.place(x="25", y="10")
+
+    patient_name = Label(ventry, text="NAME: HARIKRISHNAN SATHYAN ", font="lucida 10 bold", bg= 'white', fg="blue4")
+    patient_name.place(x="260", y="70")
+
+
+    ventry.mainloop()
+
+
+# homewindow()
+
+vcard_entry()
+
 # receiptEntry()
 # displayReceipt()
