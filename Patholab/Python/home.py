@@ -213,7 +213,7 @@ def receiptEntry():
 
     rec_email = Label(rentry, text="e-mail id : ", font="lucida 12 bold", bg="white", fg="blue4")
     rec_email.place(x="300", y="400")
-    recemail_entry = Entry(rentry, width="30",font="lucida 12", bd="3")
+    # recemail_entry = Entry(rentry, width="30",font="lucida 12", bd="3")
     recemail_entry.place(x="420", y="400")
 
     submitsymbol = Image.open("Images/submit_button.png")
@@ -1092,8 +1092,40 @@ def vcard_entry():
     receipt_toplogo = Label(ventry, image=rephoto, borderwidth="0")
     receipt_toplogo.place(x="25", y="10")
 
-    patient_name = Label(ventry, text="NAME: HARIKRISHNAN SATHYAN ", font="lucida 10 bold", bg= 'white', fg="blue4")
-    patient_name.place(x="260", y="70")
+    v_name = Label(ventry, text="NAME                :  ", font="lucida 9 bold", bg= 'white', fg="blue4")
+    v_name.place(x="260", y="70")
+    v_name_entry = Entry(ventry, width="30", font="lucida 8 bold", bd="3")
+    v_name_entry.place(x="380", y="70")
+
+    v_age = Label(ventry, text="AGE                   :  ", font="lucida 9 bold", bg='white', fg="blue4")
+    v_age.place(x="260", y="100")
+    v_age_entry = Entry(ventry, width="7", font="lucida 8 bold", bd="3")
+    v_age_entry.place(x="380", y="100")
+
+    v_aadhar = Label(ventry, text="AADHAAR NO   : 682981917161 ", font="lucida 9 bold", bg='white', fg="blue4")
+    v_aadhar.place(x="260", y="130")
+    v_age_entry = Entry(ventry, width="15", font="lucida 8 bold", bd="3")
+    v_age_entry.place(x="380", y="130")
+
+    v_vaccine = Label(ventry, text="VACCINE           : COVISHIELD ", font="lucida 9 bold", bg='white', fg="blue4")
+    v_vaccine.place(x="260", y="160")
+
+    vaccine_names = ['COVISHIELD','COVAXIN','PFIZER','SPUTNIK V']
+    click = StringVar()
+    click.set("Select Test")
+    test_dropdown = OptionMenu(ventry, click, *vaccine_names)
+    test_dropdown.config(bg="blue4", fg="white",height="0", width="20",font='lucida 5 bold', activebackground="dodger blue", activeforeground="black")
+    test_dropdown.place(x="380", y="160")
+
+    v_phone = Label(ventry, text="PHONE NO       :", font="lucida 9 bold", bg='white', fg="blue4")
+    v_phone.place(x="260", y="190")
+    v_age_entry = Entry(ventry, width="15", font="lucida 8 bold", bd="3")
+    v_age_entry.place(x="380", y="190")
+
+    v_vaccinator = Label(ventry, text="VACCINATOR'S NAME  :", font="lucida 9 bold", bg='white', fg="blue4")
+    v_vaccinator.place(x="260", y="220")
+    v_age_entry = Entry(ventry, width="25", font="lucida 8 bold", bd="3")
+    v_age_entry.place(x="440", y="220")
 
 
     ventry.mainloop()
