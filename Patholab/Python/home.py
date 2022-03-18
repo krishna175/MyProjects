@@ -16,6 +16,7 @@ from pygame import mixer
 from datetime import datetime, timedelta
 import webbrowser
 import tkinter as tk
+from tkinter import filedialog
 
 
 
@@ -1092,46 +1093,112 @@ def vcard_entry():
     receipt_toplogo = Label(ventry, image=rephoto, borderwidth="0")
     receipt_toplogo.place(x="25", y="10")
 
+    exit_size = Image.open("Images/Choose_file_btn.png")
+    exit_resized = exit_size.resize((100, 30), Image.ANTIALIAS)
+    exit_image = ImageTk.PhotoImage(exit_resized)
+    Label(image=exit_image)
+    button_exit = Button(ventry, image=exit_image, borderwidth="0", activebackground='blue',command=browseImage)
+    button_exit.place(x=87, y=195)
+
     v_name = Label(ventry, text="NAME                :  ", font="lucida 9 bold", bg= 'white', fg="blue4")
-    v_name.place(x="260", y="70")
-    v_name_entry = Entry(ventry, width="30", font="lucida 8 bold", bd="3")
-    v_name_entry.place(x="380", y="70")
+    v_name.place(x="260", y="100")
+    v_name_entry = Entry(ventry, width="35", font="lucida 8 bold", bd="3")
+    v_name_entry.place(x="380", y="100")
 
     v_age = Label(ventry, text="AGE                   :  ", font="lucida 9 bold", bg='white', fg="blue4")
-    v_age.place(x="260", y="100")
+    v_age.place(x="260", y="130")
     v_age_entry = Entry(ventry, width="7", font="lucida 8 bold", bd="3")
-    v_age_entry.place(x="380", y="100")
-
-    v_aadhar = Label(ventry, text="AADHAAR NO   : 682981917161 ", font="lucida 9 bold", bg='white', fg="blue4")
-    v_aadhar.place(x="260", y="130")
-    v_age_entry = Entry(ventry, width="15", font="lucida 8 bold", bd="3")
     v_age_entry.place(x="380", y="130")
 
+    v_aadhar = Label(ventry, text="AADHAAR NO   : 682981917161 ", font="lucida 9 bold", bg='white', fg="blue4")
+    v_aadhar.place(x="260", y="160")
+    v_age_entry = Entry(ventry, width="15", font="lucida 8 bold", bd="3")
+    v_age_entry.place(x="380", y="160")
+
     v_vaccine = Label(ventry, text="VACCINE           : COVISHIELD ", font="lucida 9 bold", bg='white', fg="blue4")
-    v_vaccine.place(x="260", y="160")
+    v_vaccine.place(x="260", y="190")
 
     vaccine_names = ['COVISHIELD','COVAXIN','PFIZER','SPUTNIK V']
     click = StringVar()
     click.set("Select Test")
     test_dropdown = OptionMenu(ventry, click, *vaccine_names)
-    test_dropdown.config(bg="blue4", fg="white",height="0", width="20",font='lucida 5 bold', activebackground="dodger blue", activeforeground="black")
-    test_dropdown.place(x="380", y="160")
+    test_dropdown.config(bg="blue4", fg="white",height="0", width="15",font='lucida 5 bold', activebackground="dodger blue", activeforeground="black")
+    test_dropdown.place(x="379", y="187")
 
     v_phone = Label(ventry, text="PHONE NO       :", font="lucida 9 bold", bg='white', fg="blue4")
-    v_phone.place(x="260", y="190")
+    v_phone.place(x="260", y="220")
     v_age_entry = Entry(ventry, width="15", font="lucida 8 bold", bd="3")
-    v_age_entry.place(x="380", y="190")
+    v_age_entry.place(x="380", y="220")
 
     v_vaccinator = Label(ventry, text="VACCINATOR'S NAME  :", font="lucida 9 bold", bg='white', fg="blue4")
-    v_vaccinator.place(x="260", y="220")
+    v_vaccinator.place(x="260", y="250")
     v_age_entry = Entry(ventry, width="25", font="lucida 8 bold", bd="3")
-    v_age_entry.place(x="440", y="220")
+    v_age_entry.place(x="440", y="250")
 
+    global label_file_explorer
+    label_file_explorer = Label(ventry,
+                                text="",font="lucida 5 bold",
+                                width=23, height=3,
+                                fg="black",bg="white",)
+    label_file_explorer.place(x="77",y="230")
 
     ventry.mainloop()
 
 
+def browseImage():
+    global filename
+    filename = filedialog.askopenfilename(initialdir="/",
+                                          title="Select a File",
+                                          filetypes=(("Image files",
+                                                      "*.png*"),
+                                                     ("all files",
+                                                      "*.*")))
+
+    # Change label contents
+    imagelocation_count = filename.rfind("/")
+    global image_name
+    image_name = filename[(imagelocation_count + 1):]
+    label_file_explorer.configure(text="File Opened: " + image_name)
+    print(filename)
+    print(image_name)
+
+
 # homewindow()
+
+def generateid():
+    home = Toplevel()
+
+    home.configure(bg="white")
+    home.title('Electrica 2.0.1')
+
+    home.resizable(False, False)
+    window_width, window_height = 500, 240
+
+    screen_width = home.winfo_screenwidth()
+    screen_height = home.winfo_screenheight()
+
+    position_top = int(screen_height / 2 - window_height / 2)
+    position_right = int(screen_width / 2 - window_width / 2)
+
+    home.geometry(f"{window_width}x{window_height}+{position_right}+{position_top}")
+
+    # readings = Image.open(f"Hari.png")
+    # reading = ImageTk.PhotoImage(readings)
+    # home.photo = reading  # solution for bug in `PhotoImage`
+    # receipt_toplo = Label(home, image=reading, borderwidth="0")
+    # receipt_toplo.place(x="37", y="300")
+    splashframe = Frame(home, highlightbackground="grey", highlightthickness=3, width=110, height=140, bd="0",bg="white")
+    splashframe.place(x=15, y=35)
+
+    conentry_top = Image.open(f"{filename}")
+    imagesize = conentry_top.resize((100, 130), Image.ANTIALIAS)
+    entrytop = ImageTk.PhotoImage(imagesize)
+    home.photo = entrytop  # solution for bug in `PhotoImage`
+    receipt = Label(home, image=entrytop, borderwidth="0")
+    receipt.place(x="20", y="40")
+    print(image_name)
+    print(filename)
+    home.mainloop()
 
 vcard_entry()
 

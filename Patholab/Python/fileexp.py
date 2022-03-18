@@ -60,7 +60,8 @@ def idcard():
     home.photo = entrytop  # solution for bug in `PhotoImage`
     receipt = Label(home, image=entrytop, borderwidth="0")
     receipt.place(x="20", y="40")
-
+    print(image_name)
+    print(filename)
     home.mainloop()
 
 def mainwindow():
