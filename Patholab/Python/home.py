@@ -1185,7 +1185,7 @@ def vcard_db():
 
         conn = sqlite3.connect('Labdb.db')
         cur = conn.cursor()
-        cur.execute(f"INSERT INTO VCARD VALUES((SELECT max (VID)+1 from VCARD),'{name}',{age},{aadhar},{phone},'{vaccine}','{vaccinator}','{image_name}')")  # get method gets values from the variable
+        cur.execute(f"INSERT INTO VCARD VALUES((SELECT max (VID)+1 from VCARD),'{name}',{age},{aadhar},'{vaccine}',{phone},'{vaccinator}','{image_name}')")  # get method gets values from the variable
         cur.close()
         conn.commit()
         conn.close()
@@ -1200,7 +1200,7 @@ def vcard_db():
 
 def generateid():
     try:
-        ventry.destroy()
+        # ventry.destroy()
         global myid
         myid = Toplevel()
         myid.iconbitmap("Images/icon4.ico")
@@ -1223,12 +1223,36 @@ def generateid():
         receipt_toplogo = Label(myid, image=rephoto, borderwidth="0")
         receipt_toplogo.place(x="25", y="10")
 
-        conentry_top = Image.open(f"{filename}")
+        # conentry_top = Image.open(f"{filename}")
+        conentry_top = Image.open(f"Images/Harikrishnan.png")
         imagesize = conentry_top.resize((136, 176), Image.ANTIALIAS)
         entrytop = ImageTk.PhotoImage(imagesize)
         myid.photo = entrytop  # solution for bug in `PhotoImage`
         receipt = Label(myid, image=entrytop, borderwidth="0")
         receipt.place(x="70", y="91.5")
+
+        v_name = Label(myid, text="NAME                :  ", font="lucida 9 bold", bg='white', fg="blue4")
+        v_name.place(x="260", y="100")
+
+
+        v_age = Label(myid, text="AGE                   :  ", font="lucida 9 bold", bg='white', fg="blue4")
+        v_age.place(x="260", y="130")
+
+
+        v_aadhar = Label(myid, text="AADHAAR NO   : 682981917161 ", font="Corbel 9 bold", bg='white', fg="blue4")
+        v_aadhar.place(x="260", y="160")
+
+
+        v_vaccine = Label(myid, text="VACCINE           : COVISHIELD ", font="lucida 9 bold", bg='white', fg="blue4")
+        v_vaccine.place(x="260", y="190")
+
+
+        v_phone = Label(myid, text="PHONE NO       :", font="lucida 9 bold", bg='white', fg="blue4")
+        v_phone.place(x="260", y="220")
+
+
+        v_vaccinator = Label(myid, text="VACCINATOR'S NAME  :", font="lucida 9 bold", bg='white', fg="blue4")
+        v_vaccinator.place(x="260", y="250")
 
         myid.mainloop()
 
@@ -1247,8 +1271,8 @@ def generateid():
 #     except Exception as e:
 #
 
-vcard_entry()
-# generateid()
+# vcard_entry()
+generateid()
 # receiptEntry()
 # displayReceipt()
 
