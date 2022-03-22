@@ -18,7 +18,7 @@ import webbrowser
 import tkinter as tk
 from tkinter import filedialog
 from  tkinter import ttk
-from xlsxwriter.workbook import Workbook
+from xlsxwriter import Workbook
 
 
 

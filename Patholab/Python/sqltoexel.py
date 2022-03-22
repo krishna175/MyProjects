@@ -1,5 +1,5 @@
 import sqlite3
-from xlsxwriter.workbook import Workbook
+from xlsxwriter import Workbook
 workbook = Workbook('Daily Report.xlsx')
 worksheet = workbook.add_worksheet()
 
