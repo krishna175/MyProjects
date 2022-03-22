@@ -1,3 +1,5 @@
+import os
+
 import cx_Oracle
 from fpdf import FPDF
 import webbrowser
@@ -222,6 +224,6 @@ for details in bill_details_list:
 
 
 
-
-pdf.output('C:/Users/Vandana/Documents/Clg Doc/OneDrive/ProjectGit/Electrica/pdf_1.pdf')
-webbrowser.open_new(r'file://C:/Users/Vandana/Documents/Clg Doc/OneDrive/ProjectGit/Electrica/pdf_1.pdf')
+directory = os.getcwd()
+pdf.output('Patient Report.pdf')
+webbrowser.open_new(r'Patient Report.pdf')
