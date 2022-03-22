@@ -323,19 +323,22 @@ def sendmail():
 
 
     # Create an object of sendpdf function
-        k = sendpdf("patholabsreport@gmail.com",
-                    f"{recepent_email}",
-                    "Patho@175",
-                    "Patholab Receipt",
-                    f"Dear {recepent_name},\nThis is the receipt for your {recepent_test} test.\nTest report will be sent to you before 6:00 PM. \n\nRegards,\nPatholab",
-                    "Receipt",
-                    f"{os.getcwd()}"
-                    )
-        print(os.getcwd())
-    # sending an email
-        k.email_send()
-        # showmailmessage()
-        notifyrecmail()
+        try:
+            k = sendpdf("patholabsreport@gmail.com",
+                        f"{recepent_email}",
+                        "Patho@175",
+                        "Patholab Receipt",
+                        f"Dear {recepent_name},\nThis is the receipt for your {recepent_test} test.\nTest report will be sent to you before 6:00 PM. \n\nRegards,\nPatholab",
+                        "Receipt",
+                        f"{os.getcwd()}"
+                        )
+            print(os.getcwd())
+            # sending an email
+            k.email_send()
+            # showmailmessage()
+            notifyrecmail()
+        except Exception as e:
+            messagebox.showerror("Error ⚠", f"Poor network connection, Please try again later.\n\n{e} ")
 
 
 def eprintrec():
@@ -383,19 +386,22 @@ def sendeditmail():
 
 
     # Create an object of sendpdf function
-        k = sendpdf("patholabsreport@gmail.com",
-                    f"{recepent_email}",
-                    "Patho@175",
-                    "Patholab Receipt",
-                    f"Dear {recepent_name},\nThis is the receipt for your {recepent_test} test.\nTest report will be sent to you before 6:00 PM. \n\nRegards,\nPatholab",
-                    "Receipt",
-                    f"{os.getcwd()}"
-                    )
-        print(os.getcwd())
-    # sending an email
-        k.email_send()
-        # showmailmessage()
-        notifyrecmail()
+        try:
+            k = sendpdf("patholabsreport@gmail.com",
+                        f"{recepent_email}",
+                        "Patho@175",
+                        "Patholab Receipt",
+                        f"Dear {recepent_name},\nThis is the receipt for your {recepent_test} test.\nTest report will be sent to you before 6:00 PM. \n\nRegards,\nPatholab",
+                        "Receipt",
+                        f"{os.getcwd()}"
+                        )
+            print(os.getcwd())
+            # sending an email
+            k.email_send()
+            # showmailmessage()
+            notifyrecmail()
+        except Exception as e:
+            messagebox.showerror("Error ⚠", f"Poor network connection, Please try again later. ")
 
 def displayReceipt():
     rdisplay = Toplevel()
@@ -884,9 +890,10 @@ def showupdatemessage():
     showReceipt()
 
 def takeTest():
+    global tktest
     tktest = Toplevel()
-
-    window_width, window_height = 850, 750
+    global tt_recid_entry, tt_hemo_entry, tt_rbc_entry,tt_pcv_entry,tt_mcv_entry,tt_mch_entry,tt_wbc_entry, tt_neuro_entry,tt_eosino_entry,tt_baso_entry,tt_lympho_entry,tt_mano_entry,tt_platelet_entry
+    window_width, window_height = 850, 754
     screen_width = tktest.winfo_screenwidth()
     screen_height = tktest.winfo_screenheight()
     position_top = int(screen_height / 2 - window_height / 2)
@@ -904,8 +911,8 @@ def takeTest():
     receipt_toplogo = Label(tktest, image=tktesttemp, borderwidth="0")
     receipt_toplogo.place(x="-3", y="0")
 
-    splashframe = Frame(tktest, highlightbackground="blue4", highlightthickness=3, width=490, height=625, bd="0",bg="white")
-    splashframe.place(x="350", y="110")
+    splashframe = Frame(tktest, highlightbackground="blue4", highlightthickness=3, width=490, height=590, bd="0",bg="white")
+    splashframe.place(x="350", y="114")
 
     tt_recid = Label(tktest, text="REC_ID : ", font="lucida 12 bold", bg='white', fg="blue4")
     tt_recid.place(x="350", y="25")
@@ -976,18 +983,48 @@ def takeTest():
     tt_platelet_entry = Entry(tktest, width="10", font="lucida 10 bold", bd="3", bg="grey94")
     tt_platelet_entry.place(x="700", y="670")
 
+    submitsymbol = Image.open("Images/submit_button.png")
+    submitsymbol = ImageTk.PhotoImage(submitsymbol)
+    tktest.photo3 = submitsymbol
+    submit_receipt = Button(tktest, image=submitsymbol, bg="white", bd="0", activebackground='green',command=testEntryinsertdb)
+    submit_receipt.place(x="540", y="710")
 
     tktest.mainloop()
 
 
-
-
-
-
-
-
-
-
+def testEntryinsertdb():
+    try:
+        recid = tt_recid_entry.get()
+        hemo = tt_hemo_entry.get()
+        rbc = tt_rbc_entry.get()
+        pcv = tt_pcv_entry.get()
+        mcv = tt_mcv_entry.get()
+        mch = tt_mch_entry.get()
+        wbc = tt_wbc_entry.get()
+        neuro = tt_neuro_entry.get()
+        eosino = tt_eosino_entry.get()
+        baso = tt_baso_entry.get()
+        lympho = tt_lympho_entry.get()
+        mano = tt_mano_entry.get()
+        platelet = tt_platelet_entry.get()
+        conn = sqlite3.connect('Labdb.db')
+        cur = conn.cursor()
+        testid = cur.execute(f"SELECT COUNT(*) FROM RECEIPT WHERE REC_ID = {recid} ")
+        ridvalidate= testid.fetchall()
+        for i in ridvalidate:
+            if(i[0]==0):
+                messagebox.showerror("Error", f"REC_ID {recid} Does not exist. \n\n⭕ Enter valid REC_ID ")
+                break
+            else:
+                cur.execute(f"INSERT INTO Report VALUES({recid},{hemo},{rbc},{pcv},{mcv},{mch},{wbc},{neuro},{eosino},{baso},{lympho},{mano},{platelet})")
+                cur.close()
+                conn.commit()
+                messagebox.showinfo("Message", "Data processed successfully!")
+                tktest.destroy()
+                conn.close()
+    except Exception as e:
+        messagebox.showerror("Error","Some Error Occured \n\n ⭕ Entry field should not be Empty.\n ⭕ Please select the profile image.")
+        print(e)
 
 
 
@@ -1431,5 +1468,4 @@ def generateid():
 # displayReceipt()
 
 
-# homewindow()
-takeTest()
+homewindow()
