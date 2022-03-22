@@ -23,15 +23,10 @@ from tkinter import filedialog
 
 
 def notifyrecmail():
-    notification.notify(
-        title = "Mail send",
-        message = "Receipt sent to patient",
-        timeout = 1
-    )
-    time.sleep(0)
+    messagebox.showinfo("Mail", "Mail sent successfully!.")
 
 def showError():
-    messagebox.showerror("Message", "Please fill the data properly.")
+    messagebox.showerror("Message", "Entry field should not be empty.")
 
 
 
@@ -205,7 +200,7 @@ def receiptEntry():
 
     rec_test = Label(rentry, text="Test : ", font="lucida 12 bold", bg="white", fg="blue4")
     rec_test.place(x="300", y="350")
-    list1 = ['Complete Blood Count', 'Prothrobin Time', 'Basic Metabolic Panel', 'Comprehensive Metabolic Panel', 'Lipid Panel', 'Liver Panel', 'Thyroid Stimulating Hormone', 'Hemoglobin A1C', 'Urinalysis', 'Cultures']
+    list1 = ['Complete Blood Count','RT-PCR','Prothrobin Time', 'Basic Metabolic Panel', 'Comprehensive Metabolic Panel', 'Lipid Panel', 'Liver Panel', 'Thyroid Stimulating Hormone', 'Hemoglobin A1C', 'Urinalysis', 'Cultures']
     click=StringVar()
     click.set("Select Test")
     test_dropdown = OptionMenu(rentry,click,*list1)
@@ -239,8 +234,10 @@ def receiptInsertdb():
     # testamt = 750
     if (test == "Complete Blood Count"):
         testamt=700
-    elif(test=="Prothrobin Time"):
-        testamt=700
+    elif(test=="RT-PCR"):
+        testamt=500
+    elif(test == "Prothrobin Time"):
+        testamt = 750
     elif(test=="Basic Metabolic Panel"):
         testamt=800
     elif(test=="Comprehensive Metabolic Panel"):
@@ -906,7 +903,94 @@ def takeTest():
     tktest.photo = tktesttemp  # solution for bug in `PhotoImage`
     receipt_toplogo = Label(tktest, image=tktesttemp, borderwidth="0")
     receipt_toplogo.place(x="-3", y="0")
+
+    splashframe = Frame(tktest, highlightbackground="blue4", highlightthickness=3, width=490, height=625, bd="0",bg="white")
+    splashframe.place(x="350", y="110")
+
+    tt_recid = Label(tktest, text="REC_ID : ", font="lucida 12 bold", bg='white', fg="blue4")
+    tt_recid.place(x="350", y="25")
+    tt_recid_entry = Entry(tktest, width="15", font="lucida 12 bold", bd="5",bg="grey94")
+    tt_recid_entry.place(x="440", y="22")
+
+    tt_testentry = Label(tktest, text="TEST ENTRY ", font="lucida 11 bold", bg='white',fg="blue3")
+    tt_testentry.place(x="520", y="80")
+
+    tt_hemoglobin = Label(tktest, text="HEMOGLOBIN                            : ", font="lucida 10 bold", bg='white', fg="blue4")
+    tt_hemoglobin.place(x="370", y="120")
+    tt_hemo_entry = Entry(tktest, width="10", font="lucida 10 bold", bd="3", bg="grey94")
+    tt_hemo_entry.place(x="700", y="120")
+
+    tt_RBC = Label(tktest, text="RBC                                           : ", font="lucida 10 bold", bg='white', fg="blue4")
+    tt_RBC.place(x="370", y="170")
+    tt_rbc_entry = Entry(tktest, width="10", font="lucida 10 bold", bd="3", bg="grey94")
+    tt_rbc_entry.place(x="700", y="170")
+
+    tt_PCV = Label(tktest, text="PCV                                            : ", font="lucida 10 bold", bg='white', fg="blue4")
+    tt_PCV.place(x="370", y="220")
+    tt_pcv_entry = Entry(tktest, width="10", font="lucida 10 bold", bd="3", bg="grey94")
+    tt_pcv_entry.place(x="700", y="220")
+
+    tt_MCV = Label(tktest, text="MCV_FL                                      : ", font="lucida 10 bold", bg='white', fg="blue4")
+    tt_MCV.place(x="370", y="270")
+    tt_mcv_entry = Entry(tktest, width="10", font="lucida 10 bold", bd="3", bg="grey94")
+    tt_mcv_entry.place(x="700", y="270")
+
+    tt_MCH = Label(tktest, text="MCH                                           : ", font="lucida 10 bold", bg='white', fg="blue4")
+    tt_MCH.place(x="370", y="320")
+    tt_mch_entry = Entry(tktest, width="10", font="lucida 10 bold", bd="3", bg="grey94")
+    tt_mch_entry.place(x="700", y="320")
+
+    tt_WBC = Label(tktest, text="TOTAL WBC                               : ", font="lucida 10 bold", bg='white', fg="blue4")
+    tt_WBC.place(x="370", y="370")
+    tt_wbc_entry = Entry(tktest, width="10", font="lucida 10 bold", bd="3", bg="grey94")
+    tt_wbc_entry.place(x="700", y="370")
+
+    tt_NEURO = Label(tktest, text="NEUROPHILES                           : ", font="lucida 10 bold", bg='white', fg="blue4")
+    tt_NEURO.place(x="370", y="420")
+    tt_neuro_entry = Entry(tktest, width="10", font="lucida 10 bold", bd="3", bg="grey94")
+    tt_neuro_entry.place(x="700", y="420")
+
+
+    tt_EOSINO = Label(tktest, text="EOSINOPHILES                          : ", font="lucida 10 bold", bg='white', fg="blue4")
+    tt_EOSINO.place(x="370", y="470")
+    tt_eosino_entry = Entry(tktest, width="10", font="lucida 10 bold", bd="3", bg="grey94")
+    tt_eosino_entry.place(x="700", y="470")
+
+    tt_BASO = Label(tktest, text="BASOPHILS                                : ", font="lucida 10 bold", bg='white', fg="blue4")
+    tt_BASO.place(x="370", y="520")
+    tt_baso_entry = Entry(tktest, width="10", font="lucida 10 bold", bd="3", bg="grey94")
+    tt_baso_entry.place(x="700", y="520")
+
+    tt_LYMPHO = Label(tktest, text="LYMPHOCYTES                          : ", font="lucida 10 bold", bg='white', fg="blue4")
+    tt_LYMPHO.place(x="370", y="570")
+    tt_lympho_entry = Entry(tktest, width="10", font="lucida 10 bold", bd="3", bg="grey94")
+    tt_lympho_entry.place(x="700", y="570")
+
+    tt_MANO = Label(tktest, text="MANOCYTES                              : ", font="lucida 10 bold", bg='white', fg="blue4")
+    tt_MANO.place(x="370", y="620")
+    tt_mano_entry = Entry(tktest, width="10", font="lucida 10 bold", bd="3", bg="grey94")
+    tt_mano_entry.place(x="700", y="620")
+
+    tt_PLATELET = Label(tktest, text="PLATELET                                  : ", font="lucida 10 bold", bg='white', fg="blue4")
+    tt_PLATELET.place(x="370", y="670")
+    tt_platelet_entry = Entry(tktest, width="10", font="lucida 10 bold", bd="3", bg="grey94")
+    tt_platelet_entry.place(x="700", y="670")
+
+
     tktest.mainloop()
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 def age_pin():
@@ -1166,9 +1250,10 @@ def browseImage():
 
     # Change label contentsx
     imagelocation_count = filename.rfind("/")
-    global image_name
+    global image_name,label_file_explorer
     image_name = filename[(imagelocation_count + 1):]
     label_file_explorer.configure(text=image_name)
+
 
 
 def vcard_db():
@@ -1193,9 +1278,40 @@ def vcard_db():
         generateid()
 
     except Exception as e:
-        messagebox.showinfo("Error", "Field should not be empty")
+        messagebox.showerror("Error", "Some Error Occured \n\n ⭕ Entry field should not be Empty.\n ⭕ Please select the profile image.")
         print(e)
 
+
+def cardss():
+    path = "card_i.png"
+    titles =pygetwindow.getAllTitles()
+
+    # x1, y1 = width, height = pygetwindow.getWindowsWithTitle('Patholab')
+    window = pygetwindow.getWindowsWithTitle('V-CARD')[0]
+    x1 = window.left+30
+    y1 = window.top+43
+    height = window.height-123
+    width = window.width-60
+    x2 = x1 + width
+    y2 = y1 + height
+
+    pyautogui.screenshot(path)
+
+    im = Image.open(path)
+    im = im.crop((x1,y1,x2,y2))
+    im.save(path)
+    # im.show(path)
+    cardtopdf()
+
+def cardtopdf():
+    filename = "card_i.png"
+    image = Image.open(filename)
+
+    if image.mode == "RGBA":
+        image = image.convert("RGB")
+    output = "Vcard.pdf"
+    image.save(output, "PDF", resolution=100.0)
+    webbrowser.open_new(r'Vcard.pdf')
 
 
 
@@ -1206,7 +1322,7 @@ def generateid():
         myid = Toplevel()
         myid.iconbitmap("Images/icon4.ico")
         myid.config(bg="white")
-        window_width, window_height = 700, 400
+        window_width, window_height = 700, 450
 
         screen_width = myid.winfo_screenwidth()
         screen_height = myid.winfo_screenheight()
@@ -1246,7 +1362,7 @@ def generateid():
             v_date = str(i[8])
 
             v_id = Label(myid, text=f"VID : {vid}", font="lucida 13 bold", bg='white', fg="black")
-            v_id.place(x="510", y="50")
+            v_id.place(x="515", y="50")
 
             v_date = Label(myid, text=f"DATE : {v_date}", font="lucida 9 bold", bg='white',fg="blue4")
             v_date.place(x="515", y="30")
@@ -1284,13 +1400,19 @@ def generateid():
             v_vaccinator = Label(myid, text="Pathologist", font="lucida 7 bold", bg='white',fg="blue4")
             v_vaccinator.place(x="420", y="335")
 
+            printcard = Image.open("Images/print_button_size.png")
+            printcard = ImageTk.PhotoImage(printcard)
+            myid.photo3 = printcard
+            printcard = Button(myid, image=printcard, bg="white", bd="0", activebackground='green',command=cardss)
+            printcard.place(x="300", y="400")
+
         myid.mainloop()
 
 
 
 
     except Exception as e:
-        print("IMAGE NOT SELECTED")
+        messagebox.showerror("Error","Some Error Occured \n\n ⭕ Entry field should not be Empty.\n ⭕ Please select the profile image.")
         print(e)
         myid.destroy()
 
@@ -1309,4 +1431,5 @@ def generateid():
 # displayReceipt()
 
 
-homewindow()
+# homewindow()
+takeTest()
