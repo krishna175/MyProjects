@@ -1,6 +1,6 @@
 import sqlite3
 from xlsxwriter.workbook import Workbook
-workbook = Workbook('output3.xlsx')
+workbook = Workbook('Daily Report.xlsx')
 worksheet = workbook.add_worksheet()
 
 conn=sqlite3.connect('Labdb.db')

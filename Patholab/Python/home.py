@@ -17,7 +17,8 @@ from datetime import datetime, timedelta
 import webbrowser
 import tkinter as tk
 from tkinter import filedialog
-
+from  tkinter import ttk
+from xlsxwriter.workbook import Workbook
 
 
 
@@ -31,9 +32,10 @@ def showError():
 
 
 def homewindow():
+    global home
     home = Tk()
     home.configure(bg="white")
-    home.title('Patholab')
+    home.title('PATHOLAB 1.1.0')
     home.resizable(False,False)
     home.iconbitmap("Images/icon4.ico")
     window_width, window_height = 885, 650
@@ -86,7 +88,7 @@ def homewindow():
     covtest_resized = covtest_size.resize((220,50), Image.ANTIALIAS)
     covtest_image = ImageTk.PhotoImage(covtest_resized)
     Label(image=covtest_image)
-    button_covtest = Button(home,image=covtest_image,borderwidth="0")
+    button_covtest = Button(home,image=covtest_image,borderwidth="0",command=takecovidtest)
     button_covtest.place(x=530,y=240)
 
     sendreport_size = Image.open("Images/sendreport_button.png")
@@ -100,7 +102,7 @@ def homewindow():
     deletereport_resized = deletereport_size.resize((220,50), Image.ANTIALIAS)
     deletereport_image = ImageTk.PhotoImage(deletereport_resized)
     Label(image=deletereport_image)
-    button_deletereport = Button(home,image=deletereport_image,borderwidth="0")
+    button_deletereport = Button(home,image=deletereport_image,borderwidth="0",command=dailyreport)
     button_deletereport.place(x=530,y=380)
 
     vcard_size = Image.open("Images/vcard_button.png")
@@ -121,10 +123,19 @@ def homewindow():
     exit_resized = exit_size.resize((60,25), Image.ANTIALIAS)
     exit_image = ImageTk.PhotoImage(exit_resized)
     Label(image=exit_image)
-    button_exit = Button(home,image=exit_image,borderwidth="0",activebackground='red',command=home.destroy)
+    button_exit = Button(home,image=exit_image,borderwidth="0",activebackground='red',command=exitapp)
     button_exit.place(x=818,y=620)
 
     home.mainloop()
+
+def exitapp():
+    response = messagebox.askyesno("PATHOLAB 1.1.0","Are you sure you want to quit? ")
+
+    if response == True:
+        home.destroy()
+
+    elif response == False:
+        pass
 
 def receiptEntry():
     global recname_entry,recage_entry,var,recphone_entry,recemail_entry,click,rentry,recrefdr_entry
@@ -221,7 +232,6 @@ def receiptEntry():
     rentry.mainloop()
 
 def receiptInsertdb():
-    # global recname_entry, recage_entry, var, recphone_entry, recemail_entry, click
     name = str(recname_entry.get())
     age = recage_entry.get()
     gender = var.get()
@@ -401,7 +411,7 @@ def sendeditmail():
             # showmailmessage()
             notifyrecmail()
         except Exception as e:
-            messagebox.showerror("Error ⚠", f"Poor network connection, Please try again later. ")
+            messagebox.showerror("Error ⚠", f"Poor network connection, Please try again later.\n\n{e} ")
 
 def displayReceipt():
     rdisplay = Toplevel()
@@ -1454,18 +1464,195 @@ def generateid():
         myid.destroy()
 
 
+# generate daily report
+def dailyreport():
+    global viewreport
+    viewreport = tk.Toplevel()
+    viewreport.title("Daily Report")
+    viewreport.configure(bg="white")
 
-# def displayid():
-#     try:
-#
-#
-#     except Exception as e:
-#
+    window_width, window_height = 1160, 350
+    screen_width = viewreport.winfo_screenwidth()
+    screen_height = viewreport.winfo_screenheight()
+    position_top = int(screen_height / 2 - window_height / 2)
+    position_right = int(screen_width / 2 - window_width / 2)
+    viewreport.geometry(f"{window_width}x{window_height}+{position_right}+{position_top}")
+    viewreport.resizable(width=False, height=False)
+    viewreport.iconbitmap('Images/icon4.ico')
+
+    conn = sqlite3.connect('Labdb.db')
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM RECEIPT")
+
+    tree = ttk.Treeview(viewreport)
+    tree['show'] = 'headings'
+
+    tabtheme = ttk.Style(viewreport)
+    tabtheme.theme_use("clam")
+
+    tabtheme.configure(".", font=('lucida', 10))
+    tabtheme.configure("Treeview.Heading", foreground="blue", font=('lucida', 9, 'bold'))
+
+    tree["columns"] = ("REC_ID", "NAME", "AGE", "GENDER", "PHONE_NO", "TEST","AMOUNT","DATE")
+
+    # assigning the width minwidth and anchor to the specified columns
+    tree.column("REC_ID", width=80, minwidth=80, anchor=tk.CENTER)
+    tree.column("NAME", width=220, minwidth=220, anchor=tk.CENTER)
+    tree.column("AGE", width=150, minwidth=150, anchor=tk.CENTER)
+    tree.column("GENDER", width=100, minwidth=100, anchor=tk.CENTER)
+    tree.column("PHONE_NO", width=100, minwidth=100, anchor=tk.CENTER)
+    tree.column("TEST", width=200, minwidth=200, anchor=tk.CENTER)
+    tree.column("AMOUNT", width=100, minwidth=100, anchor=tk.CENTER)
+    tree.column("DATE", width=100, minwidth=100, anchor=tk.CENTER)
+
+    # assigning the heading of the columns
+    tree.heading("REC_ID", text="REC_ID", anchor=tk.CENTER)
+    tree.heading("NAME", text="NAME", anchor=tk.CENTER)
+    tree.heading("AGE", text="AGE", anchor=tk.CENTER)
+    tree.heading("GENDER", text="GENDER", anchor=tk.CENTER)
+    tree.heading("PHONE_NO", text="PHONE_NO", anchor=tk.CENTER)
+    tree.heading("TEST", text="TEST", anchor=tk.CENTER)
+    tree.heading("AMOUNT", text="AMOUNT", anchor=tk.CENTER)
+    tree.heading("DATE", text="DATE", anchor=tk.CENTER)
+
+    i = 0
+    rupee_symbol = u"\u20B9"
+    for ro in  cur:
+        tree.insert('',i,text="",values=(ro[0],ro[1],ro[2],ro[3],ro[4],ro[6],rupee_symbol+" "+str(ro[8]),ro[9]))
+        i+=1
+
+    # VERTICAL SCROLLBAR
+    scroll = ttk.Scrollbar(viewreport, orient="vertical")
+    scroll.configure(command=tree.yview)
+    tree.configure(yscrollcommand=scroll.set)
+    scroll.pack(fill="y", side="right")
+
+    tree.place(x=45, y=20)
+
+    printcard = Image.open("Images/export.png")
+    printcard = ImageTk.PhotoImage(printcard)
+    viewreport.photo3 = printcard
+    printcard = Button(viewreport, image=printcard, bg="white", bd="0", activebackground='green',command=sqltoexcel)
+    printcard.place(x="480", y="270")
+
+    viewreport.mainloop()
+
+def sqltoexcel():
+    workbook = Workbook('Daily Report.xlsx')
+    worksheet = workbook.add_worksheet()
+
+    conn = sqlite3.connect('Labdb.db')
+    c = conn.cursor()
+    c.execute("select * from RECEIPT")
+    mysel = c.execute("select * from RECEIPT ")
+    for row in mysel:
+        for i, row in enumerate(mysel):
+            for j, value in enumerate(row):
+                worksheet.write(i, j, row[j])
+    workbook.close()
+    webbrowser.open_new(r'Daily Report.xlsx')
+
+def takecovidtest():
+    global ctestid_entry,var, sampletype,ctest
+    ctest = Toplevel()
+    ctest.iconbitmap("Images/icon4.ico")
+    ctest.config(bg="white")
+    window_width, window_height = 650, 420
+
+    screen_width = ctest.winfo_screenwidth()
+    screen_height = ctest.winfo_screenheight()
+
+    position_top = int(screen_height / 2 - window_height / 2)
+    position_right = int(screen_width / 2 - window_width / 2)
+
+    ctest.geometry(f"{window_width}x{window_height}+{position_right}+{position_top}")
+
+    ctest.title("COVID TEST")
+
+    rentry_top = Image.open("Images/covidtemp.png")
+    rephoto = ImageTk.PhotoImage(rentry_top)
+    ctest.photo = rephoto  # solution for bug in `PhotoImage`
+    receipt_toplogo = Label(ctest, image=rephoto, borderwidth="0")
+    receipt_toplogo.place(x="0", y="10")
+
+
+    splashframe = Frame(ctest, highlightbackground="grey", highlightthickness=3, width=270, height=350, bd="0", bg="white")
+    splashframe.place(x="350", y="30")
+
+    ctest_id = Label(ctest, text=f"REC_ID              : ", font="lucida 9 bold", bg='white', fg="blue4")
+    ctest_id.place(x="365", y="50")
+    ctestid_entry = Entry(ctest, width="13", font="lucida 9 bold", bd="3")
+    ctestid_entry.place(x="486", y="50")
+
+    sample_type = Label(ctest, text=f"SAMPLE TYPE : ", font="lucida 9 bold", bg='white', fg="blue4")
+    sample_type.place(x="365", y="100")
+    sample = ['NASAL SWAB', 'THROAT SWAB', 'BOTH']
+    sampletype = StringVar()
+    sampletype.set("Select Test")
+    test_dropdown = OptionMenu(ctest, sampletype, *sample)
+    test_dropdown.config(bg="blue4", fg="white", height="0", width="15", font='lucida 5 bold',activebackground="dodger blue", activeforeground="black")
+    test_dropdown.place(x="485", y="95")
+
+
+    sample_type = Label(ctest, text=f" RESULT ", font="lucida 9 bold underline", bg='white', fg="red")
+    sample_type.place(x="440", y="150")
+
+    var = StringVar()
+    msymbol = Image.open("Images/cpositive.png")
+    msymbol = ImageTk.PhotoImage(msymbol)
+    ctest.photo = msymbol  # solution for bug in `PhotoImage`
+    mgender_radio = Radiobutton(ctest, image=msymbol, variable=var, bg="white", fg="blue", font="2", value="POSITIVE",activebackground="green" )
+    mgender_radio.place(x="385", y="198")
+
+    fsymbol = Image.open("Images/cnegative.png")
+    fsymbol = ImageTk.PhotoImage(fsymbol)
+    ctest.photo = fsymbol  # solution for bug in `PhotoImage`
+    fgender_radio = Radiobutton(ctest, image=fsymbol, variable=var, bg="white", fg="blue", font="2", value="NEGATIVE",activebackground="red")
+    fgender_radio.place(x="500", y="198")
+
+    printcard = Image.open("Images/submit_button.png")
+    printcard = ImageTk.PhotoImage(printcard)
+    ctest.photo3 = printcard
+    printcard = Button(ctest, image=printcard, bg="white", bd="0", activebackground='green',command=covidinsertdb)
+    printcard.place(x="425", y="310")
+
+    ctest.mainloop()
+
+
+def covidinsertdb():
+    try:
+        recid = ctestid_entry.get()
+        sample = sampletype.get()
+        finalresult = var.get()
+        timenow = (datetime.today().strftime("%I:%M %p"))
+        print(finalresult)
+
+
+        conn = sqlite3.connect('Labdb.db')
+        cur = conn.cursor()
+        testid = cur.execute(f"SELECT COUNT(*) FROM RECEIPT WHERE REC_ID = {recid} and TEST = 'RT-PCR'  ")
+        ridvalidate = testid.fetchall()
+        for i in ridvalidate:
+            if (i[0] == 0):
+                messagebox.showerror("Error", f"REC_ID {recid} Does not exist for RT-PCR test. \n\n⭕ Enter valid REC_ID ")
+                break
+            else:
+                cur.execute(f"INSERT INTO RTPCR VALUES({recid},'{sample}','{finalresult}',STRFTIME('%d/%m/%Y'),'{timenow}')")
+                cur.close()
+                conn.commit()
+                messagebox.showinfo("Message", "Data processed successfully!")
+                ctest.destroy()
+                conn.close()
+
+    except Exception as e:
+        messagebox.showerror("Error","Some Error Occured \n\n ⭕ Entry field should not be Empty.\n ⭕ Enter valid details")
+        print(e)
+
 
 # vcard_entry()
 # generateid()
 # receiptEntry()
 # displayReceipt()
 
-
+# takecovidtest()
 homewindow()
