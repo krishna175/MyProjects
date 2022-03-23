@@ -156,7 +156,8 @@ def sendbloodreport():
             notifyrecmail()
 
     except Exception as e:
-        print("some error",e)
+        messagebox.showerror("Error ⚠", f"Poor network connection, Please try again later.\n\n{e} ")
+
 
 def exitapp():
     response = messagebox.askyesno("PATHOLAB 1.1.0","Are you sure you want to quit? ")
@@ -614,7 +615,7 @@ def editReceipt():
     position_top = int(screen_height / 2 - window_height / 2)
     position_right = int(screen_width / 2 - window_width / 2)
     edrecwin.geometry(f"{window_width}x{window_height}+{position_right}+{position_top}")
-
+    edrecwin.iconbitmap("Images/icon4.ico")
     reditselectionimg = Image.open("Images/backnew_3.png")
     rebg = ImageTk.PhotoImage(reditselectionimg)
     edrecwin.photo = rebg  # solution for bug in `PhotoImage`
@@ -1083,7 +1084,7 @@ def age_pin():
     position_right = int(screen_width / 2 - window_width / 2)
 
     agpin.geometry(f"{window_width}x{window_height}+{position_right}+{position_top}")
-
+    agpin.iconbitmap("Images/icon4.ico")
     agpin.title("Pincode and age")
     # agpin.wm_attributes("-transparentcolor", "white")
 
@@ -1119,7 +1120,7 @@ def loading():
 
     position_top = int(screen_height / 2 - window_height / 2)
     position_right = int(screen_width / 2 - window_width / 2)
-
+    load.iconbitmap("Images/icon4.ico")
     load.geometry(f"{window_width}x{window_height}+{position_right}+{position_top}")
     Label(load, text="No vaccine slots are available at this moment\nPlease try again after sometime.", bg="white",
           fg="black").pack(pady=10)
@@ -1160,7 +1161,7 @@ def slotbook():
     position_right = int(screen_width / 2 - window_width / 2)
 
     slot.geometry(f"{window_width}x{window_height}+{position_right}+{position_top}")
-
+    slot.iconbitmap("Images/icon4.ico")
     slot.configure(bg="white")
     slot.title("Vaccine slot")
 
@@ -1660,7 +1661,7 @@ def covidinsertdb():
 
         conn = sqlite3.connect('Labdb.db')
         cur = conn.cursor()
-        testid = cur.execute(f"SELECT COUNT(*) FROM RECEIPT WHERE REC_ID = {recid} and TEST = 'RT-PCR'  ")
+        testid = cur.execute(f"SELECT COUNT(*) FROM RECEIPT WHERE REC_ID ={recid} and TEST = 'RT-PCR'  ")
         ridvalidate = testid.fetchall()
         for i in ridvalidate:
             if (i[0] == 0):
@@ -1699,7 +1700,7 @@ def sendreport():
     rtpcrreport = Image.open("Images/rtp_report.png")
     rtpcrreport = ImageTk.PhotoImage(rtpcrreport)
     sendrp.photo2 = rtpcrreport
-    rtpcrreport = Button(sendrp, image=rtpcrreport, bg="white", bd="0", activebackground='green',)
+    rtpcrreport = Button(sendrp, image=rtpcrreport, bg="white", bd="0", activebackground='green',command=sendcovidrep)
     rtpcrreport.place(x="70", y="100")
 
     bloodreport = Image.open("Images/blood_report.png")
@@ -1858,6 +1859,10 @@ def generatereportpdf():
         pdf.text(150, 74, f'REC ID   : {i[0]}')
         pdf.text(150, 58, f'DATE     : {i[9]}')
         pdf.text(150, 66, f'TIME      : {i[10]}')
+        pdf.set_font('helvetica', 'BU', 12)
+        pdf.set_text_color(0, 0, 0)
+        pdf.text(76, 85, f'{i[6]}')
+
 
     # TESTS
     pdf.set_text_color(0, 0, 0)
@@ -1872,8 +1877,7 @@ def generatereportpdf():
     pdf.text(16, 233,
              '_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ ')
 
-    pdf.set_font('helvetica', 'BU', 12, )
-    pdf.text(76, 85, 'COMPLETE BLOOD TEST')
+    pdf.set_font('helvetica', 'BU', 12)
     pdf.text(80, 170, 'DIFFERENTIAL COUNT')
 
     conn = sqlite3.connect('Labdb.db')
@@ -1934,9 +1938,262 @@ def generatereportpdf():
 
 
 
+def sendcovidrep():
+    sendrp.destroy()
+    global cvd_recidentry, covrep
+    covrep = Toplevel()
+    covrep.iconbitmap("Images/icon4.ico")
+    covrep.config(bg="white")
+    window_width, window_height = 325, 180
+
+    screen_width = covrep.winfo_screenwidth()
+    screen_height = covrep.winfo_screenheight()
+
+    position_top = int(screen_height / 2 - window_height / 2)
+    position_right = int(screen_width / 2 - window_width / 2)
+
+    covrep.geometry(f"{window_width}x{window_height}+{position_right}+{position_top}")
+
+    covrep.resizable(width=False, height=False)
+
+
+    covrep.title("COVID REPORT")
+
+    bld_rec_id = Label(covrep, text=f"REC ID : ", font="lucida 12 bold ", bg='white', fg="blue4")
+    bld_rec_id.place(x="50", y="40")
+    cvd_recidentry = Entry(covrep, width="10", font="lucida 12 bold", bd="3",bg="grey94")
+    cvd_recidentry.place(x="150", y="40")
+
+    bloodreport = Image.open("Images/print_button_size.png")
+    bloodreport = ImageTk.PhotoImage(bloodreport)
+    covrep.photo3 = bloodreport
+    bloodreport = Button(covrep, image=bloodreport, bg="white", bd="0", activebackground='green',command=covidrepvalidate)
+    bloodreport.place(x="50", y="100")
+
+    mailreport = Image.open("Images/mail_button.png")
+    mailreport = ImageTk.PhotoImage(mailreport)
+    covrep.photo4 = mailreport
+    mailreport = Button(covrep, image=mailreport, bg="white", bd="0", activebackground='green',command=sendcovidreport)
+    mailreport.place(x="165", y="100")
+
+    covrep.mainloop()
+
+def covidrepvalidate():
+    try:
+        repid = cvd_recidentry.get()
+        conn = sqlite3.connect('Labdb.db')
+        cur = conn.cursor()
+        testid = cur.execute(f"SELECT COUNT(*) FROM RTPCR WHERE REC_ID = {repid}   ")
+        ridvalidate = testid.fetchall()
+        for i in ridvalidate:
+            if (i[0] == 0):
+                messagebox.showerror("Error", f"REC_ID {repid} COVID reports not generated \n\n⭕ Enter valid REC_ID\n⭕ Insert the test entries in the take test section .")
+                break
+            else:
+                # displaybloodreport()
+                covsendsplash()
+
+    except Exception as e:
+        print(e)
+        messagebox.showerror("Error","Some Error Occured \n\n ⭕ Entry field should not be Empty.\n ⭕ Please enter valid ID.")
+
+
+def covsendsplash():
+    global billing
+    billing = Toplevel()
+    window_width, window_height = 300, 100
+    screen_width = billing.winfo_screenwidth()
+    screen_height = billing.winfo_screenheight()
+    position_top = int(screen_height / 2 - window_height / 2)
+    position_right = int(screen_width / 2 - window_width / 2)
+    billing.geometry(f"{window_width}x{window_height}+{position_right}+{position_top}")
+
+    billing.configure(bg="white")
+    billing.resizable(width=False, height=False)
+    billing.overrideredirect(True)
+
+    splashframe = Frame(billing, highlightbackground="black", highlightthickness=3, width=300, height=110, bd="0",bg="white")
+    splashframe.pack()
+    file = "Images/preloader.gif"
+
+    info = Image.open(file)
+
+    frames = info.n_frames  # gives total number of frames that gif contains
+
+    # creating list of PhotoImage objects for each frames
+    im = [PhotoImage(file=file, format=f"gif -index {i}") for i in range(frames)]
+
+    count = 0
+    anim = None
+
+    def animation(count):
+        global anim
+        im2 = im[count]
+
+        gif_label.configure(image=im2)
+        count += 1
+        if count == frames:
+            count = 0
+        anim = billing.after(45, lambda: animation(count))
+
+    gif_label = Label(billing, image="", bd="0")
+    gif_label.place(x="75", y="25")
+    animation(count)
+
+    sending_label = Label(billing, text="Generating Report", font="lucida 8 ", bg="white", fg="black")
+    sending_label.place(x="80", y="53")
+    loading_label = Label(billing, text="Please wait....", font="lucida 8 ", bg="white", fg="black")
+    loading_label.place(x="110", y="72")
+    billing.after(500,generatecovidreport)
+
+    billing.mainloop()
+
+
+
+def sendcovidreport():
+    try:
+        recid = cvd_recidentry.get()
+        conn = sqlite3.connect('Labdb.db')
+        cur = conn.cursor()
+        details = cur.execute(f"SELECT * FROM RECEIPT WHERE REC_ID = {recid}")
+        values = details.fetchall()
+        for i in values:
+            name = i[1]
+            test = i[6]
+            email = i[5]
+            # Create an object of sendpdf function
+            k = sendpdf("patholabsreport@gmail.com",
+                        f"{email}",
+                        "Patho@175",
+                        "Patholab Report",
+                        f"Dear {name} ,\nThis is your Report for {test} lab test. Please download the report. \nFor any complaints or queries visit our website. \nWebsite:  \n\nRegards,\nPatholab.",
+                        "Patient Report",
+                        f"{os.getcwd()}")
+
+        # sending an email
+            k.email_send()
+            notifyrecmail()
+
+    except Exception as e:
+        messagebox.showerror("Error ⚠", f"Poor network connection, Please try again later.\n\n{e} ")
+
+
+
+
+def generatecovidreport():
+    repid = cvd_recidentry.get()
+    pdf = FPDF('P', 'mm', (210, 297))
+
+    pdf.add_page()
+
+    pdf.set_font('helvetica', 'B', 8)
+    pdf.set_text_color(0, 0, 0)
+
+    # Images
+    pdf.image('Images/Report_toptemp.png', 5, 15, 200, 40)
+    pdf.image('Images/pdf_report_down.png', 5, 260, 200, 23)
+    pdf.image('Images/pdf_backtemp2.png', 54, 130, 100, 70)
+    pdf.image('Images/signature2.jpg', 155, 241, 25, 12)
+    pdf.image('Images/rtpcrback.png', 17, 92, 175, 12)
+
+    pdf.set_font('helvetica', 'B', 6)
+    pdf.text(162, 253, 'Consultant')
+    pdf.text(153, 257, '(Microbiologist/Pathologist)')
+
+    conn = sqlite3.connect('Labdb.db')
+    cur = conn.cursor()
+    details = cur.execute(f"SELECT * FROM RECEIPT WHERE REC_ID = {repid}")
+    pdetails = details.fetchall()
+    for i in pdetails:
+        pdf.set_font('helvetica', 'B', 10)
+        pdf.set_text_color(0, 0, 96)
+        pdf.text(50, 50, f'NAME      : {i[1]}')
+        pdf.text(150, 50, f'AGE       : {i[2]}')
+        pdf.text(50, 58, f'GENDER : {i[3]}')
+        pdf.text(50, 66, f'TEST       : {i[6]}')
+        pdf.text(50, 74, f'DOCTOR : {i[7]}')
+        pdf.text(150, 74, f'REC ID   : {i[0]}')
+        pdf.text(150, 58, f'DATE     : {i[9]}')
+        pdf.text(150, 66, f'TIME      : {i[10]}')
+
+    pdf.set_font('helvetica', 'BU', 10)
+    pdf.text(80, 85, 'RT-PCR TEST RESULT')
+
+    pdf.set_font('helvetica', 'B', 9)
+    pdf.set_text_color(0, 0, 0)
+    pdf.text(40, 97, 'REC ID')
+    pdf.text(92, 97, 'SAMPLE TYPE')
+    pdf.text(155, 97, 'RESULT')
+    conn = sqlite3.connect('Labdb.db')
+    cur = conn.cursor()
+    rtpcrt = cur.execute(f"SELECT * FROM RTPCR WHERE REC_ID = {repid}")
+    rtpcrresult = rtpcrt.fetchall()
+    for i in rtpcrresult:
+        if i[2] == 'NEGATIVE':
+            pdf.set_text_color(0, 128, 0)
+            pdf.text(153.5, 102, f'{i[2]}')
+        else:
+            pdf.set_text_color(255, 0, 0)
+            pdf.text(153.5, 102, f'{i[2]}')
+        pdf.set_font('helvetica', '', 9)
+        pdf.set_text_color(0, 0, 0)
+        pdf.text(40, 102, f'{i[0]}')
+        pdf.text(93, 102, f'{i[1]}')
+
+    pdf.set_font('helvetica', '', 8)
+    pdf.text(20, 120,
+             'The performance of this test has been validated & evaluated by National Institute of Virology/ICMR.')
+    pdf.set_font('helvetica', 'B', 8)
+    pdf.text(20, 125, 'Indications')
+    pdf.text(20, 142, 'Methodology')
+    pdf.text(20, 155, 'Clinical Significance')
+    pdf.text(20, 164, 'Limitation of the assay')
+    pdf.text(20, 181, 'Disclaimer')
+    pdf.set_font('helvetica', '', 8)
+    pdf.text(20, 129,
+             'COVID-19 is an infectious disease caused by the virus strain "severe acute respiratory syndrome coronavirus 2" (SARS-CoV-2),')
+    pdf.text(20, 133,
+             'Common signs of infection include respiratory symptoms,fever,cough,shortness of breath and breathing difficulties.')
+    pdf.text(20, 137,
+             'In more severe cases,infection can causes pneumonia ,severe acture respiratory syndrome and kidney failure.')
+
+    pdf.text(20, 146,
+             'COVID19 detection by polymerase chain reaction (PCR) is based on the amplification of specific regions of the SARS-CoV-2')
+    pdf.text(20, 150, 'In real Time PCR the amplified product is detected via fluorescent dyes.')
+
+    pdf.text(20, 159, 'Detection of COVID-19 RNA in patients with COVID-19 infection.')
+
+    pdf.text(20, 168, '1.Presence of PCR inhibitors may interfere with PCR amplification.')
+    pdf.text(20, 172,
+             '2.Undetected result does not rule out the possibility of infection.Presence of inhibitors,mutations & insufficient')
+    pdf.text(23, 176, 'organism RNA can influence the result.')
+
+    pdf.text(23, 185,
+             '1.This test is intended for use in conjunction with clinical presentation and other laboratory markers.')
+    pdf.text(23, 189,
+             '2.Improper specimen collection, handling, storage and transportation may results in false negative results.')
+    pdf.text(23, 193, '3.The report represents only the specimen received in laboratory.')
+
+    # TESTS
+
+    pdf.set_font('helvetica', 'B', 10)
+
+    pdf.text(16, 79,
+             '_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ ')
+    pdf.text(16, 233,
+             '_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ ')
+
+    pdf.output('Patient Report.pdf')
+    billing.destroy()
+    webbrowser.open_new(r'Patient Report.pdf')
+
+
 # sendreport()
 # sendbloodrep()
 # paySplash()
 
 # mailreport()
 homewindow()
+
+
+# sendcovidrep()
