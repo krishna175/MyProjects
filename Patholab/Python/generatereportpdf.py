@@ -1,6 +1,7 @@
 import sqlite3
 from fpdf import FPDF
 import webbrowser
+from pdf_mail import sendpdf
 
 
 pdf = FPDF('P', 'mm',(210,297))
@@ -119,4 +120,27 @@ pdf.text(20,231,'PLATELET')
 
 pdf.output('Patient Report.pdf')
 webbrowser.open_new(r'Patient Report.pdf')
+
+
+def mailreport():
+    conn = sqlite3.connect('Labdb.db')
+    cur = conn.cursor()
+    details = cur.execute(f"SELECT * FROM RECEIPT WHERE REC_ID = 1111114")
+    values = details.fetchall()
+    for i in values:
+        name = i[1]
+        test = i[6]
+        email = i[5]
+        # Create an object of sendpdf function
+        k = sendpdf("patholabsreport@gmail.com",
+                    f"{email}",
+                    "Patho@175",
+                    "Patholab Report",
+                    f"Dear {name} ,\nThis is your Report for {test} lab test. Please download \nFor any complaints or queries visit our website. \nWebsite:  \n\nRegards,\nPatholab.",
+                    "Patient Report",
+                    "C:/Users/Vandana/Documents/Clg Doc/OneDrive/ProjectGit/Electrica")
+
+    # sending an email
+        k.email_send()
+
 

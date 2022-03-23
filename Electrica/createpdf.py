@@ -4,6 +4,7 @@ import cx_Oracle
 from fpdf import FPDF
 import webbrowser
 
+
 # create FPDF object
 # Layout ('P','L')
 # Unit ('mm', 'cm', 'in')
