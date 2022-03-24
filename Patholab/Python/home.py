@@ -51,6 +51,8 @@ def homewindow():
 
     home.geometry(f"{window_width}x{window_height}+{position_right}+{position_top}")
 
+
+
     temp_size = Image.open("Images/home_template2.png")
     temp_resized = temp_size.resize((395,655), Image.ANTIALIAS)
     template = ImageTk.PhotoImage(temp_resized)
@@ -63,6 +65,8 @@ def homewindow():
     backtemplate_image = Label(home,image=backtemplate,borderwidth="0")
     backtemplate_image.place(x="430",y="0")
 
+    developer = Label(home, text="Developed By HARKRISHNAN SATHYAN", font="lucida 6 ", bg="navy", fg="white")
+    developer.place(x="0", y="635")
 
     receipt_size = Image.open("Images/receipt_button.png")
     receipt_resized = receipt_size.resize((220,50), Image.ANTIALIAS)
@@ -147,7 +151,7 @@ def sendbloodreport():
                         f"{email}",
                         "Patho@175",
                         "Patholab Report",
-                        f"Dear {name} ,\nThis is your Report for {test} lab test. Please download the report. \nFor any complaints or queries visit our website. \nWebsite:  \n\nRegards,\nPatholab.",
+                        f"Dear {name} ,\nThis is your Report for {test} lab test. Please download the report. \nFor any complaints or queries visit our website. \nWebsite:www.patholab.com  \n\nRegards,\nPatholab.",
                         "Patient Report",
                         f"{os.getcwd()}")
 
@@ -186,7 +190,7 @@ def receiptEntry():
 
     rentry_top = Image.open("Images/receipt_temp.png")
     rephoto = ImageTk.PhotoImage(rentry_top)
-    rentry.photo = rephoto  # solution for bug in `PhotoImage`
+    rentry.photo1 = rephoto  # solution for bug in `PhotoImage`
     receipt_toplogo = Label(rentry, image=rephoto, borderwidth="0")
     receipt_toplogo.place(x="37",y="15")
 
@@ -198,7 +202,7 @@ def receiptEntry():
 
     gpay_logo = Image.open("Images/payment_image.png")
     gpay_logo = ImageTk.PhotoImage(gpay_logo)
-    rentry.photo2 = gpay_logo  # solution for bug in `PhotoImage`
+    rentry.photo3 = gpay_logo  # solution for bug in `PhotoImage`
     rec_gpay_logo = Label(rentry, image=gpay_logo, borderwidth="0",bg="white")
     rec_gpay_logo.place(x="100", y="230")
 
@@ -225,7 +229,7 @@ def receiptEntry():
 
     fsymbol = Image.open("Images/femenine.png")
     fsymbol = ImageTk.PhotoImage(fsymbol)
-    rentry.photo = fsymbol  # solution for bug in `PhotoImage`
+    rentry.photo4 = fsymbol  # solution for bug in `PhotoImage`
     fgender_radio = Radiobutton(rentry,image=fsymbol,variable=var,bg="white",fg="blue",font="2",value="FEMALE")
     fgender_radio.place(x="630",y="198")
 
@@ -256,7 +260,7 @@ def receiptEntry():
 
     submitsymbol = Image.open("Images/submit_button.png")
     submitsymbol = ImageTk.PhotoImage(submitsymbol)
-    rentry.photo3 = submitsymbol
+    rentry.photo5 = submitsymbol
     submit_receipt = Button(rentry,image=submitsymbol,bg="white",bd="0",activebackground='green',command=receiptInsertdb)
     submit_receipt.place(x="800",y="400")
 
@@ -2141,8 +2145,7 @@ def generatecovidreport():
         pdf.text(93, 102, f'{i[1]}')
 
     pdf.set_font('helvetica', '', 8)
-    pdf.text(20, 120,
-             'The performance of this test has been validated & evaluated by National Institute of Virology/ICMR.')
+    pdf.text(20, 120,'The performance of this test has been validated & evaluated by National Institute of Virology/ICMR.')
     pdf.set_font('helvetica', 'B', 8)
     pdf.text(20, 125, 'Indications')
     pdf.text(20, 142, 'Methodology')
@@ -2150,28 +2153,21 @@ def generatecovidreport():
     pdf.text(20, 164, 'Limitation of the assay')
     pdf.text(20, 181, 'Disclaimer')
     pdf.set_font('helvetica', '', 8)
-    pdf.text(20, 129,
-             'COVID-19 is an infectious disease caused by the virus strain "severe acute respiratory syndrome coronavirus 2" (SARS-CoV-2),')
-    pdf.text(20, 133,
-             'Common signs of infection include respiratory symptoms,fever,cough,shortness of breath and breathing difficulties.')
-    pdf.text(20, 137,
-             'In more severe cases,infection can causes pneumonia ,severe acture respiratory syndrome and kidney failure.')
+    pdf.text(20, 129,'COVID-19 is an infectious disease caused by the virus strain "severe acute respiratory syndrome coronavirus 2" (SARS-CoV-2),')
+    pdf.text(20, 133,'Common signs of infection include respiratory symptoms,fever,cough,shortness of breath and breathing difficulties.')
+    pdf.text(20, 137,   'In more severe cases,infection can causes pneumonia ,severe acture respiratory syndrome and kidney failure.')
 
-    pdf.text(20, 146,
-             'COVID19 detection by polymerase chain reaction (PCR) is based on the amplification of specific regions of the SARS-CoV-2')
+    pdf.text(20, 146,'COVID19 detection by polymerase chain reaction (PCR) is based on the amplification of specific regions of the SARS-CoV-2')
     pdf.text(20, 150, 'In real Time PCR the amplified product is detected via fluorescent dyes.')
 
     pdf.text(20, 159, 'Detection of COVID-19 RNA in patients with COVID-19 infection.')
 
     pdf.text(20, 168, '1.Presence of PCR inhibitors may interfere with PCR amplification.')
-    pdf.text(20, 172,
-             '2.Undetected result does not rule out the possibility of infection.Presence of inhibitors,mutations & insufficient')
+    pdf.text(20, 172,'2.Undetected result does not rule out the possibility of infection.Presence of inhibitors,mutations & insufficient')
     pdf.text(23, 176, 'organism RNA can influence the result.')
 
-    pdf.text(23, 185,
-             '1.This test is intended for use in conjunction with clinical presentation and other laboratory markers.')
-    pdf.text(23, 189,
-             '2.Improper specimen collection, handling, storage and transportation may results in false negative results.')
+    pdf.text(23, 185,'1.This test is intended for use in conjunction with clinical presentation and other laboratory markers.')
+    pdf.text(23, 189,'2.Improper specimen collection, handling, storage and transportation may results in false negative results.')
     pdf.text(23, 193, '3.The report represents only the specimen received in laboratory.')
 
     # TESTS
