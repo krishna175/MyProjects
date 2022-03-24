@@ -632,16 +632,56 @@ def editReceipt():
     showreceiptbtn = Image.open("Images/showReceipt.png")
     showreceiptbtn = ImageTk.PhotoImage(showreceiptbtn)
     edrecwin.photo = showreceiptbtn  # solution for bug in `PhotoImage`
-    showrecbtn = Button(edrecwin, image=showreceiptbtn, bg="white", bd="0", activebackground='blue',command=showReceipt)
+    showrecbtn = Button(edrecwin, image=showreceiptbtn, bg="white", bd="0", activebackground='blue',command=showReceiptValidate)
     showrecbtn.place(x="190", y="160")
 
     editrecimg = Image.open("Images/editReceipt.png")
     editrecimg = ImageTk.PhotoImage(editrecimg)
     edrecwin.photo = editrecimg  # solution for bug in `PhotoImage`
-    editrecbtn = Button(edrecwin, image=editrecimg, bg="white", bd="0", activebackground='blue',command=recUpdate)
+    editrecbtn = Button(edrecwin, image=editrecimg, bg="white", bd="0", activebackground='blue',command=recUpdateValidate)
     editrecbtn.place(x="191", y="220")
 
     edrecwin.mainloop()
+
+
+def showReceiptValidate():
+    try:
+        recid = select_rec_entry.get()
+        conn = sqlite3.connect('Labdb.db')
+        cur = conn.cursor()
+        testid = cur.execute(f"SELECT COUNT(*) FROM Receipt WHERE REC_ID = {recid}   ")
+        ridvalidate = testid.fetchall()
+        for i in ridvalidate:
+            if (i[0] == 0):
+                messagebox.showerror("Error", f"REC_ID {recid} does not exist. \n\n⭕ Enter valid REC_ID")
+                break
+            else:
+                showReceipt()
+
+
+    except Exception as e:
+        print(e)
+        messagebox.showerror("Error","Some Error Occured \n\n ⭕ Entry field should not be Empty.\n ⭕ Please enter valid ID.")
+
+
+def recUpdateValidate():
+    try:
+        recid = select_rec_entry.get()
+        conn = sqlite3.connect('Labdb.db')
+        cur = conn.cursor()
+        testid = cur.execute(f"SELECT COUNT(*) FROM Receipt WHERE REC_ID = {recid}   ")
+        ridvalidate = testid.fetchall()
+        for i in ridvalidate:
+            if (i[0] == 0):
+                messagebox.showerror("Error", f"REC_ID {recid} does not exist. \n\n⭕ Enter valid REC_ID")
+                break
+            else:
+                recUpdate()
+
+
+    except Exception as e:
+        print(e)
+        messagebox.showerror("Error","Some Error Occured \n\n ⭕ Entry field should not be Empty.\n ⭕ Please enter valid ID.")
 
 def showReceipt():
     global rdisplay,recid
@@ -2182,12 +2222,10 @@ def generatecovidreport():
     webbrowser.open_new(r'Patient Report.pdf')
 
 
-# sendreport()
-# sendbloodrep()
-# paySplash()
 
-# mailreport()
 homewindow()
 
 
-# sendcovidrep()
+
+
+
