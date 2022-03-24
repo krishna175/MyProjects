@@ -185,8 +185,7 @@ def receiptEntry():
 
     rentry.title("RECEIPT ENTRY")
     rentry.configure(bg="white")
-    rentry.resizable(width=False, height=False)
-    rentry.iconbitmap('C:/gui/icon4.ico')
+    rentry.iconbitmap('Images/icon4.ico')
 
     rentry_top = Image.open("Images/receipt_temp.png")
     rephoto = ImageTk.PhotoImage(rentry_top)
@@ -460,8 +459,7 @@ def displayReceipt():
 
     rdisplay.title("RECEIPT")
     rdisplay.configure(bg="white")
-    rdisplay.resizable(width=False, height=False)
-    rdisplay.iconbitmap('C:/gui/icon4.ico')
+    rdisplay.iconbitmap('Images/icon4.ico')
 
     rdisplay_top = Image.open("Images/receipt_temp.png")
     rephoto = ImageTk.PhotoImage(rdisplay_top)
@@ -659,8 +657,8 @@ def showReceipt():
 
     rdisplay.title("RECEIPT")
     rdisplay.configure(bg="white")
-    rdisplay.resizable(width=False, height=False)
-    rdisplay.iconbitmap('C:/gui/icon4.ico')
+
+    rdisplay.iconbitmap('Images/icon4.ico')
 
     rdisplay_top = Image.open("Images/receipt_temp.png")
     rephoto = ImageTk.PhotoImage(rdisplay_top)
@@ -780,8 +778,8 @@ def recUpdate():
 
     rentry.title("RECEIPT ENTRY")
     rentry.configure(bg="white")
-    rentry.resizable(width=False, height=False)
-    rentry.iconbitmap('C:/gui/icon4.ico')
+
+    rentry.iconbitmap('Images/icon4.ico')
 
     rentry_top = Image.open("Images/receipt_temp.png")
     rephoto = ImageTk.PhotoImage(rentry_top)
@@ -947,8 +945,8 @@ def takeTest():
 
     tktest.title("REPORT ENTRY")
     tktest.configure(bg="white")
-    tktest.resizable(width=False, height=False)
-    tktest.iconbitmap('C:/gui/icon4.ico')
+
+    tktest.iconbitmap('Images/icon4.ico')
 
     taketest_temp = Image.open("Images/taketest_template.png")
     tktesttemp = ImageTk.PhotoImage(taketest_temp)
